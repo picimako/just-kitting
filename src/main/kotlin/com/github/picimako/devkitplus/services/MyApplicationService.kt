@@ -1,6 +1,6 @@
-package org.jetbrains.plugins.template.services
+package com.github.picimako.devkitplus.services
 
-import org.jetbrains.plugins.template.MyBundle
+import com.github.picimako.devkitplus.MyBundle
 
 class MyApplicationService {
 
