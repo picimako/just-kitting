@@ -1,0 +1,7 @@
+<idea-plugin>
+    <id>another.plugin.id</id>
+    <vendor>SomeOtherVendor</vendor>
+    <extensions defaultExtensionNs="com.intellij">
+        <projectService serviceImplementation="ServiceRegisteredInDependencyPluginXml"/>
+    </extensions>
+</idea-plugin>

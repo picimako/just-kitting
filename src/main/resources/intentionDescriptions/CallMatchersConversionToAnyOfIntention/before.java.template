@@ -1,0 +1,13 @@
+public class SomeClass {
+    static final CallMatcher LIST_OF = CallMatcher.staticCall("java.util.List", "of");
+    static final CallMatcher SET_OF = CallMatcher.staticCall("java.util.Set", "of");
+    static final CallMatcher MAP_OF = CallMatcher.staticCall("java.util.Map", "of");
+    
+    public void method(PsiMethodCallExpression expression) {
+        if (<spot>LIST_OF.matches(expression)
+            || SET_OF.matches(expression)
+            || MAP_OF.matches(expression)</spot>) {
+            //...
+        }
+    }
+}

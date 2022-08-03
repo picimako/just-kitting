@@ -1,0 +1,25 @@
+<html>
+<body>
+<!-- tooltip end -->
+This inspection groups various optimizations together and provides quick fixes when possible to replace code snippets to
+their more optimal forms.
+
+<h4>Empty array creation</h4>
+<pre>
+//From:
+PsiElement[] array = new PsiElement[0];
+//To (it is any type that has this EMPTY_ARRAY constant defined):
+PsiElement[] array = PsiElement.EMPTY_ARRAY;
+</pre>
+
+<h4>Emptiness comparison</h4>
+<pre>
+//From (the operands are recognized if they are switched too):
+psiMethodCallExpression.getArgumentList().getExpressions().length == 0;
+psiMethodCallExpression.getArgumentList().getExpressions().length > 0;
+//To:
+psiMethodCallExpression.getArgumentList().isEmpty();
+!psiMethodCallExpression.getArgumentList().isEmpty();
+</pre>
+</body>
+</html>

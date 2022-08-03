@@ -1,0 +1,21 @@
+<html>
+<body>
+<!-- tooltip end -->
+Reports calls to the <code>create()</code> methods and the constructor of <code>com.intellij.psi.util.CachedValueProvider.Result</code>
+in which there is no dependency specified, or it is an empty collection.
+<p>
+    In this case the <code>Result</code> class constructor would log an error level message, saying:
+<blockquote><i>No dependencies provided which causes CachedValue to be never recalculated again. If this is intentional,
+    please use
+    ModificationTracker.NEVER_CHANGED</i>
+</blockquote>
+<p>
+    The following empty collection factory methods are considered during validation:
+<ul>
+    <li><code>List.of()</code></li>
+    <li><code>Set.of()</code></li>
+    <li><code>Collections.emptyList()</code></li>
+    <li><code>Collections.emptySet()</code></li>
+</ul>
+</body>
+</html>

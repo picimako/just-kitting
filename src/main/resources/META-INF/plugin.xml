@@ -1,18 +1,65 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
-<idea-plugin>
-    <id>com.github.picimako.devkitplus</id>
-    <name>devkit-plus</name>
-    <vendor>picimako</vendor>
+<idea-plugin require-restart="false">
+    <id>devkitplus</id>
+    <name>DevKit Plus</name>
+    <vendor url="https://github.com/picimako/devkit-plus">Tamás Balog</vendor>
+    <version>0.1.0</version>
+    <resource-bundle>messages.DevKitPlusBundle</resource-bundle>
+
+    <!-- https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
+    <idea-version since-build="213"/>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+    <depends>DevKit</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.picimako.devkitplus.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.picimako.devkitplus.services.MyProjectService"/>
+
+        <!-- Light services -->
+        <localInspection implementationClass="com.picimako.devkitplus.inspection.LightServiceClassConditionsInspection" id="devkit.plus.light.service.final"
+                         language="JAVA" displayName="Light service criteria" groupName="DevKit Plus" enabledByDefault="true" level="ERROR"/>
+        <localInspection implementationClass="com.picimako.devkitplus.inspection.LightServiceRetrievalInspection" id="devkit.plus.light.service.retrieval"
+                         language="JAVA" displayName="Suspicious light service retrieval" groupName="DevKit Plus" enabledByDefault="true" level="WARNING"/>
+
+        <!-- CallMatcher -->
+        <localInspection implementationClass="com.picimako.devkitplus.inspection.CallMatcherInspection" id="devkit.plus.call.matcher"
+                         language="JAVA" displayName="CallMatcher inspections" groupName="DevKit Plus" enabledByDefault="true" level="ERROR"/>
+
+        <!-- Caching -->
+        <localInspection implementationClass="com.picimako.devkitplus.inspection.CachedValuesInspection" id="devkit.plus.caching"
+                         language="JAVA" displayName="Caching inspections" groupName="DevKit Plus" enabledByDefault="true" level="ERROR"/>
+
+        <!-- Code optimization -->
+        <localInspection implementationClass="com.picimako.devkitplus.inspection.OptimizeExpressionsInspection" id="devkit.plus.code.optimization"
+                         language="JAVA" displayName="Code optimization checks" groupName="DevKit Plus" enabledByDefault="true" level="WARNING"/>
+
+        <intentionAction>
+            <categoryKey>devkit.intention.category</categoryKey>
+            <className>com.picimako.devkitplus.intention.state.MakeClassPersistentStateComponentIntention</className>
+        </intentionAction>
+
+        <intentionAction>
+            <categoryKey>devkit.intention.category</categoryKey>
+            <className>com.picimako.devkitplus.intention.callmatcher.CallMatchersConversionToAnyOfIntention</className>
+        </intentionAction>
+
+        <defaultLiveTemplates file="/liveTemplates/DevKitPlus.xml"/>
+
+        <codeInsight.inlayProvider language="XML" implementationClass="com.picimako.devkitplus.inlayhint.LightServicesInlayHintsProvider"/>
+        <psi.referenceContributor language="JAVA" implementation="com.picimako.devkitplus.reference.CallMatcherReferenceContributor"/>
+
     </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.picimako.devkitplus.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+    <actions>
+        <action id="DevKitPlus.generate.light.service.static.getter"
+                class="com.picimako.devkitplus.action.GenerateLightServiceStaticGetInstanceAction"
+                text="Light Service getInstance()" description="${project.description}">
+            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
+        </action>
+        <action id="DevKitPlus.generate.inspection.options.panel"
+                class="com.picimako.devkitplus.action.inspectionpanel.CreateInspectionOptionsPanelAction"
+                text="Inspection Options Panel..." description="${project.description}">
+            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
+        </action>
+    </actions>
 </idea-plugin>

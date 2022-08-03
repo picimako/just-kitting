@@ -1,0 +1,20 @@
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.PersistentStateComponent;
+
+@State(name = "SomeComponent", storages = @Storage("TODO: INSERT STORAGE NAME"))
+public class SomeComponent extends PersistentStateComponent<SomeComponent.State> {
+
+    private State myState = new State();
+    
+    public State getState() {
+        return myState;
+    }
+    
+    public void loadState(State state) {
+        myState = state;
+    }
+    
+    static final class State {
+    }
+}

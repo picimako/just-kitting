@@ -1,0 +1,12 @@
+<templateSet group="DevKit">
+  <template name="CVM" value="com.intellij.psi.util.CachedValuesManager.getManager($PROJECT$).getCachedValue($PROJECT$, () -&gt; {&#10;    $SELECTION$&#10;    return com.intellij.psi.util.CachedValueProvider.Result.create($RESULT$, $DEPENDENCY$);&#10;});&#10;$END$&#10;" description="Surround with CachedValuesManager.getCachedValue" toReformat="true" toShortenFQNames="true">
+    <variable name="PROJECT" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="RESULT" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="DEPENDENCY" expression="" defaultValue="&quot;com.intellij.openapi.util.ModificationTracker.NEVER_CHANGED&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="JAVA_DECLARATION" value="true" />
+      <option name="JAVA_EXPRESSION" value="true" />
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+</templateSet>

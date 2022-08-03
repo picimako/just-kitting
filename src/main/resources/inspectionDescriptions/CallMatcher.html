@@ -1,0 +1,20 @@
+<html>
+<body>
+<!-- tooltip end -->
+Reports method name arguments of calls to <code>com.siyeh.ig.callMatcher.CallMatcher</code> if they don't exist in the
+current context of the call matcher.
+<p>
+    If...
+<ul>
+    <li>the call is <code>CallMatcher#instanceCall(String, String...)</code>, problem is registered only when the method
+        doesn't exist as an instance method in the class or any of its super classes.
+    </li>
+    <li>the call is <code>CallMatcher#exactInstanceCall(String, String...)</code>, problem is registered only when the
+        method doesn't exist as an instance method in the class.
+    </li>
+    <li>the call is <code>CallMatcher#staticCall(String, String...)</code>, problem is registered only when the method
+        doesn't exist as a static method in the class or any of its super classes.
+    </li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<idea-plugin>
+    <id>a.plugin.id</id>
+    <vendor>SomeVendor</vendor>
+    <depends optional="true" config-file="dependency.xml">jbehave-support-plugin</depends>
+    <extensions defaultExtensionNs="com.intellij">
+        <projectService serviceImplementation="ServiceRegisteredInMainPluginXml"/>
+        <projectService serviceImplementation="Service"/>
+    </extensions>
+</idea-plugin>
