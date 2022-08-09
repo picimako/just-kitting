@@ -9,6 +9,10 @@
 
 Official Plugin SDK documentation: [Light Services](https://plugins.jetbrains.com/docs/intellij/plugin-services.html#light-services)
 
+Related JetBrains YT tickets:
+- [Devkit: Light Services inspection](https://youtrack.jetbrains.com/issue/IDEA-236032/Devkit-Light-Services-inspection)
+- [Class, that registered as extension, must be not registered as service or component](https://youtrack.jetbrains.com/issue/IDEA-294395/Class-that-registered-as-extension-must-be-not-registered-as-service-or-component)
+
 ## Generate Light Service static getInstance() method
 
 ![](https://img.shields.io/badge/action-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-GenerateLightServiceStaticGetInstanceAction-blue)](../src/main/java/com/picimako/devkitplus/action/GenerateLightServiceStaticGetInstanceAction.java)
