@@ -10,9 +10,9 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiSubstitutor;
 import com.intellij.psi.ResolveResult;
-import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
 
 import com.picimako.devkitplus.DevKitPlusTestBase;
+import com.picimako.devkitplus.ThirdPartyLibraryLoader;
 
 /**
  * Functional test for {@link CallMatcherReferenceContributor}.
@@ -20,8 +20,9 @@ import com.picimako.devkitplus.DevKitPlusTestBase;
 public class CallMatcherReferenceContributorTest extends DevKitPlusTestBase {
 
     @Override
-    protected void tuneFixture(JavaModuleFixtureBuilder<?> moduleBuilder) throws Exception {
-        loadJavaImplJar(moduleBuilder);
+    protected void setUp() throws Exception {
+        super.setUp();
+        ThirdPartyLibraryLoader.loadJavaImpl(myFixture);
     }
 
     //Class reference
@@ -242,7 +243,8 @@ public class CallMatcherReferenceContributorTest extends DevKitPlusTestBase {
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
 
-        assertThat(resolveResults).hasSize(1);
+        assertThat(resolveResults).hasSize(2);
         assertThat(((PsiMethod) resolveResults[0].getElement()).getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: toUnsignedString([PsiType:int, PsiType:int])");
+        assertThat(((PsiMethod) resolveResults[1].getElement()).getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: toUnsignedString([PsiType:int])");
     }
 }

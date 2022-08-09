@@ -3,7 +3,7 @@
 package com.picimako.devkitplus.inspection;
 
 import com.intellij.codeInspection.InspectionProfileEntry;
-import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
+import com.picimako.devkitplus.ThirdPartyLibraryLoader;
 
 /**
  * Functional test for {@link LightServiceRetrievalInspection}.
@@ -16,9 +16,9 @@ public class LightServiceRetrievalInspectionTest extends DevKitPlusInspectionTes
     }
 
     @Override
-    protected void tuneFixture(JavaModuleFixtureBuilder<?> moduleBuilder) throws Exception {
-        super.tuneFixture(moduleBuilder);
-        loadUtilJar(moduleBuilder);
+    protected void setUp() throws Exception {
+        super.setUp();
+        ThirdPartyLibraryLoader.loadUtil(myFixture);
     }
 
     @Override

@@ -2,7 +2,7 @@
 
 package com.picimako.devkitplus.intention.state;
 
-import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
+import com.picimako.devkitplus.ThirdPartyLibraryLoader;
 import com.picimako.devkitplus.action.DevKitPlusActionTestBase;
 
 /**
@@ -11,9 +11,9 @@ import com.picimako.devkitplus.action.DevKitPlusActionTestBase;
 public class ConversionActionsTest extends DevKitPlusActionTestBase {
 
     @Override
-    protected void tuneFixture(JavaModuleFixtureBuilder<?> moduleBuilder) throws Exception {
-        super.tuneFixture(moduleBuilder);
-        loadUtilJar(moduleBuilder);
+    protected void setUp() throws Exception {
+        super.setUp();
+        ThirdPartyLibraryLoader.loadUtil(myFixture);
     }
 
     public void testConvertsClassWithStandaloneStateObject() {

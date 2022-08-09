@@ -5,7 +5,6 @@ package com.picimako.devkitplus;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.intellij.psi.PsiClass;
-import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
 
 /**
  * Unit test for {@link LightServiceUtil}.
@@ -13,9 +12,9 @@ import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
 public class LightServiceUtilTest extends DevKitPlusTestBase {
 
     @Override
-    protected void tuneFixture(JavaModuleFixtureBuilder<?> moduleBuilder) throws Exception {
-        super.tuneFixture(moduleBuilder);
-        loadUtilJar(moduleBuilder);
+    protected void setUp() throws Exception {
+        super.setUp();
+        ThirdPartyLibraryLoader.loadUtil(myFixture);
     }
 
     public void testIsLightService() {

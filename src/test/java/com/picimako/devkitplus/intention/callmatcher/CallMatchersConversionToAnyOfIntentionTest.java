@@ -4,8 +4,8 @@ package com.picimako.devkitplus.intention.callmatcher;
 
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.psi.PsiFile;
-import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
 
+import com.picimako.devkitplus.ThirdPartyLibraryLoader;
 import com.picimako.devkitplus.intention.DevKitPlusIntentionTestBase;
 
 /**
@@ -14,8 +14,9 @@ import com.picimako.devkitplus.intention.DevKitPlusIntentionTestBase;
 public class CallMatchersConversionToAnyOfIntentionTest extends DevKitPlusIntentionTestBase {
 
     @Override
-    protected void tuneFixture(JavaModuleFixtureBuilder<?> moduleBuilder) throws Exception {
-        loadJavaImplJar(moduleBuilder);
+    protected void setUp() throws Exception {
+        super.setUp();
+        ThirdPartyLibraryLoader.loadJavaImpl(myFixture);
     }
 
     @Override
