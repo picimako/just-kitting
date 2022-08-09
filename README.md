@@ -1,5 +1,8 @@
 # DevKit Plus
 
+![Build](https://github.com/picimako/mockitools/workflows/Build/badge.svg)
+![](https://img.shields.io/badge/since-IJ2021.3-blue) ![](https://img.shields.io/badge/until-IJ2022.2-blue)
+
 <!-- Plugin description -->
 A plugin for JetBrains IDE plugin developers to provide them with extra functionality during plugin development, besides
 the official DevKit plugin. Its aim is to make their experience with the IntelliJ platform and the plugin API even better.
@@ -14,9 +17,12 @@ the official DevKit plugin. Its aim is to make their experience with the Intelli
 - [Inspections](docs/inspections.md)
 - [Miscellaneous](docs/misc.md)
 
+
+- [Developer docs](/docs/dev_docs.md)
+
 ## Kotlin support
 
-As of now, all functionality in this plugin is implemented only for Java code, Kotlin is not yet supported.
+As of now, all functionality in this plugin is implemented only for Java code, but Kotlin support is planned.
 
 ## License
 
