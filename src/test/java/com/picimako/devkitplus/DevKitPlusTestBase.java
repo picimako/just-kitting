@@ -2,45 +2,38 @@
 
 package com.picimako.devkitplus;
 
-import com.intellij.openapi.components.Service;
-import com.intellij.openapi.roots.LanguageLevelProjectExtension;
+import com.intellij.openapi.projectRoots.JavaSdk;
+import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.pom.java.LanguageLevel;
-import com.intellij.psi.PsiClass;
-import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
-import com.intellij.testFramework.fixtures.JavaCodeInsightFixtureTestCase;
-import com.intellij.util.PathUtil;
-import com.intellij.util.xmlb.XmlSerializerUtil;
-import com.siyeh.ig.callMatcher.CallMatcher;
+import com.intellij.testFramework.LightProjectDescriptor;
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class for functional tests.
  */
-public abstract class DevKitPlusTestBase extends JavaCodeInsightFixtureTestCase {
+public abstract class DevKitPlusTestBase extends LightJavaCodeInsightFixtureTestCase {
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        LanguageLevelProjectExtension.getInstance(getProject()).setLanguageLevel(LanguageLevel.JDK_11);
+        ThirdPartyLibraryLoader.loadPlatformApi(myFixture);
     }
 
     @Override
-    protected void tuneFixture(JavaModuleFixtureBuilder<?> moduleBuilder) throws Exception {
-        loadPlatformApiJar(moduleBuilder);
-    }
-    
-    protected void loadPlatformApiJar(JavaModuleFixtureBuilder<?> moduleBuilder) {
-        moduleBuilder.addLibrary("platform-api", PathUtil.getJarPathForClass(Service.class));
-    }
-    
-    protected void loadUtilJar(JavaModuleFixtureBuilder<?> moduleBuilder) {
-        moduleBuilder.addLibrary("util.jar", PathUtil.getJarPathForClass(XmlSerializerUtil.class));
+    protected @NotNull LightProjectDescriptor getProjectDescriptor() {
+        return getJdkHome();
     }
 
-    protected void loadJavaImplJar(JavaModuleFixtureBuilder<?> moduleBuilder) {
-        moduleBuilder.addLibrary("java-impl.jar", PathUtil.getJarPathForClass(CallMatcher.class));
-    }
-
-    protected void loadJavaApiJar(JavaModuleFixtureBuilder<?> moduleBuilder) {
-        moduleBuilder.addLibrary("java-api.jar", PathUtil.getJarPathForClass(PsiClass.class));
+    /**
+     * Returns a descriptor with a real JDK defined by the JAVA_HOME environment variable.
+     */
+    public static LightProjectDescriptor getJdkHome() {
+        return new ProjectDescriptor(LanguageLevel.JDK_11) {
+            @Override
+            public Sdk getSdk() {
+                return JavaSdk.getInstance().createJdk("Real JDK", System.getenv("JAVA_HOME"), false);
+            }
+        };
     }
 }

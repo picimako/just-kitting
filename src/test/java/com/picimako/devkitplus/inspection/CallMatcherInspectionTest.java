@@ -3,7 +3,7 @@
 package com.picimako.devkitplus.inspection;
 
 import com.intellij.codeInspection.InspectionProfileEntry;
-import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
+import com.picimako.devkitplus.ThirdPartyLibraryLoader;
 
 /**
  * Functional test for {@link CallMatcherInspection}.
@@ -16,8 +16,9 @@ public class CallMatcherInspectionTest extends DevKitPlusInspectionTestBase {
     }
 
     @Override
-    protected void tuneFixture(JavaModuleFixtureBuilder<?> moduleBuilder) throws Exception {
-        loadJavaImplJar(moduleBuilder);
+    protected void setUp() throws Exception {
+        super.setUp();
+        ThirdPartyLibraryLoader.loadJavaImpl(myFixture);
     }
 
     public void testNonExistentMethod() {

@@ -3,7 +3,7 @@
 package com.picimako.devkitplus.inspection;
 
 import com.intellij.codeInspection.InspectionProfileEntry;
-import com.intellij.testFramework.builders.JavaModuleFixtureBuilder;
+import com.picimako.devkitplus.ThirdPartyLibraryLoader;
 
 /**
  * Functional test for {@link CachedValuesInspection}.
@@ -16,9 +16,9 @@ public class CachedValuesInspectionTest extends DevKitPlusInspectionTestBase {
     }
 
     @Override
-    protected void tuneFixture(JavaModuleFixtureBuilder<?> moduleBuilder) throws Exception {
-        super.tuneFixture(moduleBuilder);
-        loadJavaApiJar(moduleBuilder);
+    protected void setUp() throws Exception {
+        super.setUp();
+        ThirdPartyLibraryLoader.loadJavaApi(myFixture);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class CachedValuesInspectionTest extends DevKitPlusInspectionTestBase {
     }
 
     public void testNoHighlightForNonEmptyDependencies() {
-        doJavaTest("",
+        doJavaTest("NoHighlightForNonEmptyDependencies.java",
             "import com.intellij.psi.util.CachedValueProvider;\n" +
                 "import com.intellij.psi.PsiClass;\n" +
                 "\n" +
@@ -201,7 +201,7 @@ public class CachedValuesInspectionTest extends DevKitPlusInspectionTestBase {
     }
 
     public void testNoHighlightForNonEmptyDependenciesNewResult() {
-        doJavaTest("",
+        doJavaTest("NoHighlightForNonEmptyDependencies.java",
             "import com.intellij.psi.util.CachedValueProvider;\n" +
                 "import com.intellij.psi.PsiClass;\n" +
                 "\n" +

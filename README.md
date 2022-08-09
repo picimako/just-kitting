@@ -5,10 +5,6 @@ A plugin for JetBrains IDE plugin developers to provide them with extra function
 the official DevKit plugin. Its aim is to make their experience with the IntelliJ platform and the plugin API even better.
 <!-- Plugin description end -->
 
-## Download
-
-The plugin is not yet released, but the built jar is upload into the repository, and can be downloaded from [**here**](/lib/devkit-plus-0.1.0.jar).
-
 ## Documentation
 
 - [Light Services](docs/light_services.md)
