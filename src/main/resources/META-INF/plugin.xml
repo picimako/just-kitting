@@ -39,6 +39,8 @@
         <codeInsight.inlayProvider language="XML" implementationClass="com.picimako.devkitplus.inlayhint.LightServicesInlayHintsProvider"/>
         <psi.referenceContributor language="JAVA" implementation="com.picimako.devkitplus.reference.CallMatcherReferenceContributor"/>
 
+        <defaultLiveTemplates file="/liveTemplates/DevKitPlus.xml"/>
+
     </extensions>
 
     <actions>
