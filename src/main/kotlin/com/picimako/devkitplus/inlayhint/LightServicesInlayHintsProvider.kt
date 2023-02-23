@@ -1,6 +1,4 @@
-/*
- * Copyright 2021 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
- */
+//Copyright 2021 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.devkitplus.inlayhint
 
@@ -34,7 +32,6 @@ import java.util.function.Supplier
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComponent
 import javax.swing.event.DocumentEvent
-
 
 /**
  * Provides inlay hints for the `<extensions>` starting tag in a plugin's main plugin.xml file.

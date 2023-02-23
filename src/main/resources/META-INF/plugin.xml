@@ -14,13 +14,6 @@
     <depends>DevKit</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-
-        <!-- Light services -->
-        <localInspection implementationClass="com.picimako.devkitplus.inspection.LightServiceClassConditionsInspection" id="devkit.plus.light.service.final"
-                         language="JAVA" displayName="Light service criteria" groupName="DevKit Plus" enabledByDefault="true" level="ERROR"/>
-        <localInspection implementationClass="com.picimako.devkitplus.inspection.LightServiceRetrievalInspection" id="devkit.plus.light.service.retrieval"
-                         language="JAVA" displayName="Suspicious light service retrieval" groupName="DevKit Plus" enabledByDefault="true" level="WARNING"/>
-
         <!-- CallMatcher -->
         <localInspection implementationClass="com.picimako.devkitplus.inspection.CallMatcherInspection" id="devkit.plus.call.matcher"
                          language="JAVA" displayName="CallMatcher inspections" groupName="DevKit Plus" enabledByDefault="true" level="ERROR"/>
@@ -42,8 +35,6 @@
             <categoryKey>devkit.intention.category</categoryKey>
             <className>com.picimako.devkitplus.intention.callmatcher.CallMatchersConversionToAnyOfIntention</className>
         </intentionAction>
-
-        <defaultLiveTemplates file="/liveTemplates/DevKitPlus.xml"/>
 
         <codeInsight.inlayProvider language="XML" implementationClass="com.picimako.devkitplus.inlayhint.LightServicesInlayHintsProvider"/>
         <psi.referenceContributor language="JAVA" implementation="com.picimako.devkitplus.reference.CallMatcherReferenceContributor"/>

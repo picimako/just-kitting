@@ -9,10 +9,10 @@ A plugin for JetBrains IDE plugin developers to provide them with extra function
 
 ## Disclaimer
 
-The features in this plugin are based on the IntelliJ Platform SDK documentation, and personal experience, and what I personally found useful.
+The features in this plugin are based on the IntelliJ Platform SDK documentation, and personal experience, and what I personally find useful.
 There are many subtleties to using DevKit and the IntelliJ Platform, that are not covered here, and I don't know of.
 
-Please use your best judgement when using e.g. some of the code generation features, to make sure they actually suit your specific needs.
+Please use your best judgement when using these features to make sure they actually suit your specific needs.
 
 ## Contributions
 
@@ -29,12 +29,11 @@ This is to minimize the chance of clashing with the development of the DevKit pl
 - [Inspections](docs/inspections.md)
 - [Miscellaneous](docs/misc.md)
 
-
 - [Developer docs](/docs/dev_docs.md)
 
 ## Kotlin support
 
-As of now, all functionality in this plugin is implemented only for Java code, but Kotlin support is planned.
+As of now, all functionality in this plugin is implemented only for Java code, but at least some Kotlin support is planned in the long run.
 
 ## License
 
