@@ -111,8 +111,8 @@ tasks {
         include("**/*Test.class")
     }
 
-    //    runPluginVerifier {
-//        ideVersions.set(listOf("IU-223.7571.58"))
+//    runPluginVerifier {
+//        ideVersions.set(listOf("IC-2023.1"))
 //    }
 
     signPlugin {
