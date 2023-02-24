@@ -1,7 +1,6 @@
 # DevKit Plus
 
-![Build](https://github.com/picimako/mockitools/workflows/Build/badge.svg)
-![](https://img.shields.io/badge/since-IJ2021.3-blue) ![](https://img.shields.io/badge/until-IJ2022.2-blue)
+![](https://img.shields.io/badge/since-IJ2022.1-blue) ![](https://img.shields.io/badge/until-IJ2022.3-blue)
 
 <!-- Plugin description -->
 A plugin for JetBrains IDE plugin developers to provide them with extra functionality during plugin development, besides the official DevKit plugin.
