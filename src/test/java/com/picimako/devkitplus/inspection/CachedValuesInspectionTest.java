@@ -231,7 +231,7 @@ public class CachedValuesInspectionTest extends DevKitPlusInspectionTestBase {
                 "\n" +
                 "public class NoHighlightForEmptyResultCreateParameterList {\n" +
                 "   public void method() {\n" +
-                "       new CachedValueProvider.Result<error descr=\"Cannot infer arguments (unable to resolve constructor)\"><></error>();\n" +
+                "       new CachedValueProvider.Result<><error descr=\"Cannot resolve constructor 'Result()'\">()</error>;\n" +
                 "   }\n" +
                 "}");
     }
