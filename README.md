@@ -1,4 +1,4 @@
-# DevKit Plus
+# Just Kitting IntelliJ plugin
 
 ![](https://img.shields.io/badge/since-IJ2022.1-blue) ![](https://img.shields.io/badge/until-IJ2022.3-blue)
 

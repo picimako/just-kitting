@@ -2,7 +2,7 @@
 
 ## Expressions can be optimized
 
-![](https://img.shields.io/badge/inspection-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-OptimizeExpressionsInspection-blue)](../src/main/java/com/picimako/devkitplus/inspection/OptimizeExpressionsInspection.java)
+![](https://img.shields.io/badge/inspection-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-OptimizeExpressionsInspection-blue)](../src/main/java/com/picimako/justkitting/inspection/OptimizeExpressionsInspection.java)
 
 There are various convenience constants, methods, etc. with which one can optimize and/or simplify code.
 

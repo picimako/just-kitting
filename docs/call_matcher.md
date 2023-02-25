@@ -5,7 +5,7 @@ parameter count and types.
 
 ## References for CallMatcher static factory method arguments
 
-![](https://img.shields.io/badge/referencecontributor-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CallMatcherReferenceContributor-blue)](../src/main/java/com/picimako/devkitplus/reference/CallMatcherReferenceContributor.java)
+![](https://img.shields.io/badge/referencecontributor-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CallMatcherReferenceContributor-blue)](../src/main/java/com/picimako/justkitting/reference/CallMatcherReferenceContributor.java)
 
 This reference contributor provides an alternative way to navigate to the classes and methods referenced in `CallMatcher`'s static factory methods.
 The scope of search is everything in the current project plus libraries.
@@ -29,7 +29,7 @@ Method references are added
 
 ## No method with given name exists
 
-![](https://img.shields.io/badge/inspection-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CallMatcherInspection-blue)](../src/main/java/com/picimako/devkitplus/inspection/CallMatcherInspection.java)
+![](https://img.shields.io/badge/inspection-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CallMatcherInspection-blue)](../src/main/java/com/picimako/justkitting/inspection/CallMatcherInspection.java)
 
 This inspection reports method name arguments in calls to `com.siyeh.ig.callMatcher.CallMatcher`'s factory methods, if they don't exist in the current context of the CallMatcher.
 A problem is registered only when the first argument (the class FQN) of the CallMatcher call can be identified,
@@ -44,7 +44,7 @@ If...
 
 ## Combine CallMatcher boolean expressions to CallMatcher.anyOf()
 
-![](https://img.shields.io/badge/intention-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CallMatchersConversionToAnyOfIntention-blue)](../src/main/java/com/picimako/devkitplus/intention/callmatcher/CallMatchersConversionToAnyOfIntention.java)
+![](https://img.shields.io/badge/intention-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CallMatchersConversionToAnyOfIntention-blue)](../src/main/java/com/picimako/justkitting/intention/callmatcher/CallMatchersConversionToAnyOfIntention.java)
 
 `CallMatcher` provides an `anyOf()` factory method that would match if one of the provided matchers matches.
 

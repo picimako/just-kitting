@@ -1,1 +1,1 @@
-rootProject.name = "devkit-plus"
+rootProject.name = "just-kitting"

@@ -4,7 +4,7 @@ Official Plugin SDK documentation: [Persisting State of Components](https://plug
 
 ## Convert class to PersistentStateComponent
 
-![](https://img.shields.io/badge/intention-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-MakeClassPersistentStateComponentIntention-blue)](../src/main/java/com/picimako/devkitplus/intention/state/MakeClassPersistentStateComponentIntention.java)
+![](https://img.shields.io/badge/intention-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-MakeClassPersistentStateComponentIntention-blue)](../src/main/java/com/picimako/justkitting/intention/state/MakeClassPersistentStateComponentIntention.java)
 
 According to the [Implementing the PersistentStateComponent Interface](https://plugins.jetbrains.com/docs/intellij/persisting-state-of-components.html#implementing-the-persistentstatecomponent-interface)
 section there are two ways to specify the object that will store the state of the component, whose implementation this intention action helps with.

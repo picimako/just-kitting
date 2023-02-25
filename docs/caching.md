@@ -2,7 +2,7 @@
 
 ## CachedValueProvider.Result creation with no dependency
 
-![](https://img.shields.io/badge/inspection-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CachedValuesInspection-blue)](../src/main/java/com/picimako/devkitplus/inspection/CachedValuesInspection.java)
+![](https://img.shields.io/badge/inspection-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CachedValuesInspection-blue)](../src/main/java/com/picimako/justkitting/inspection/CachedValuesInspection.java)
 
 During the creation of a `com.intellij.psi.util.CachedValueProvider.Result` object, if there is no dependency specified,
 an error level message is logged saying:

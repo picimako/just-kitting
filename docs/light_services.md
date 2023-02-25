@@ -14,7 +14,7 @@ Related JetBrains YT tickets:
 
 ## Generate Light Service static getInstance() method
 
-![](https://img.shields.io/badge/action-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-GenerateLightServiceStaticGetInstanceAction-blue)](../src/main/java/com/picimako/devkitplus/action/GenerateLightServiceStaticGetInstanceAction.java)
+![](https://img.shields.io/badge/action-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-GenerateLightServiceStaticGetInstanceAction-blue)](../src/main/java/com/picimako/justkitting/action/GenerateLightServiceStaticGetInstanceAction.java)
 
 It is common practice, and is mentioned by the [Retrieving a Service](https://plugins.jetbrains.com/docs/intellij/plugin-services.html#retrieving-a-service)
 section as well, that a static `getInstance()` convenience method may be added to light service classes to wrap service retrieval logic.
@@ -80,7 +80,7 @@ In every other case, for now, a warning message is displayed that the service le
 
 ## Light Services visualized in plugin.xml
 
-![](https://img.shields.io/badge/inlayhint-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-LightServicesInlayHintsProvider-blue)](../src/main/java/com/picimako/devkitplus/inlayhint/LightServicesInlayHintsProvider.kt)
+![](https://img.shields.io/badge/inlayhint-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-LightServicesInlayHintsProvider-blue)](../src/main/java/com/picimako/justkitting/inlayhint/LightServicesInlayHintsProvider.kt)
 
 According to the [Light Services](https://plugins.jetbrains.com/docs/intellij/plugin-services.html#light-services) Plugin SDK docs:
 > A service not going to be overridden does not need to be registered in plugin.xml... Instead, annotate service class with @Service.
@@ -121,6 +121,6 @@ This mode shows only the *View all light services...* hint, which behaves the sa
 
 ### Notes
 
-As for the popup list (see [LightServicesHintPresentationAware](../src/main/java/com/picimako/devkitplus/inlayhint/LightServicesHintPresentationAware.kt)):
+As for the popup list (see [LightServicesHintPresentationAware](../src/main/java/com/picimako/justkitting/inlayhint/LightServicesHintPresentationAware.kt)):
 - there is no speed search implemented yet,
 - the popup height is not yet limited to make the list scrollable

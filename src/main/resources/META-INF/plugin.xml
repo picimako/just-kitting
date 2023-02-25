@@ -1,10 +1,10 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin require-restart="false">
-    <id>devkitplus</id>
-    <name>DevKit Plus</name>
+    <id>picimako.justkitting</id>
+    <name>Just Kitting</name>
     <vendor url="https://github.com/picimako/devkit-plus">Tamás Balog</vendor>
     <version>0.1.0</version>
-    <resource-bundle>messages.DevKitPlusBundle</resource-bundle>
+    <resource-bundle>messages.JustKittingBundle</resource-bundle>
 
     <!-- https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="221"/>
@@ -15,42 +15,42 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- CallMatcher -->
-        <localInspection implementationClass="com.picimako.devkitplus.inspection.CallMatcherInspection" id="devkit.plus.call.matcher"
-                         language="JAVA" displayName="CallMatcher inspections" groupName="DevKit Plus" enabledByDefault="true" level="ERROR"/>
+        <localInspection implementationClass="com.picimako.justkitting.inspection.CallMatcherInspection" id="just.kitting.call.matcher"
+                         language="JAVA" displayName="CallMatcher inspections" groupName="Just Kitting" enabledByDefault="true" level="ERROR"/>
 
         <!-- Caching -->
-        <localInspection implementationClass="com.picimako.devkitplus.inspection.CachedValuesInspection" id="devkit.plus.caching"
-                         language="JAVA" displayName="Caching inspections" groupName="DevKit Plus" enabledByDefault="true" level="ERROR"/>
+        <localInspection implementationClass="com.picimako.justkitting.inspection.CachedValuesInspection" id="just.kitting.caching"
+                         language="JAVA" displayName="Caching inspections" groupName="Just Kitting" enabledByDefault="true" level="ERROR"/>
 
         <!-- Code optimization -->
-        <localInspection implementationClass="com.picimako.devkitplus.inspection.OptimizeExpressionsInspection" id="devkit.plus.code.optimization"
-                         language="JAVA" displayName="Code optimization checks" groupName="DevKit Plus" enabledByDefault="true" level="WARNING"/>
+        <localInspection implementationClass="com.picimako.justkitting.inspection.OptimizeExpressionsInspection" id="just.kitting.code.optimization"
+                         language="JAVA" displayName="Code optimization checks" groupName="Just Kitting" enabledByDefault="true" level="WARNING"/>
 
         <intentionAction>
-            <categoryKey>devkit.intention.category</categoryKey>
-            <className>com.picimako.devkitplus.intention.state.MakeClassPersistentStateComponentIntention</className>
+            <categoryKey>justkitting.intention.category</categoryKey>
+            <className>com.picimako.justkitting.intention.state.MakeClassPersistentStateComponentIntention</className>
         </intentionAction>
 
         <intentionAction>
-            <categoryKey>devkit.intention.category</categoryKey>
-            <className>com.picimako.devkitplus.intention.callmatcher.CallMatchersConversionToAnyOfIntention</className>
+            <categoryKey>justkitting.intention.category</categoryKey>
+            <className>com.picimako.justkitting.intention.callmatcher.CallMatchersConversionToAnyOfIntention</className>
         </intentionAction>
 
-        <codeInsight.inlayProvider language="XML" implementationClass="com.picimako.devkitplus.inlayhint.LightServicesInlayHintsProvider"/>
-        <psi.referenceContributor language="JAVA" implementation="com.picimako.devkitplus.reference.CallMatcherReferenceContributor"/>
+        <codeInsight.inlayProvider language="XML" implementationClass="com.picimako.justkitting.inlayhint.LightServicesInlayHintsProvider"/>
+        <psi.referenceContributor language="JAVA" implementation="com.picimako.justkitting.reference.CallMatcherReferenceContributor"/>
 
-        <defaultLiveTemplates file="/liveTemplates/DevKitPlus.xml"/>
+        <defaultLiveTemplates file="/liveTemplates/JustKitting.xml"/>
 
     </extensions>
 
     <actions>
-        <action id="DevKitPlus.generate.light.service.static.getter"
-                class="com.picimako.devkitplus.action.GenerateLightServiceStaticGetInstanceAction"
+        <action id="JustKitting.generate.light.service.static.getter"
+                class="com.picimako.justkitting.action.GenerateLightServiceStaticGetInstanceAction"
                 text="Light Service getInstance()" description="${project.description}">
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
         </action>
-        <action id="DevKitPlus.generate.inspection.options.panel"
-                class="com.picimako.devkitplus.action.inspectionpanel.CreateInspectionOptionsPanelAction"
+        <action id="JustKitting.generate.inspection.options.panel"
+                class="com.picimako.justkitting.action.inspectionpanel.CreateInspectionOptionsPanelAction"
                 text="Inspection Options Panel..." description="${project.description}">
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
         </action>

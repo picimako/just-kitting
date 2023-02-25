@@ -13,24 +13,24 @@ Also configure the **JAVA_HOME** environment variable on your system, this is ne
 Integrations tests build mostly on JUnit3-based platform test classes. For assertions, either the IntelliJ platform's underlying logic is used, or AssertJ
 where applicable.
 
-DevKit Plus base test classes:
-- [WireMochaTestBase](../src/test/java/com/picimako/devkitplus/DevKitPlusTestBase.java) as the main base test class
-- [IntentionTestBase](../src/test/java/com/picimako/devkitplus/intention/DevKitPlusIntentionTestBase.java) for Intention Actions
-- [InspectionTestBase](../src/test/java/com/picimako/devkitplus/inspection/DevKitPlusInspectionTestBase.java) for Inspections
-- [CodeCompletionTestBase](../src/test/java/com/picimako/devkitplus/action/DevKitPlusActionTestBase.java) for Actions
+Just Kitting base test classes:
+- [JustKittingTestBase](../src/test/java/com/picimako/justkitting/JustKittingTestBase.java) as the main base test class
+- [JustKittingIntentionTestBase](../src/test/java/com/picimako/justkitting/intention/JustKittingIntentionTestBase.java) for Intention Actions
+- [JustKittingInspectionTestBase](../src/test/java/com/picimako/justkitting/inspection/JustKittingInspectionTestBase.java) for Inspections
+- [JustKittingActionTestBase](../src/test/java/com/picimako/justkitting/action/JustKittingActionTestBase.java) for Actions
 
 ### Load 3rd-party libs
 
 #### JDK
 
-Java file based tests require either a mock or a real JDK to be available. This project is configured to always use a real JDK via `com.picimako.devkitplus.DevKitPlusTestBase.getJdkHome()`,
+Java file based tests require either a mock or a real JDK to be available. This project is configured to always use a real JDK via `com.picimako.justkitting.JustKittingTestBase.getJdkHome()`,
 so that no modification of the [`idea.home.path` system property](https://plugins.jetbrains.com/docs/intellij/code-inspections.html#inspection-unit-test) is necessary for running tests locally.
 And, using the JAVA_HOME based JDK also works on GitHub Actions.
 
 #### Other libs
 
 In order for tests to recognize code from other libraries, those libraries have to be added to the classpath too. You can use the various
-`load*()` methods of `com.picimako.devkitplus.ThirdPartyLibraryLoader`.
+`load*()` methods of `com.picimako.justkitting.ThirdPartyLibraryLoader`.
 
 These libraries are located in the `lib` directory under the project root.
 

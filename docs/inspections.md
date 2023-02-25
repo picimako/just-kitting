@@ -2,7 +2,7 @@
 
 ## Generate options panel
 
-![](https://img.shields.io/badge/action-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CreateInspectionOptionsPanelAction-blue)](../src/main/java/com/picimako/devkitplus/action/inspectionpanel/CreateInspectionOptionsPanelAction.java)
+![](https://img.shields.io/badge/action-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CreateInspectionOptionsPanelAction-blue)](../src/main/java/com/picimako/justkitting/action/inspectionpanel/CreateInspectionOptionsPanelAction.java)
 
 There simple UI components in the `com.intellij.codeInspection.ui` package that are dedicated for use in `InspectionProfileEntry` implementations.
 
