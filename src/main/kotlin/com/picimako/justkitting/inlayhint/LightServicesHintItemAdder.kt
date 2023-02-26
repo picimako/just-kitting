@@ -23,9 +23,9 @@ import java.util.function.Supplier
 @Suppress("UnstableApiUsage")
 abstract class LightServicesHintItemAdder(open var settings: Settings,
                                           open var sink: InlayHintsSink,
-                                          override var factory: PresentationFactory,
-                                          override var editor: Editor,
-                                          override var file: PsiFile) : LightServicesHintPresentationAware(factory, editor, file) {
+                                          open var factory: PresentationFactory,
+                                          open var editor: Editor,
+                                          open var file: PsiFile) : LightServicesHintPresentationAware(factory, editor, file) {
 
     /**
      * Adds all the `services` PsiClasses as hints to the `extensionsTag` under the `serviceLevel` group.
