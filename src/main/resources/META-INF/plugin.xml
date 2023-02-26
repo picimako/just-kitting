@@ -2,7 +2,7 @@
 <idea-plugin require-restart="false">
     <id>picimako.justkitting</id>
     <name>Just Kitting</name>
-    <vendor url="https://github.com/picimako/devkit-plus">Tamás Balog</vendor>
+    <vendor url="https://github.com/picimako/just-kitting">Tamás Balog</vendor>
     <version>0.1.0</version>
     <resource-bundle>messages.JustKittingBundle</resource-bundle>
 
