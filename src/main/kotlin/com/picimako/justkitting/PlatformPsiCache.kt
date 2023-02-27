@@ -28,6 +28,7 @@ class PlatformPsiCache(val project: Project) {
     val singleCheckboxOptionsPanel: PsiClass? by lazy { findClass(PlatformNames.SINGLE_CHECKBOX_OPTIONS_PANEL) }
     val singleIntegerFieldOptionsPanel: PsiClass? by lazy { findClass(PlatformNames.SINGLE_INTEGER_FIELD_OPTIONS_PANEL) }
     val conventionOptionsPanel: PsiClass? by lazy { findClass(PlatformNames.CONVENTION_OPTIONS_PANEL) }
+    val callMatcher: PsiClass? by lazy { findClass(PlatformNames.CALL_MATCHER) }
 
     private fun findClass(name: String): PsiClass? = JavaPsiFacade.getInstance(project).findClass(name, ProjectScope.getLibrariesScope(project)) 
 

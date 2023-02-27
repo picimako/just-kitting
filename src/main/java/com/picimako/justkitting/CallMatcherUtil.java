@@ -23,6 +23,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class CallMatcherUtil {
 
+    public static final String INSTANCE_CALL = "instanceCall";
+    public static final String EXACT_INSTANCE_CALL = "exactInstanceCall";
+    public static final String STATIC_CALL = "staticCall";
+
     public static final PsiElementPattern.Capture<PsiLiteralExpression> ARGUMENT_OF_CALL_MATCHER_PATTERN = psiElement(PsiLiteralExpression.class)
         //If the string literal has a CallMatcher factory method as parent with at least one argument specified
         .withSuperParent(2, psiElement(PsiMethodCallExpression.class)

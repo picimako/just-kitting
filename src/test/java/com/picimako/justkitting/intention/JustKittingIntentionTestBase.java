@@ -26,6 +26,10 @@ public abstract class JustKittingIntentionTestBase extends JustKittingTestBase {
         doIntentionTest(filename, beforeText, afterText, getIntention());
     }
 
+    protected void checkIfAvailableIn(PsiFile psiFile) {
+        assertThat(getIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isTrue();
+    }
+
     protected void checkIfNotAvailableIn(PsiFile psiFile) {
         assertThat(getIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
     }
@@ -34,7 +38,7 @@ public abstract class JustKittingIntentionTestBase extends JustKittingTestBase {
         return null;
     }
 
-    private void runIntentionOn(PsiFile psiFile, IntentionAction intentionAction) {
+    protected void runIntentionOn(PsiFile psiFile, IntentionAction intentionAction) {
         ReadAction.run(() ->
             CommandProcessor.getInstance().executeCommand(getProject(),
                 () -> intentionAction.invoke(getProject(), myFixture.getEditor(), psiFile), "Intention", ""));

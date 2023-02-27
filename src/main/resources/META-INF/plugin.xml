@@ -35,12 +35,16 @@
             <categoryKey>justkitting.intention.category</categoryKey>
             <className>com.picimako.justkitting.intention.callmatcher.CallMatchersConversionToAnyOfIntention</className>
         </intentionAction>
+        <intentionAction>
+            <categoryKey>justkitting.intention.category</categoryKey>
+            <className>com.picimako.justkitting.intention.callmatcher.GenerateCallMatcherFromSignatureIntention
+            </className>
+        </intentionAction>
 
         <codeInsight.inlayProvider language="XML" implementationClass="com.picimako.justkitting.inlayhint.LightServicesInlayHintsProvider"/>
         <psi.referenceContributor language="JAVA" implementation="com.picimako.justkitting.reference.CallMatcherReferenceContributor"/>
 
         <defaultLiveTemplates file="/liveTemplates/JustKitting.xml"/>
-
     </extensions>
 
     <actions>

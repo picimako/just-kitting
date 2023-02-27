@@ -65,3 +65,35 @@ it is still recognized and available for conversion.
 In case the selected expression has multiple parent classes, it lets the user choose which one to introduce the constant in.
 
 ![call_matchers_to_any_of_intention](assets/call_matchers_to_any_of_intention.gif)
+
+## Generate CallMatcher from Java class method
+
+![](https://img.shields.io/badge/intention-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CallMatchersConversionToAnyOfIntention-blue)](../src/main/java/com/picimako/justkitting/intention/callmatcher/GenerateCallMatcherFromSignatureIntention.java)
+
+This intention generates a `com.siyeh.ig.callMatcher.CallMatcher` initializer call based on the Java class method it is invoked on.
+(More specifically, the intention is available on the method's identifier.)
+
+The generated code is copied to the clipboard, so after pasting it, `CallMatcher` has to be imported manually.
+
+Kotlin or other JVM language methods are not supported yet.
+
+### Generation logic
+
+If the target method is static, you'll get a code like this:
+```java
+CallMatcher.staticCalls("SomeClassName", "someMethodName")....
+```
+
+If the target is an instance method, a popup list is displayed to select whether to create an instanceCall matcher
+```java
+CallMatcher.instanceCall("SomeClassName", "someMethodName")....
+```
+or an exactInstanceCall matcher
+```java
+CallMatcher.exactInstanceCall("SomeClassName", "someMethodName")....
+```
+
+If there is also at least one method parameter, then the `parameterTypes()` are also configured:
+```java
+CallMatcher.instanceCall("SomeClassName", "someMethodName").parameterTypes("Type1", "Type2");
+```

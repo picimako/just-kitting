@@ -9,7 +9,7 @@ import com.picimako.justkitting.ThirdPartyLibraryLoader;
 import com.picimako.justkitting.intention.JustKittingIntentionTestBase;
 
 /**
- * Functional test for {@link CallMatchersConversionToAnyOfIntention}.
+ * Integration test for {@link CallMatchersConversionToAnyOfIntention}.
  */
 public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingIntentionTestBase {
 
@@ -25,6 +25,7 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
     }
 
     //Positive cases
+
     public void testConversionOfBinaryExpression() {
         doIntentionTest("BinaryExpression.java",
             "import com.siyeh.ig.callMatcher.CallMatcher;\n" +

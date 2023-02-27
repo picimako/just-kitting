@@ -1,0 +1,16 @@
+<body>
+<!-- tooltip end -->
+This intention generates a <code>com.siyeh.ig.callMatcher.CallMatcher</code> initializer call
+based on the Java class method it is invoked on.
+<p>
+    The intention is available on the method's identifier.
+<p>
+    The generated code is copied to the clipboard, so after pasting it, <code>CallMatcher</code> has
+    to be imported manually. It will be something like this:
+<pre>
+    CallMatcher.instanceCall("SomeClassName", "someMethodName").parameterTypes("Type1", "Type2");
+</pre>
+<p>
+    Kotlin or other JVM language methods are not supported yet.
+</body>
+</html>
