@@ -4,6 +4,11 @@
 
 <!-- Plugin description -->
 A plugin for JetBrains IDE plugin developers to provide them with extra functionality during plugin development, besides the official DevKit plugin.
+
+It provides utilities (inspections, intentions for code generation, etc.) that wouldn't/couldn't necessarily be a part of the original DevKit plugin,
+but can still be useful to improve the plugin development process.
+
+Detailed documentation can be found on the [project's GitHub](https://github.com/picimako/just-kitting) repository.
 <!-- Plugin description end -->
 
 ## Disclaimer
