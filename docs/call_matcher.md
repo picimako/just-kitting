@@ -3,6 +3,13 @@
 There is a smart tool called `CallMatcher` with which `PsiExpression`s can be matched against a class' fully qualified name, methods' name(s),
 parameter count and types.
 
+<!-- TOC -->
+* [References for CallMatcher static factory method arguments](#references-for-callmatcher-static-factory-method-arguments)
+* [No method with given name exists](#no-method-with-given-name-exists)
+* [Combine CallMatcher boolean expressions to CallMatcher.anyOf()](#combine-callmatcher-boolean-expressions-to-callmatcheranyof--)
+* [Generate CallMatcher from Java class method](#generate-callmatcher-from-java-class-method)
+<!-- TOC -->
+
 ## References for CallMatcher static factory method arguments
 
 ![](https://img.shields.io/badge/referencecontributor-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CallMatcherReferenceContributor-blue)](../src/main/java/com/picimako/justkitting/reference/CallMatcherReferenceContributor.java)
