@@ -2,6 +2,8 @@
 
 ## Generate options panel
 
+If your plugin targets IDE versions 2023.1+ only, JetBrains now recommends using the new [Declarative Inspection Options](https://plugins.jetbrains.com/docs/intellij/inspection-options.html#declarative-inspection-options) feature.
+
 ![](https://img.shields.io/badge/action-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CreateInspectionOptionsPanelAction-blue)](../src/main/java/com/picimako/justkitting/action/inspectionpanel/CreateInspectionOptionsPanelAction.java)
 
 There simple UI components in the `com.intellij.codeInspection.ui` package that are dedicated for use in `InspectionProfileEntry` implementations.
