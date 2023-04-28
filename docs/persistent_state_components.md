@@ -29,10 +29,12 @@ There are two child actions that can convert the target class to implement `Pers
     
         private State myState = new State();
     
+        @Override
         public State getState() {
             return myState;
         }
     
+        @Override
         public void loadState(State state) {
             myState = state;
         }
@@ -60,10 +62,12 @@ There are two child actions that can convert the target class to implement `Pers
     @State(name = "SomeService", storages = @Storage("TODO: INSERT STORAGE NAME"))
     public final class SomeService implements PersistentStateComponent<SomeService> {
     
+        @Override
         public SomeService getState() {
             return this;
         }
     
+        @Override
         public void loadState(SomeService state) {
             XmlSerializerUtil.copyBean(state, this);
         }

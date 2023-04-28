@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.2.0]
+### Added
+- Added missing `@Override` annotation to `getState()` and `loadState()` methods when converting a class to `PersistentStateComponent`.
+
 ## [0.1.0]
 ### Added
 - Added project files.

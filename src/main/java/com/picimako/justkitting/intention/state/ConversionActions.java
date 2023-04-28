@@ -42,10 +42,12 @@ final class ConversionActions {
      *
      *   private State myState = new State();
      *
+     *   &#064;Override
      *   public State getState() {
      *     return myState;
      *   }
      *
+     *   &#064;Override
      *   public void loadState(State state) {
      *     myState = state;
      *   }
@@ -68,8 +70,8 @@ final class ConversionActions {
                 addStandaloneStateClass(context);
                 //Add getState() and loadState() methods with the corresponding state field
                 context.targetClass.add(context.factory.createFieldFromText("private State myState = new State();", context.targetClass));
-                context.targetClass.add(context.factory.createMethodFromText("public State getState() {return myState;}", context.targetClass));
-                context.targetClass.add(context.factory.createMethodFromText("public void loadState(State state) {myState = state;}", context.targetClass));
+                context.targetClass.add(context.factory.createMethodFromText("@Override\npublic State getState() {return myState;}", context.targetClass));
+                context.targetClass.add(context.factory.createMethodFromText("@Override\npublic void loadState(State state) {myState = state;}", context.targetClass));
 
             });
         };
@@ -105,10 +107,12 @@ final class ConversionActions {
      * &#064;State(name = "SomeComponent", storages = @Storage("TODO: INSERT STORAGE NAME"))
      * public class SomeComponent implements PersistentStateComponent&lt;SomeComponent> {
      *
+     *   &#064;Override
      *   public SomeComponent getState() {
      *     return this;
      *   }
      *
+     *   &#064;Override
      *   public void loadState(SomeComponent state) {
      *     XmlSerializerUtil.copyBean(state, this);
      *   }
@@ -127,9 +131,9 @@ final class ConversionActions {
                 String className = context.targetClass.getName();
                 addPersistentStateComponentToImplementsList(context, className);
                 //Add getState() and loadState() methods
-                context.targetClass.add(context.factory.createMethodFromText("public " + className + " getState() {return this;}", context.targetClass));
+                context.targetClass.add(context.factory.createMethodFromText("@Override\npublic " + className + " getState() {return this;}", context.targetClass));
                 context.targetClass.add(context.styleManager.shortenClassReferences(context.factory
-                    .createMethodFromText("public void loadState(" + className + " state) {com.intellij.util.xmlb.XmlSerializerUtil.copyBean(state, this);}", context.targetClass)));
+                    .createMethodFromText("@Override\npublic void loadState(" + className + " state) {com.intellij.util.xmlb.XmlSerializerUtil.copyBean(state, this);}", context.targetClass)));
             });
         };
 
