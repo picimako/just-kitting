@@ -5,8 +5,10 @@
 ## [Unreleased]
 
 ## [0.2.0]
-### Added
+### Changed
 - Added missing `@Override` annotation to `getState()` and `loadState()` methods when converting a class to `PersistentStateComponent`.
+- Relaxed the conditions in what the service `getInstance()` generation action is available.
+It is now available in interfaces, abstract classes and non-light-service classes as well, and users can also choose the service level.
 
 ## [0.1.0]
 ### Added

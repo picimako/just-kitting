@@ -5,6 +5,7 @@ package com.picimako.justkitting;
 import static com.picimako.justkitting.PlatformNames.SERVICE_ANNOTATION;
 import static java.util.stream.Collectors.toList;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -17,6 +18,7 @@ import com.intellij.psi.PsiAnnotationMemberValue;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiReferenceExpression;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility for determining the service level of classes that are annotated with {@link com.intellij.openapi.components.Service}.
@@ -37,15 +39,19 @@ public final class ServiceLevelDecider {
      * If there is NO {@link com.intellij.openapi.components.Service.Level} attribute specified, then PROJECT or APP is returned if one
      * of the predefined regex patterns match the class name.
      * <p>
-     * Otherwise NOT_SURE is returned, meaning the service level could not be determined.
+     * Otherwise, NOT_SURE is returned, meaning the service level could not be determined.
      *
      * @param targetClass the class of which the service level is determined
      */
     @NotNull
     public static ServiceLevel getServiceLevel(@NotNull PsiClass targetClass) {
-        final List<String> levels = convertToServiceLevelNames(getSpecifiedServiceLevels(targetClass), targetClass.getProject());
+        var specifiedServiceLevels = getSpecifiedServiceLevels(targetClass);
 
-        ServiceLevel level = ServiceLevel.NOT_SURE;
+        final var levels = specifiedServiceLevels != null
+            ? convertToServiceLevelNames(specifiedServiceLevels, targetClass.getProject())
+            : Collections.emptyList();
+
+        var level = ServiceLevel.NOT_SURE;
         if (!levels.isEmpty()) {
             if (levels.contains(PROJECT) && levels.contains(APP)) level = ServiceLevel.PROJECT_AND_APP;
             if (levels.contains(PROJECT) && !levels.contains(APP)) level = ServiceLevel.PROJECT;
@@ -65,8 +71,11 @@ public final class ServiceLevelDecider {
     /**
      * Returns the {@link com.intellij.openapi.components.Service.Level} values specified in the target class' {@code @Service} annotation.
      */
-    private static @NotNull List<PsiAnnotationMemberValue> getSpecifiedServiceLevels(@NotNull PsiClass targetClass) {
-        var serviceValueAttr = targetClass.getAnnotation(SERVICE_ANNOTATION).findAttributeValue("value");
+    private static @Nullable List<PsiAnnotationMemberValue> getSpecifiedServiceLevels(@NotNull PsiClass targetClass) {
+        var serviceAnnotation = targetClass.getAnnotation(SERVICE_ANNOTATION);
+        if (serviceAnnotation == null) return null;
+
+        var serviceValueAttr = serviceAnnotation.findAttributeValue("value");
         return AnnotationUtil.arrayAttributeValues(serviceValueAttr);
     }
 
@@ -110,10 +119,6 @@ public final class ServiceLevelDecider {
 
         public boolean isProject() {
             return this == PROJECT;
-        }
-
-        public boolean isApp() {
-            return this == APP;
         }
     }
 }

@@ -6,9 +6,9 @@ import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Generic utility for dealing with light service classes.
+ * Generic utility for dealing with service classes.
  */
-public final class LightServiceUtil {
+public final class ServiceUtil {
 
     /**
      * Returns whether the argument class is annotated with {@link com.intellij.openapi.components.Service}.
@@ -17,7 +17,7 @@ public final class LightServiceUtil {
         return psiClass != null && psiClass.hasAnnotation(PlatformNames.SERVICE_ANNOTATION);
     }
 
-    private LightServiceUtil() {
+    private ServiceUtil() {
         //Utility class
     }
 }

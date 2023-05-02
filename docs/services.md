@@ -1,9 +1,8 @@
-# Light Services
+# Services
 
 <!-- TOC -->
-* [Generate Light Service static getInstance() method](#generate-light-service-static-getinstance-method)
+* [Generate service static getInstance() method](#generate-service-static-getinstance---method)
 * [Light Services visualized in plugin.xml](#light-services-visualized-in-pluginxml)
-* [Suspicious light service retrieval](#suspicious-light-service-retrieval)
 <!-- TOC -->
 
 Official Plugin SDK documentation: [Light Services](https://plugins.jetbrains.com/docs/intellij/plugin-services.html#light-services)
@@ -12,27 +11,26 @@ Related JetBrains YT tickets:
 - [Devkit: Light Services inspection](https://youtrack.jetbrains.com/issue/IDEA-236032/Devkit-Light-Services-inspection)
 - [Class, that registered as extension, must be not registered as service or component](https://youtrack.jetbrains.com/issue/IDEA-294395/Class-that-registered-as-extension-must-be-not-registered-as-service-or-component)
 
-## Generate Light Service static getInstance() method
+## Generate service static getInstance() method
 
 ![](https://img.shields.io/badge/action-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-GenerateLightServiceStaticGetInstanceAction-blue)](../src/main/java/com/picimako/justkitting/action/GenerateLightServiceStaticGetInstanceAction.java)
 
 It is common practice, and is mentioned by the [Retrieving a Service](https://plugins.jetbrains.com/docs/intellij/plugin-services.html#retrieving-a-service)
-section as well, that a static `getInstance()` convenience method may be added to light service classes to wrap service retrieval logic.
+section as well, that a static `getInstance()` convenience method may be added to (light) service classes to wrap service retrieval logic.
 
 This action is available from the Alt+Insert **Generate** menu when the following conditions are met:
 - the class is not anonymous
-- the class is not an interface, an enum, or an abstract class
-- the class is annotated as `com.intellij.openapi.components.Service`
+- the class is not an enum
 - the class doesn't have any static `getInstance()` method defined
 
 The generation logic happens as follows:
 - If `Service.Level#PROJECT` is specified, then project-level getter is generated.
 - If `Service.Level#APP` is specified, then application-level getter is generated.
-- If no `Service.Level` is specified and the class name ends with
+- If no `Service.Level` is specified but the class name ends with
   - _ProjectService_, _ProjectSettings_, or _ProjectState_, then project-level getter is generated,
   - _ApplicationService_, _ApplicationSettings_ or _ApplicationState_, then application-level getter is generated.
 
-In every other case, for now, a warning message is displayed that the service level could not be determined.
+In every other case, users can choose from a popup list the service level to generated the method for.
     
   <details>
       <summary><strong>Project-level example...</strong></summary>

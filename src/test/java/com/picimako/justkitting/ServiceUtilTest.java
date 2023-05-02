@@ -7,9 +7,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.intellij.psi.PsiClass;
 
 /**
- * Unit test for {@link LightServiceUtil}.
+ * Unit test for {@link ServiceUtil}.
  */
-public class LightServiceUtilTest extends JustKittingTestBase {
+public class ServiceUtilTest extends JustKittingTestBase {
 
     @Override
     protected void setUp() throws Exception {
@@ -26,11 +26,11 @@ public class LightServiceUtilTest extends JustKittingTestBase {
                 "}");
         PsiClass psiClass = (PsiClass) myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
 
-        assertThat(LightServiceUtil.isLightService(psiClass)).isTrue();
+        assertThat(ServiceUtil.isLightService(psiClass)).isTrue();
     }
 
     public void testIsNotLightServiceDueToNullClass() {
-        assertThat(LightServiceUtil.isLightService(null)).isFalse();
+        assertThat(ServiceUtil.isLightService(null)).isFalse();
     }
 
     public void testIsNotLightServiceDueToNoAnnotation() {
@@ -39,6 +39,6 @@ public class LightServiceUtilTest extends JustKittingTestBase {
                 "}");
         PsiClass psiClass = (PsiClass) myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
 
-        assertThat(LightServiceUtil.isLightService(psiClass)).isFalse();
+        assertThat(ServiceUtil.isLightService(psiClass)).isFalse();
     }
 }
