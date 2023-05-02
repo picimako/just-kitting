@@ -17,6 +17,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiAnnotationMemberValue;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiReferenceExpression;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
  * Utility for determining the service level of classes that are annotated with {@link com.intellij.openapi.components.Service}.
  */
 public final class ServiceLevelDecider {
-
     private static final Pattern PROJECT_SERVICE_CLASS_NAME_PATTERN = Pattern.compile(".*(ProjectService|ProjectSettings|ProjectState)$");
     private static final Pattern APP_SERVICE_CLASS_NAME_PATTERN = Pattern.compile(".*(ApplicationService|ApplicationSettings|ApplicationState)$");
     private static final String PROJECT = "PROJECT";
@@ -101,6 +101,7 @@ public final class ServiceLevelDecider {
         //Utility class
     }
 
+    @RequiredArgsConstructor
     public enum ServiceLevel {
         PROJECT(JustKittingBundle.message("service.level.display.name.project")),
         APP(JustKittingBundle.message("service.level.display.name.app")),
@@ -108,10 +109,6 @@ public final class ServiceLevelDecider {
         NOT_SURE(JustKittingBundle.message("service.level.display.name.not.sure"));
 
         private final String displayName;
-
-        ServiceLevel(String displayName) {
-            this.displayName = displayName;
-        }
 
         public String getDisplayName() {
             return displayName;

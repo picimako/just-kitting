@@ -51,7 +51,6 @@ import java.util.Optional;
  * @since 0.1.0
  */
 public class OptimizeExpressionsInspection extends LocalInspectionTool {
-
     private static final CallMatcher.Simple GET_ARGUMENT_LIST = CallMatcher.instanceCall(PSI_CALL, "getArgumentList");
 
     @Override
@@ -163,6 +162,7 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
                 var constantEvaluationHelper = JavaPsiFacade.getInstance(expression.getProject()).getConstantEvaluationHelper();
                 return Objects.equals(constantEvaluationHelper.computeConstantExpression(expression, true), 0);
             } catch (ConstantEvaluationOverflowException e) {
+                //Fall through. Will return false.
             }
         }
         return false;

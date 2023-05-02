@@ -17,6 +17,7 @@ import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiParameterList;
 import com.intellij.ui.SimpleListCellRenderer;
 import com.picimako.justkitting.resources.JustKittingBundle;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -31,15 +32,10 @@ import java.util.function.Consumer;
  *
  * @since 0.1.0
  */
+@RequiredArgsConstructor
 public class JavaCallMatcherGenerator implements CallMatcherGenerator<PsiMethod> {
-
     private final Project project;
     private final Editor editor;
-
-    public JavaCallMatcherGenerator(Project project, Editor editor) {
-        this.editor = editor;
-        this.project = project;
-    }
 
     @Override
     public void generateCallMatcher(PsiMethod method, Consumer<String> postActions) {
