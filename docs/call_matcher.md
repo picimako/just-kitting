@@ -77,12 +77,14 @@ In case the selected expression has multiple parent classes, it lets the user ch
 
 ![](https://img.shields.io/badge/intention-orange) ![](https://img.shields.io/badge/since-0.1.0-blue) [![](https://img.shields.io/badge/implementation-CallMatchersConversionToAnyOfIntention-blue)](../src/main/java/com/picimako/justkitting/intention/callmatcher/GenerateCallMatcherFromSignatureIntention.java)
 
-This intention generates a `com.siyeh.ig.callMatcher.CallMatcher` initializer call based on the Java class method it is invoked on.
-(More specifically, the intention is available on the method's identifier.)
+This intention generates a `com.siyeh.ig.callMatcher.CallMatcher` initializer call based on the Java class method, or the Java method call, it is invoked on.
+(More specifically, the intention is available on the method's or method call's identifier.)
 
 The generated code is copied to the clipboard, so after pasting it, `CallMatcher` has to be imported manually.
 
 Kotlin or other JVM language methods are not supported yet.
+
+If the called method cannot be resolved, thus the `CallMatcher` cannot be generated, an error hint is shown to inform you.
 
 ### Generation logic
 
