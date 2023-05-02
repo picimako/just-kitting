@@ -111,7 +111,7 @@ abstract class GetInstanceGenerationAction extends BaseCodeInsightAction {
 
         @Override
         protected String getText() {
-            return JustKittingBundle.message("justkitting.action.generate.getinstance.project.level");
+            return JustKittingBundle.message("action.generate.getinstance.project.level");
         }
     }
 
@@ -131,7 +131,7 @@ abstract class GetInstanceGenerationAction extends BaseCodeInsightAction {
 
         @Override
         protected String getText() {
-            return JustKittingBundle.message("justkitting.action.generate.getinstance.application.level");
+            return JustKittingBundle.message("action.generate.getinstance.application.level");
         }
     }
 

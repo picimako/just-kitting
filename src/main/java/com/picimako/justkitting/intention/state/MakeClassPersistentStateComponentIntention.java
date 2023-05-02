@@ -48,12 +48,12 @@ public class MakeClassPersistentStateComponentIntention extends BaseIntentionAct
 
     @Override
     public @IntentionName @NotNull String getText() {
-        return JustKittingBundle.message("justkitting.intention.convert.to.persistent.state.component.text");
+        return JustKittingBundle.message("intention.convert.to.persistent.state.component.text");
     }
 
     @Override
     public @NotNull @IntentionFamilyName String getFamilyName() {
-        return JustKittingBundle.message("justkitting.intention.convert.to.persistent.state.component.family");
+        return JustKittingBundle.message("intention.convert.to.persistent.state.component.family");
     }
 
     @Override

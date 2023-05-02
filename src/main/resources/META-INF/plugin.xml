@@ -27,16 +27,16 @@
                          language="JAVA" displayName="Code optimization checks" groupName="Just Kitting" enabledByDefault="true" level="WARNING"/>
 
         <intentionAction>
-            <categoryKey>justkitting.intention.category</categoryKey>
+            <categoryKey>intention.category</categoryKey>
             <className>com.picimako.justkitting.intention.state.MakeClassPersistentStateComponentIntention</className>
         </intentionAction>
 
         <intentionAction>
-            <categoryKey>justkitting.intention.category</categoryKey>
+            <categoryKey>intention.category</categoryKey>
             <className>com.picimako.justkitting.intention.callmatcher.CallMatchersConversionToAnyOfIntention</className>
         </intentionAction>
         <intentionAction>
-            <categoryKey>justkitting.intention.category</categoryKey>
+            <categoryKey>intention.category</categoryKey>
             <className>com.picimako.justkitting.intention.callmatcher.GenerateCallMatcherFromSignatureIntention
             </className>
         </intentionAction>

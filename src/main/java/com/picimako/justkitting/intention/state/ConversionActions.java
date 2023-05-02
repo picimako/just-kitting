@@ -79,7 +79,7 @@ final class ConversionActions {
         @Override
         protected void update(@NotNull Presentation presentation, @NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) {
             super.update(presentation, project, editor, file);
-            presentation.setText(JustKittingBundle.message("justkitting.intention.persistent.state.use.standalone.state.object"));
+            presentation.setText(JustKittingBundle.message("intention.persistent.state.use.standalone.state.object"));
         }
 
         @Override
@@ -140,7 +140,7 @@ final class ConversionActions {
         @Override
         protected void update(@NotNull Presentation presentation, @NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) {
             super.update(presentation, project, editor, file);
-            presentation.setText(JustKittingBundle.message("justkitting.intention.persistent.state.use.self.as.state"));
+            presentation.setText(JustKittingBundle.message("intention.persistent.state.use.self.as.state"));
         }
 
         @Override

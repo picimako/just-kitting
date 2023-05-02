@@ -95,7 +95,7 @@ public class GenerateStaticGetInstanceAction extends BaseCodeInsightAction {
                 case NOT_SURE:
                 default:
                     ListPopupHelper.showActionsInListPopup(
-                        JustKittingBundle.message("justkitting.action.generate.getinstance.level.list.title"), actions, editor);
+                        JustKittingBundle.message("action.generate.getinstance.level.list.title"), actions, editor);
             }
         }
 
