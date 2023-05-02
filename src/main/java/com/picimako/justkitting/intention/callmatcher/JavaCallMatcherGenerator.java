@@ -13,10 +13,13 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiParameterList;
+import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.ui.SimpleListCellRenderer;
 import com.picimako.justkitting.resources.JustKittingBundle;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -31,18 +34,21 @@ import java.util.function.Consumer;
  *
  * @since 0.1.0
  */
-public class JavaCallMatcherGenerator implements CallMatcherGenerator<PsiMethod> {
-
+@RequiredArgsConstructor
+public class JavaCallMatcherGenerator implements CallMatcherGenerator<PsiMethod, PsiMethodCallExpression> {
     private final Project project;
     private final Editor editor;
 
-    public JavaCallMatcherGenerator(Project project, Editor editor) {
-        this.editor = editor;
-        this.project = project;
-    }
-
     @Override
-    public void generateCallMatcher(PsiMethod method, Consumer<String> postActions) {
+    public void generateCallMatcherForMethod(@Nullable PsiMethod method, Consumer<String> postActions) {
+        if (method == null) {
+            CommonRefactoringUtil.showErrorHint(project, editor,
+                JustKittingBundle.message("intention.call.matcher.could.not.resolve.method.message"),
+                JustKittingBundle.message("intention.call.matcher.could.not.resolve.method.title"),
+                "");
+            return;
+        }
+
         //In case of a static method it generates {@code CallMatcher.staticCall()}.
         if (method.getModifierList().hasModifierProperty(PsiModifier.STATIC)) {
             postActions.accept(generateCallMatcher(method, STATIC_CALL));
@@ -65,6 +71,11 @@ public class JavaCallMatcherGenerator implements CallMatcherGenerator<PsiMethod>
                 .createListPopup(project, step, listCellRenderer -> SimpleListCellRenderer.create("", Object::toString))
                 .showInBestPositionFor(editor);
         }
+    }
+
+    @Override
+    public void generateCallMatcherForMethodCall(PsiMethodCallExpression methodCall, Consumer<String> postActions) {
+        generateCallMatcherForMethod(methodCall.resolveMethod(), postActions);
     }
 
     private String generateCallMatcher(PsiMethod method, String callType) {

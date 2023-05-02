@@ -3,7 +3,7 @@
     <id>picimako.justkitting</id>
     <name>Just Kitting</name>
     <vendor url="https://github.com/picimako/just-kitting">Tamás Balog</vendor>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <resource-bundle>messages.JustKittingBundle</resource-bundle>
 
     <!-- https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
@@ -27,16 +27,16 @@
                          language="JAVA" displayName="Code optimization checks" groupName="Just Kitting" enabledByDefault="true" level="WARNING"/>
 
         <intentionAction>
-            <categoryKey>justkitting.intention.category</categoryKey>
+            <categoryKey>intention.category</categoryKey>
             <className>com.picimako.justkitting.intention.state.MakeClassPersistentStateComponentIntention</className>
         </intentionAction>
 
         <intentionAction>
-            <categoryKey>justkitting.intention.category</categoryKey>
+            <categoryKey>intention.category</categoryKey>
             <className>com.picimako.justkitting.intention.callmatcher.CallMatchersConversionToAnyOfIntention</className>
         </intentionAction>
         <intentionAction>
-            <categoryKey>justkitting.intention.category</categoryKey>
+            <categoryKey>intention.category</categoryKey>
             <className>com.picimako.justkitting.intention.callmatcher.GenerateCallMatcherFromSignatureIntention
             </className>
         </intentionAction>
@@ -48,9 +48,9 @@
     </extensions>
 
     <actions>
-        <action id="JustKitting.generate.light.service.static.getter"
-                class="com.picimako.justkitting.action.GenerateLightServiceStaticGetInstanceAction"
-                text="Light Service getInstance()" description="${project.description}">
+        <action id="JustKitting.generate.service.static.getter"
+                class="com.picimako.justkitting.action.GenerateStaticGetInstanceAction"
+                text="Service getInstance()" description="${project.description}">
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
         </action>
         <action id="JustKitting.generate.inspection.options.panel"

@@ -26,6 +26,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.picimako.justkitting.resources.JustKittingBundle;
 import com.siyeh.ig.InspectionGadgetsFix;
 import com.siyeh.ig.callMatcher.CallMatcher;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -169,17 +170,13 @@ public class CachedValuesInspection extends LocalInspectionTool {
     /**
      * Defines the modification tracker names and FQNs to add.
      */
+    @RequiredArgsConstructor
     private enum ModificationTracker {
         MODIFICATION_TRACKER_NEVER_CHANGED("ModificationTracker.NEVER_CHANGED", "com.intellij.openapi.util.ModificationTracker.NEVER_CHANGED"),
         PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT("PsiModificationTracker.MODIFICATION_COUNT", "com.intellij.psi.util.PsiModificationTracker.MODIFICATION_COUNT");
 
         private final String name;
         private final String fqn;
-
-        ModificationTracker(String name, String fqn) {
-            this.name = name;
-            this.fqn = fqn;
-        }
 
         /**
          * Adds this modification tracker to the argument list of the Result creation call.

@@ -28,10 +28,12 @@ public class ConversionActionsTest extends JustKittingActionTestBase {
                 "public final class SomeComponent implements PersistentStateComponent<SomeComponent.State> {\n" +
                 "    private State myState = new State();\n" +
                 "\n" +
+                "    @Override\n" +
                 "    public State getState() {\n" +
                 "        return myState;\n" +
                 "    }\n" +
                 "\n" +
+                "    @Override\n" +
                 "    public void loadState(State state) {\n" +
                 "        myState = state;\n" +
                 "    }\n" +
@@ -53,10 +55,12 @@ public class ConversionActionsTest extends JustKittingActionTestBase {
                 "\n" +
                 "@State(name = \"SomeComponent\", storages = @Storage(\"TODO: INSERT STORAGE NAME\"))\n" +
                 "public final class SomeComponent implements PersistentStateComponent<SomeComponent> {\n" +
+                "    @Override\n" +
                 "    public SomeComponent getState() {\n" +
                 "        return this;\n" +
                 "    }\n" +
                 "\n" +
+                "    @Override\n" +
                 "    public void loadState(SomeComponent state) {\n" +
                 "        XmlSerializerUtil.copyBean(state, this);\n" +
                 "    }\n" +
