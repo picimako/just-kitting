@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.3.0]
+### Changed
+- Updated the inspection description code snippets to enable syntax highlight in them starting from IJ 2023.2.
+
 ## [0.2.0]
 ### Changed
 - Added missing `@Override` annotation to `getState()` and `loadState()` methods when converting a class to `PersistentStateComponent`.

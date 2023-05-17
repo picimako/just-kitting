@@ -6,20 +6,24 @@ their more optimal forms.
 
 <h4>Empty array creation</h4>
 <pre>
+    <code>
 //From:
 PsiElement[] array = new PsiElement[0];
 //To (it is any type that has this EMPTY_ARRAY constant defined):
 PsiElement[] array = PsiElement.EMPTY_ARRAY;
+    </code>
 </pre>
 
 <h4>Emptiness comparison</h4>
 <pre>
+    <code>
 //From (the operands are recognized if they are switched too):
 psiMethodCallExpression.getArgumentList().getExpressions().length == 0;
 psiMethodCallExpression.getArgumentList().getExpressions().length > 0;
 //To:
 psiMethodCallExpression.getArgumentList().isEmpty();
 !psiMethodCallExpression.getArgumentList().isEmpty();
+    </code>
 </pre>
 </body>
 </html>
