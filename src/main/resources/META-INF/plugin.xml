@@ -3,7 +3,7 @@
     <id>picimako.justkitting</id>
     <name>Just Kitting</name>
     <vendor url="https://github.com/picimako/just-kitting">Tamás Balog</vendor>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <resource-bundle>messages.JustKittingBundle</resource-bundle>
 
     <!-- https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
