@@ -5,6 +5,10 @@
 ## [Unreleased]
 
 ## [0.3.0]
+### Added
+- Added support for IJ 2023.2.
+- Kotlin class light services are now listed in the light services inlay hint in plugin.xml.
+
 ### Changed
 - Updated the inspection description code snippets to enable syntax highlight in them starting from IJ 2023.2.
 

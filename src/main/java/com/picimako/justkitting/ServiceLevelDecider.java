@@ -5,21 +5,28 @@ package com.picimako.justkitting;
 import static com.picimako.justkitting.PlatformNames.SERVICE_ANNOTATION;
 import static java.util.stream.Collectors.toList;
 
+import com.intellij.codeInsight.AnnotationUtil;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiReferenceExpression;
+import com.picimako.justkitting.resources.JustKittingBundle;
+import kotlin.Pair;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.kotlin.asJava.elements.KtLightPsiLiteral;
+import org.jetbrains.kotlin.psi.KtClass;
+import org.jetbrains.uast.UClass;
+import org.jetbrains.uast.UastFacade;
+import org.jetbrains.uast.kotlin.KotlinUQualifiedReferenceExpression;
+import org.jetbrains.uast.kotlin.KotlinUVarargExpression;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
-
-import com.picimako.justkitting.resources.JustKittingBundle;
-
-import com.intellij.codeInsight.AnnotationUtil;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiReferenceExpression;
-import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility for determining the service level of classes that are annotated with {@link com.intellij.openapi.components.Service}.
@@ -44,7 +51,7 @@ public final class ServiceLevelDecider {
      * @param targetClass the class of which the service level is determined
      */
     @NotNull
-    public static ServiceLevel getServiceLevel(@NotNull PsiClass targetClass) {
+    public static <T extends PsiNameIdentifierOwner> ServiceLevel getServiceLevel(@NotNull T targetClass) {
         var specifiedServiceLevels = getSpecifiedServiceLevels(targetClass);
 
         final var levels = specifiedServiceLevels != null
@@ -71,12 +78,41 @@ public final class ServiceLevelDecider {
     /**
      * Returns the {@link com.intellij.openapi.components.Service.Level} values specified in the target class' {@code @Service} annotation.
      */
-    private static @Nullable List<PsiAnnotationMemberValue> getSpecifiedServiceLevels(@NotNull PsiClass targetClass) {
-        var serviceAnnotation = targetClass.getAnnotation(SERVICE_ANNOTATION);
-        if (serviceAnnotation == null) return null;
+    private static <T extends PsiNameIdentifierOwner> @Nullable List<? extends Object> getSpecifiedServiceLevels(@NotNull T targetClass) {
+        if (targetClass instanceof PsiClass) {
+            var serviceAnnotation = ((PsiClass) targetClass).getAnnotation(SERVICE_ANNOTATION);
+            if (serviceAnnotation == null) return null;
 
-        var serviceValueAttr = serviceAnnotation.findAttributeValue("value");
-        return AnnotationUtil.arrayAttributeValues(serviceValueAttr);
+            var serviceValueAttr = serviceAnnotation.findAttributeValue("value");
+            return AnnotationUtil.arrayAttributeValues(serviceValueAttr);
+        }
+
+        /*
+         * Since I didn't find a proper way to fetch the annotation from a KtClass by the annotation's fully qualified name,
+         * and I didn't find a way to retrieve the fully qualified name of a KtAnnotation or KtAnnotationEntry,
+         * it spiraled into this UAST-based implementation.
+         *
+         * It works.
+         */
+        if (targetClass instanceof KtClass) {
+            var targetCls = UastFacade.INSTANCE.convertElementWithParent(targetClass, new Class[]{UClass.class});
+            if (targetCls instanceof UClass) {
+                var serviceAnnotation = ((UClass) targetCls).findAnnotation(SERVICE_ANNOTATION);
+                if (serviceAnnotation == null) return null;
+
+                var serviceValueAttr = serviceAnnotation.findAttributeValue("value");
+                if (serviceValueAttr instanceof KotlinUVarargExpression) {
+                    return ((KotlinUVarargExpression) serviceValueAttr).getValueArguments()
+                        .stream()
+                        .filter(KotlinUQualifiedReferenceExpression.class::isInstance)
+                        .map(KotlinUQualifiedReferenceExpression.class::cast)
+                        .collect(toList());
+                } else if (serviceValueAttr instanceof KotlinUQualifiedReferenceExpression) {
+                    return Collections.singletonList(serviceValueAttr);
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -86,12 +122,27 @@ public final class ServiceLevelDecider {
      * The returned collection's size can be 0 to 2 - Empty, "APP" or "PROJECT", "APP" and "PROJECT".
      */
     @NotNull
-    private static List<String> convertToServiceLevelNames(List<PsiAnnotationMemberValue> serviceLevels, Project project) {
+    private static List<String> convertToServiceLevelNames(List<? extends Object> serviceLevels, Project project) {
         var cache = PlatformPsiCache.getInstance(project);
         return serviceLevels.stream()
-            .filter(PsiReferenceExpression.class::isInstance)
-            .map(PsiReferenceExpression.class::cast)
-            .map(levelRef -> (levelRef.isReferenceTo(cache.getServiceLevelProject()) || levelRef.isReferenceTo(cache.getServiceLevelApp()) ? levelRef.getReferenceName() : null))
+            .map(expression -> {
+                if (expression instanceof PsiReferenceExpression) {
+                    var levelRef = (PsiReferenceExpression) expression;
+                    return levelRef.isReferenceTo(cache.getServiceLevelProject()) || levelRef.isReferenceTo(cache.getServiceLevelApp()) ? levelRef.getReferenceName() : null;
+                } else if (expression instanceof KotlinUQualifiedReferenceExpression) {
+                    var levelRef = (KotlinUQualifiedReferenceExpression) expression;
+                    var levelEnumConst = levelRef.resolve();
+
+                    var psiManager = PsiManager.getInstance(project);
+                    return psiManager.areElementsEquivalent(levelEnumConst, cache.getServiceLevelProject()) || psiManager.areElementsEquivalent(levelEnumConst, cache.getServiceLevelApp())
+                        ? levelRef.getResolvedName()
+                        : null;
+                } else if (expression instanceof KtLightPsiLiteral) {
+                    var levelRefValue = ((KtLightPsiLiteral) expression).getValue();
+                    return levelRefValue instanceof Pair ? ((Pair) levelRefValue).getSecond().toString() : null;
+                }
+                return null;
+            })
             .filter(Objects::nonNull)
             .distinct()
             .collect(toList());

@@ -11,12 +11,15 @@ import com.intellij.openapi.editor.ex.util.EditorUtil;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.xml.XmlToken;
 import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.kotlin.psi.KtClass;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -51,25 +54,28 @@ public abstract class LightServicesHintPresentationAware {
     /**
      * Clickable hint showing the referenced class name. It navigates to the PsiClass when clicked.
      */
-    public InlayPresentation classReferencePresentation(PsiClass psiClass) {
+    public <T extends PsiNameIdentifierOwner> InlayPresentation classReferencePresentation(T psiClass) {
         return factory.referenceOnHover(
             factory.smallText(psiClass.getName() != null ? psiClass.getName() : ""),
-            (mouseEvent, point) -> psiClass.navigate(true));
+            (mouseEvent, point) -> ((Navigatable) psiClass).navigate(true));
     }
 
     /**
      * Hint for showing all light services available in the project.
      * On click, it brings up a popup with the list of light service classes from where users can navigate to the corresponding classes.
      *
-     * @param classes the list of PsiClasses to populate the popup list with
+     * @param classes     the list of PsiClasses to populate the popup list with
      * @param startOffset the start offset of the `<extensions>` xml tag
      */
-    public InlayPresentation viewAllServicesPresentation(Supplier<List<PsiClass>> classes, int startOffset) {
+    public <T extends PsiNameIdentifierOwner> InlayPresentation viewAllServicesPresentation(Supplier<List<T>> classes, int startOffset) {
         return factory.referenceOnHover(factory.smallText(JustKittingBundle.inlayHints("light.services.view.all.light.services")), (mouseEvent, point) -> {
-            var step = new BaseListPopupStep<>(JustKittingBundle.inlayHints("light.services.view.all.popup.title"), classes.get()) {
+            var step = new BaseListPopupStep<T>(JustKittingBundle.inlayHints("light.services.view.all.popup.title"), classes.get()) {
                 @Override
-                public @Nullable PopupStep<?> onChosen(PsiClass selectedValue, boolean finalChoice) {
-                    selectedValue.navigate(true);
+                public @Nullable PopupStep<?> onChosen(T selectedValue, boolean finalChoice) {
+                    if (selectedValue instanceof PsiClass || selectedValue instanceof KtClass) {
+                        ((Navigatable) selectedValue).navigate(true);
+                    }
+
                     return null;
                 }
             };

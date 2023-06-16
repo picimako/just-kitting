@@ -11,8 +11,9 @@
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
     <depends>DevKit</depends>
-
+    
     <extensions defaultExtensionNs="com.intellij">
         <!-- CallMatcher -->
         <localInspection implementationClass="com.picimako.justkitting.inspection.CallMatcherInspection" id="just.kitting.call.matcher"

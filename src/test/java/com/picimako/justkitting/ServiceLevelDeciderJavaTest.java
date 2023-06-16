@@ -9,7 +9,7 @@ import com.intellij.psi.PsiJavaFile;
 /**
  * Functional test for {@link ServiceLevelDecider}.
  */
-public class ServiceLevelDeciderTest extends JustKittingTestBase {
+public class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
 
     //By annotation
 
@@ -89,5 +89,4 @@ public class ServiceLevelDeciderTest extends JustKittingTestBase {
         var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.NOT_SURE);
     }
-
 }

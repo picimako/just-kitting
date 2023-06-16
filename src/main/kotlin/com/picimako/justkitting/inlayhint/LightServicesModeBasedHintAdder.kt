@@ -7,8 +7,8 @@ import com.picimako.justkitting.resources.JustKittingBundle
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
 import com.intellij.openapi.editor.Editor
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.xml.XmlToken
 import org.apache.commons.lang3.mutable.MutableInt
 
@@ -79,7 +79,7 @@ data class LightServicesModeBasedHintAdder(override var settings: Settings,
         val lightServices = LightServiceLookup.lookupLightServiceClasses(file.project)
         if (lightServices.isNotEmpty()) {
             //Collect and group the classes into collections based on their service level
-            val services = linkedMapOf<ServiceLevelDecider.ServiceLevel, MutableList<PsiClass>>()
+            val services = linkedMapOf<ServiceLevelDecider.ServiceLevel, MutableList<PsiNameIdentifierOwner>>()
             ServiceLevelDecider.ServiceLevel.values().forEach { services[it] = mutableListOf() }
             lightServices.forEach { services[ServiceLevelDecider.getServiceLevel(it)]?.add(it) }
 

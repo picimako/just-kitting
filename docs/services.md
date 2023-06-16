@@ -119,6 +119,6 @@ This mode shows only the *View all light services...* hint, which behaves the sa
 
 ### Notes
 
-As for the popup list (see [LightServicesHintPresentationAware](../src/main/java/com/picimako/justkitting/inlayhint/LightServicesHintPresentationAware.kt)):
+As for the popup list (see [LightServicesHintPresentationAware](../src/main/java/com/picimako/justkitting/inlayhint/LightServicesHintPresentationAware.java)):
 - there is no speed search implemented yet,
 - the popup height is not yet limited to make the list scrollable
