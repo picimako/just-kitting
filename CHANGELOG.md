@@ -7,7 +7,9 @@
 ## [0.3.0]
 ### Added
 - Added support for IJ 2023.2.
-- Kotlin class light services are now listed in the light services inlay hint in plugin.xml.
+- Kotlin class light services are now listed too in the light services inlay hint in `plugin.xml`.
+- Added an action that opens a diff view of certain plugin configuration files, and compares them with their versions
+in the IntelliJ Platform Plugin template on GitHub. It opens a two-sided diff view with the local and remote versions of the file.
 
 ### Changed
 - Updated the inspection description code snippets to enable syntax highlight in them starting from IJ 2023.2.

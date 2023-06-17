@@ -10,14 +10,14 @@ Also configure the **JAVA_HOME** environment variable on your system, this is ne
 
 ## Functional tests
 
-Integrations tests build mostly on JUnit3-based platform test classes. For assertions, either the IntelliJ platform's underlying logic is used, or AssertJ
+Integration tests build mostly on JUnit3-based platform test classes. For assertions, either the IntelliJ platform's underlying logic is used, or AssertJ
 where applicable.
 
 Just Kitting base test classes:
 - [JustKittingTestBase](../src/test/java/com/picimako/justkitting/JustKittingTestBase.java) as the main base test class
 - [JustKittingIntentionTestBase](../src/test/java/com/picimako/justkitting/intention/JustKittingIntentionTestBase.java) for Intention Actions
 - [JustKittingInspectionTestBase](../src/test/java/com/picimako/justkitting/inspection/JustKittingInspectionTestBase.java) for Inspections
-- [JustKittingActionTestBase](../src/test/java/com/picimako/justkitting/action/JustKittingActionTestBase.java) for Actions
+- [JustKittingActionTestBase](../src/test/java/com/picimako/justkitting/action/JustKittingActionTestBase.java) for AnActions
 
 ### Load 3rd-party libs
 
