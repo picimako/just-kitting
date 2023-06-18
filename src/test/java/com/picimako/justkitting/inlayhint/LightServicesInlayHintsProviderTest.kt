@@ -20,6 +20,7 @@ class LightServicesInlayHintsProviderTest : JustKittingTestBase() {
     private fun loadLightServiceFiles() {
         myFixture.copyFileToProject("AProjectService.java")
         myFixture.copyFileToProject("AnApplicationService.java")
+        myFixture.copyFileToProject("AProjectAndApplicationService.kt")
     }
 
     fun testNoHint() {
@@ -28,11 +29,13 @@ class LightServicesInlayHintsProviderTest : JustKittingTestBase() {
 
     fun testListOfServicesWithoutViewAll() {
         loadLightServiceFiles()
-        doTest(Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 2), 1,
+        doTest(Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 3), 1,
             """-- Project light services --
 AProjectService
 -- Application light services --
 AnApplicationService
+-- Project and application light services --
+AProjectAndApplicationService
 """.trimIndent())
     }
 

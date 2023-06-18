@@ -9,9 +9,9 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.presentation.InsetPresentation
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
 import com.intellij.openapi.editor.Editor
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.xml.XmlToken
 import com.intellij.refactoring.suggested.startOffset
 import org.apache.commons.lang3.mutable.MutableInt
@@ -46,7 +46,7 @@ abstract class LightServicesHintItemAdder(open var settings: Settings,
      * @param serviceLevel the level of service (project, app) of the PsiClasses
      * @param classCount stores the number of class hints added
      */
-    fun addClassReferenceHints(services: MutableList<PsiClass>?, extensionsTag: XmlToken, serviceLevel: String, classCount: MutableInt) {
+    fun <T: PsiNameIdentifierOwner> addClassReferenceHints(services: MutableList<T>?, extensionsTag: XmlToken, serviceLevel: String, classCount: MutableInt) {
         if (classCount.value < settings.maxNumberOfServicesToDisplay && services!!.isNotEmpty()) {
             addLabelHints(extensionsTag, JustKittingBundle.inlayHints("light.services.list.display.mode.group.title", serviceLevel))
             for (service in services.sortedBy { it.name }) {
@@ -74,7 +74,7 @@ abstract class LightServicesHintItemAdder(open var settings: Settings,
      * project, instead of working with a pre-processed collection of them. Since, for [InlayDisplayMode.ListOfLightServices] the View All hint is displayed
      * only when there is definitely a light service in the project, the empty map will not interfere with that logic.
      */
-    fun addViewAllServicesHint(extensionsTag: XmlToken, classes: Map<ServiceLevelDecider.ServiceLevel, MutableList<PsiClass>> = emptyMap()) {
+    fun addViewAllServicesHint(extensionsTag: XmlToken, classes: Map<ServiceLevelDecider.ServiceLevel, MutableList<PsiNameIdentifierOwner>> = emptyMap()) {
         val classesSupplier =
             if (classes.isNotEmpty()) Supplier { classes.flatMap { (_, values) -> values } }
             else Supplier { lookupLightServiceClasses(extensionsTag.project).toList() }
@@ -84,7 +84,7 @@ abstract class LightServicesHintItemAdder(open var settings: Settings,
     /**
      * Adds a formatted PsiClass reference hint to the given `element`.
      */
-    private fun addClassReferenceHint(element: XmlToken, psiClass: PsiClass) {
+    private fun <T: PsiNameIdentifierOwner> addClassReferenceHint(element: XmlToken, psiClass: T) {
         addHintFor(element, factory.inset(classReferencePresentation(psiClass), down = 1))
     }
 

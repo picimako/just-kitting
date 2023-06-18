@@ -3,7 +3,7 @@
     <id>picimako.justkitting</id>
     <name>Just Kitting</name>
     <vendor url="https://github.com/picimako/just-kitting">Tamás Balog</vendor>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <resource-bundle>messages.JustKittingBundle</resource-bundle>
 
     <!-- https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
@@ -11,8 +11,9 @@
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
     <depends>DevKit</depends>
-
+    
     <extensions defaultExtensionNs="com.intellij">
         <!-- CallMatcher -->
         <localInspection implementationClass="com.picimako.justkitting.inspection.CallMatcherInspection" id="just.kitting.call.matcher"
@@ -57,6 +58,13 @@
                 class="com.picimako.justkitting.action.inspectionpanel.CreateInspectionOptionsPanelAction"
                 text="Inspection Options Panel..." description="${project.description}">
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
+        </action>
+
+        <action id="com.picimako.justkitting.action.diff.CompareConfigFileWithPluginTemplateAction"
+                class="com.picimako.justkitting.action.diff.CompareConfigFileWithPluginTemplateAction"
+                text="Compare with Platform Plugin Template Version">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CompareFileWithEditor"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="CompareClipboardWithSelection"/>
         </action>
     </actions>
 </idea-plugin>

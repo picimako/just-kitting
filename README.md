@@ -1,6 +1,6 @@
 # Just Kitting IntelliJ plugin
 
-![](https://img.shields.io/badge/since-IJ2022.1-blue) ![](https://img.shields.io/badge/until-IJ2022.3-blue)
+![](https://img.shields.io/badge/since-IJ2022.1-blue) ![](https://img.shields.io/badge/until-IJ2023.2-blue)
 
 <!-- Plugin description -->
 A plugin for JetBrains IDE plugin developers to provide them with extra functionality during plugin development, besides the official DevKit plugin.
@@ -26,11 +26,12 @@ This is to minimize the chance of clashing with the development of the DevKit pl
 
 ## Documentation
 
-- [Light Services](docs/light_services.md)
+- [Light Services](docs/services.md)
 - [Caching](docs/caching.md)
 - [CallMatcher](docs/call_matcher.md)
 - [PersistentStateComponents](docs/persistent_state_components.md)
 - [Inspections](docs/inspections.md)
+- [Plugin Configuration](docs/plugin_configuration.md)
 - [Miscellaneous](docs/misc.md)
 
 - [Developer docs](/docs/dev_docs.md)
