@@ -15,7 +15,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Query;
 import com.picimako.justkitting.PlatformPsiCache;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.kotlin.idea.references.KtSimpleNameReferenceDescriptorsImpl;
+import org.jetbrains.kotlin.idea.references.KtSimpleNameReference;
 import org.jetbrains.kotlin.psi.KtClass;
 
 import java.util.Collection;
@@ -49,7 +49,7 @@ public final class LightServiceLookup {
     @NotNull
     private static Query<? extends PsiNameIdentifierOwner> getServiceAnnotationQuery(Project project) {
         return ReferencesSearch.search(PlatformPsiCache.getInstance(project).getServiceAnnotation(), ProjectScope.getProjectScope(project))
-            .filtering(ref -> ref instanceof PsiJavaCodeReferenceElement || ref instanceof KtSimpleNameReferenceDescriptorsImpl)
+            .filtering(ref -> ref instanceof PsiJavaCodeReferenceElement || ref instanceof KtSimpleNameReference)
             .mapping(ref ->
                 ref.getElement().getParent() instanceof PsiAnnotation
                     ? PsiTreeUtil.getParentOfType(ref.getElement().getParent(), PsiClass.class)
