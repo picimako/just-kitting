@@ -34,7 +34,7 @@ kotlin {
 dependencies {
     testImplementation("org.assertj:assertj-core:3.24.2")
     //https://kotlinlang.org/docs/reflection.html#jvm-dependency
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.21")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
     testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.21")
 }
 
