@@ -15,6 +15,7 @@ and it opens a two-sided diff view comparing the local version of the file with 
 The action is available for the following configuration files:
 - `build.gradle.kts`
 - `gradle.properties`
+- `qodana.yml`
 - `.github/dependabot.yml`
 - `.github/workflows/build.yml`
 - `.github/workflows/release.yml`
