@@ -2,8 +2,6 @@
 
 package com.picimako.justkitting.inlayhint
 
-import com.picimako.justkitting.inlayhint.Settings.Companion.MAX_NO_OF_SERVICES
-import com.picimako.justkitting.resources.JustKittingBundle
 import com.intellij.codeInsight.hints.*
 import com.intellij.lang.Language
 import com.intellij.lang.xml.XMLLanguage
@@ -18,16 +16,17 @@ import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.XmlPatterns.xmlTag
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.ui.DocumentAdapter
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTextField
-import com.intellij.ui.layout.PropertyBinding
-import com.intellij.ui.layout.panel
-import com.intellij.ui.layout.withTextBinding
+import com.intellij.ui.dsl.builder.bindText
+import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
-import org.jetbrains.idea.devkit.util.DescriptorUtil
+import com.picimako.justkitting.inlayhint.Settings.Companion.MAX_NO_OF_SERVICES
+import com.picimako.justkitting.resources.JustKittingBundle.inlayHints
 import java.util.function.Supplier
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComponent
@@ -48,7 +47,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
         get() = SettingsKey("light.services")
 
     override val name: String
-        get() = JustKittingBundle.inlayHints("light.services.settings.type.title")
+        get() = inlayHints("light.services.settings.type.title")
 
     override val previewText: String
         get() = """
@@ -61,25 +60,25 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
     override fun createConfigurable(settings: Settings): ImmediateConfigurable {
         return object : ImmediateConfigurable {
             val lightServicesDisplayModeModel = DefaultComboBoxModel(InlayDisplayMode.values())
-            val propBinding = PropertyBinding(
-                { settings.maxNumberOfServicesToDisplay.toString() },
-                { value -> settings.maxNumberOfServicesToDisplay = value.toIntOrNull() ?: Settings.DEFAULT_MAX_NO_OF_SERVICES })
-            val maxNoOfServicesTextField = JBTextField(propBinding.get(), 2)
+            val maxNoOfServicesTextField = JBTextField(2)
 
             override val mainCheckboxText: String
-                get() = JustKittingBundle.inlayHints("light.services.settings.show.hints.option")
+                get() = inlayHints("light.services.settings.show.hints.option")
 
             override fun createComponent(listener: ChangeListener): JComponent {
                 val panel = panel {
-                    row {
-                        label(JustKittingBundle.inlayHints("light.services.display.mode.label"))
+
+                    /*
+                     * Display mode: [<combobox with options>]
+                     */
+                    row(inlayHints("light.services.display.mode.label")) {
+
                         //Add combobox to select display mode
                         val lightServicesDisplayMode = comboBox<InlayDisplayMode>(
                             lightServicesDisplayModeModel,
-                            { settings.lightServicesDisplayMode },
-                            { settings.lightServicesDisplayMode = it ?: InlayDisplayMode.Disabled },
                             SimpleListCellRenderer.create("") { it.displayName }
                         ).component
+
                         //Update Settings properties and related UI controls
                         lightServicesDisplayMode.addActionListener {
                             settings.lightServicesDisplayMode = lightServicesDisplayMode.selectedItem as InlayDisplayMode
@@ -87,39 +86,19 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                             listener.settingsChanged()
                         }
                     }
-                    row {
-                        label(JustKittingBundle.inlayHints("light.services.settings.max.no.of.services.label"))
-                        component(maxNoOfServicesTextField).withTextBinding(propBinding)
-                        //https://jetbrains.design/intellij/principles/validation_errors/
-                        //ComponentValidator is used since CellBuilder.intTextField with its validation mechanism won't work for some reason
-                        ComponentValidator(ApplicationManager.getApplication()).withValidator(Supplier {
-                            maxNoOfServicesTextField.let {
-                                val maxServices: String = it.text
-                                if (maxServices.isNotBlank()) {
-                                    try {
-                                        if (maxServices.toInt() !in 1..MAX_NO_OF_SERVICES) {
-                                            ValidationInfo(
-                                                JustKittingBundle.inlayHints(
-                                                    "light.services.settings.value.must.be.between.x.and.y",
-                                                    1,
-                                                    MAX_NO_OF_SERVICES
-                                                ), maxNoOfServicesTextField
-                                            )
-                                        } else {
-                                            settings.maxNumberOfServicesToDisplay = maxServices.toInt()
-                                            null
-                                        }
-                                    } catch (nfe: NumberFormatException) {
-                                        ValidationInfo(
-                                            JustKittingBundle.inlayHints("light.services.settings.value.must.be.a.number"),
-                                            maxNoOfServicesTextField
-                                        )
-                                    }
-                                } else {
-                                    null
-                                }
+
+                    /*
+                     * Max number of services to display: [<text field>]
+                     */
+                    row(inlayHints("light.services.settings.max.no.of.services.label")) {
+                        cell(maxNoOfServicesTextField)
+                            .bindText({ settings.maxNumberOfServicesToDisplay.toString() })
+                            { value ->
+                                settings.maxNumberOfServicesToDisplay = value.toIntOrNull()
+                                    ?: Settings.DEFAULT_MAX_NO_OF_SERVICES
                             }
-                        }).installOn(maxNoOfServicesTextField)
+
+                        installValidatorForMaxNoOfServices()
 
                         maxNoOfServicesTextField.document.addDocumentListener(object : DocumentAdapter() {
                             override fun textChanged(e: DocumentEvent) {
@@ -131,6 +110,42 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                 }
                 panel.border = JBUI.Borders.empty(2)
                 return panel
+            }
+
+            /**
+             * ComponentValidator is used since CellBuilder.intTextField with its validation mechanism won't work for some reason
+             *
+             * See [Validation errors](https://jetbrains.design/intellij/principles/validation_errors/).
+             */
+            private fun installValidatorForMaxNoOfServices() {
+                ComponentValidator(ApplicationManager.getApplication()).withValidator(Supplier {
+                    maxNoOfServicesTextField.let {
+                        val maxServices: String = it.text
+                        if (maxServices.isNotBlank()) {
+                            try {
+                                if (maxServices.toInt() !in 1..MAX_NO_OF_SERVICES) {
+                                    ValidationInfo(
+                                        inlayHints(
+                                            "light.services.settings.value.must.be.between.x.and.y",
+                                            1,
+                                            MAX_NO_OF_SERVICES
+                                        ), maxNoOfServicesTextField
+                                    )
+                                } else {
+                                    settings.maxNumberOfServicesToDisplay = maxServices.toInt()
+                                    null
+                                }
+                            } catch (nfe: NumberFormatException) {
+                                ValidationInfo(
+                                    inlayHints("light.services.settings.value.must.be.a.number"),
+                                    maxNoOfServicesTextField
+                                )
+                            }
+                        } else {
+                            null
+                        }
+                    }
+                }).installOn(maxNoOfServicesTextField)
             }
 
             override fun reset() {
@@ -169,18 +184,22 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
              * Since there is a separate inspection reporting that the `<extensions>` tag doesn't have `defaultExtensionNs="com.intellij"` specified,
              * that construct is ignored in this hints provider.
              *
+             * It uses a simplified check to determine if the file is an actual plugin descriptor because
+             * [org.jetbrains.idea.devkit.util.DescriptorUtil.isPluginXml] returns null due to null file descriptor being returned
+             * by the underlying logic.
+             *
              * @see org.jetbrains.idea.devkit.inspections.PluginXmlDomInspection
              */
             private fun isElementToShowHintFor(element: PsiElement): Boolean {
-                return DescriptorUtil.isPluginXml(file) &&
-                        psiElement(XmlToken::class.java)
-                            .withElementType(XmlTokenType.XML_START_TAG_START)
-                            .withParent(
-                                xmlTag()
-                                    .withName("extensions")
-                                    .withAttributeValue("defaultExtensionNs", "com.intellij")
-                            )
-                            .accepts(element)
+                return file is XmlFile && file.rootTag?.name == "idea-plugin" &&
+                    psiElement(XmlToken::class.java)
+                        .withElementType(XmlTokenType.XML_START_TAG_START)
+                        .withParent(
+                            xmlTag()
+                                .withName("extensions")
+                                .withAttributeValue("defaultExtensionNs", "com.intellij")
+                        )
+                        .accepts(element)
             }
         }
     }

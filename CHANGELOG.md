@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [0.4.0]
+### Changed
+- Updated plugin configuration to match version 1.7.0 of the platform plugin template.
+- Removed support for IJ 2022.1.
+- Added `qodana.yml` to the list diffable plugin configuration files.
+
 ## [0.3.0]
 ### Added
 - Added support for IJ 2023.2.
