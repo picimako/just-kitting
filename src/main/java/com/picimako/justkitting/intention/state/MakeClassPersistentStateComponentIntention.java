@@ -62,8 +62,7 @@ public class MakeClassPersistentStateComponentIntention extends BaseIntentionAct
             return false;
         }
         final PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
-        if (element instanceof PsiIdentifier && element.getParent() instanceof PsiClass) {
-            PsiClass parentClass = (PsiClass) element.getParent();
+        if (element instanceof PsiIdentifier && element.getParent() instanceof PsiClass parentClass) {
             return !parentClass.isInterface()
                 && !parentClass.isEnum()
                 && !parentClass.hasModifierProperty(PsiModifier.ABSTRACT)

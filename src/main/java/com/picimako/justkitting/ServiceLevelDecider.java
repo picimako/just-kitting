@@ -101,7 +101,7 @@ public final class ServiceLevelDecider {
      * The returned collection's size can be 0 to 2 - Empty, "APP" or "PROJECT", "APP" and "PROJECT".
      */
     @NotNull
-    private static List<String> convertToServiceLevelNames(List<? extends Object> serviceLevels, Project project) {
+    private static List<String> convertToServiceLevelNames(List<?> serviceLevels, Project project) {
         var cache = PlatformPsiCache.getInstance(project);
         return serviceLevels.stream()
             .map(expression -> {
@@ -125,7 +125,7 @@ public final class ServiceLevelDecider {
                 }
                 //Handles Kotlin cases at least in integration tests, but might occur in the wild too.
                 else if (expression instanceof KtLightPsiLiteral levelRef) {
-                    return levelRef.getValue() instanceof Pair levelRefValue ? levelRefValue.getSecond().toString() : null;
+                    return levelRef.getValue() instanceof Pair<?, ?> levelRefValue ? levelRefValue.getSecond().toString() : null;
                 }
                 return null;
             })

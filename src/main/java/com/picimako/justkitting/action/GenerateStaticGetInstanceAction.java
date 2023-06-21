@@ -85,17 +85,10 @@ public class GenerateStaticGetInstanceAction extends BaseCodeInsightAction {
             //Null check for 'staticOrTopLevelClass' is not required due to it being checked in 'isValidFor()'
             var serviceLevel = ServiceLevelDecider.getServiceLevel(getStaticOrTopLevelClass(file, editor));
             switch (serviceLevel) {
-                case PROJECT:
-                    new ProjectServiceAction().getHandler().invoke(project, editor, file);
-                    break;
-                case APP:
-                    new ApplicationServiceAction().getHandler().invoke(project, editor, file);
-                    break;
-                case PROJECT_AND_APP:
-                case NOT_SURE:
-                default:
-                    ListPopupHelper.showActionsInListPopup(
-                        JustKittingBundle.message("action.generate.getinstance.level.list.title"), actions, editor);
+                case PROJECT -> new ProjectServiceAction().getHandler().invoke(project, editor, file);
+                case APP -> new ApplicationServiceAction().getHandler().invoke(project, editor, file);
+                default -> ListPopupHelper.showActionsInListPopup(
+                    JustKittingBundle.message("action.generate.getinstance.level.list.title"), actions, editor);
             }
         }
 

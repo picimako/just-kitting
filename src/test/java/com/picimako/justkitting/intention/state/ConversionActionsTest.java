@@ -20,51 +20,53 @@ public class ConversionActionsTest extends JustKittingActionTestBase {
         checkAction("SomeComponent.java", ConversionActions.WithStandaloneStateObject::new,
             "public final class SomeCom<caret>ponent {\n" +
                 "}",
-            "import com.intellij.openapi.components.PersistentStateComponent;\n" +
-                "import com.intellij.openapi.components.State;\n" +
-                "import com.intellij.openapi.components.Storage;\n" +
-                "\n" +
-                "@State(name = \"SomeComponent\", storages = @Storage(\"TODO: INSERT STORAGE NAME\"))\n" +
-                "public final class SomeComponent implements PersistentStateComponent<SomeComponent.State> {\n" +
-                "    private State myState = new State();\n" +
-                "\n" +
-                "    @Override\n" +
-                "    public State getState() {\n" +
-                "        return myState;\n" +
-                "    }\n" +
-                "\n" +
-                "    @Override\n" +
-                "    public void loadState(State state) {\n" +
-                "        myState = state;\n" +
-                "    }\n" +
-                "\n" +
-                "    static final class State {\n" +
-                "\n" +
-                "    }\n" +
-                "}");
+            """
+                import com.intellij.openapi.components.PersistentStateComponent;
+                import com.intellij.openapi.components.State;
+                import com.intellij.openapi.components.Storage;
+
+                @State(name = "SomeComponent", storages = @Storage("TODO: INSERT STORAGE NAME"))
+                public final class SomeComponent implements PersistentStateComponent<SomeComponent.State> {
+                    private State myState = new State();
+
+                    @Override
+                    public State getState() {
+                        return myState;
+                    }
+
+                    @Override
+                    public void loadState(State state) {
+                        myState = state;
+                    }
+
+                    static final class State {
+
+                    }
+                }""");
     }
 
     public void testConvertsClassWithSelfAsState() {
         checkAction("SomeComponent.java", ConversionActions.WithSelfAsState::new,
             "public final class SomeC<caret>omponent {\n" +
                 "}",
-            "import com.intellij.openapi.components.PersistentStateComponent;\n" +
-                "import com.intellij.openapi.components.State;\n" +
-                "import com.intellij.openapi.components.Storage;\n" +
-                "import com.intellij.util.xmlb.XmlSerializerUtil;\n" +
-                "\n" +
-                "@State(name = \"SomeComponent\", storages = @Storage(\"TODO: INSERT STORAGE NAME\"))\n" +
-                "public final class SomeComponent implements PersistentStateComponent<SomeComponent> {\n" +
-                "    @Override\n" +
-                "    public SomeComponent getState() {\n" +
-                "        return this;\n" +
-                "    }\n" +
-                "\n" +
-                "    @Override\n" +
-                "    public void loadState(SomeComponent state) {\n" +
-                "        XmlSerializerUtil.copyBean(state, this);\n" +
-                "    }\n" +
-                "}"
+            """
+                import com.intellij.openapi.components.PersistentStateComponent;
+                import com.intellij.openapi.components.State;
+                import com.intellij.openapi.components.Storage;
+                import com.intellij.util.xmlb.XmlSerializerUtil;
+
+                @State(name = "SomeComponent", storages = @Storage("TODO: INSERT STORAGE NAME"))
+                public final class SomeComponent implements PersistentStateComponent<SomeComponent> {
+                    @Override
+                    public SomeComponent getState() {
+                        return this;
+                    }
+
+                    @Override
+                    public void loadState(SomeComponent state) {
+                        XmlSerializerUtil.copyBean(state, this);
+                    }
+                }"""
         );
     }
 }

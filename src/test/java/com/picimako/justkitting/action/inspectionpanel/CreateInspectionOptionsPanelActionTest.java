@@ -14,65 +14,69 @@ public class CreateInspectionOptionsPanelActionTest extends JustKittingTestBase 
 
     public void testActionIsAvailableInsideEmptyCreateOptionsPanel() {
         PsiFile psiFile = myFixture.configureByText("SomeInspection.java",
-            "import javax.swing.JComponent;\n" +
-                "import com.intellij.codeInspection.LocalInspectionTool;\n" +
-                "import org.jetbrains.annotations.Nullable;\n" +
-                "\n" +
-                "public class SomeInspection extends LocalInspectionTool {\n" +
-                "    @Override\n" +
-                "    public @Nullable JComponent createOptionsPanel() {\n" +
-                "        <caret>\n" +
-                "    }\n" +
-                "}");
+            """
+                import javax.swing.JComponent;
+                import com.intellij.codeInspection.LocalInspectionTool;
+                import org.jetbrains.annotations.Nullable;
+
+                public class SomeInspection extends LocalInspectionTool {
+                    @Override
+                    public @Nullable JComponent createOptionsPanel() {
+                        <caret>
+                    }
+                }""");
 
         assertThat(new CreateInspectionOptionsPanelAction().isValidForFile(getProject(), myFixture.getEditor(), psiFile)).isTrue();
     }
 
     public void testActionIsAvailableInsideNonEmptyCreateOptionsPanel() {
         PsiFile psiFile = myFixture.configureByText("SomeInspection.java",
-            "import javax.swing.JComponent;\n" +
-                "import com.intellij.codeInspection.LocalInspectionTool;\n" +
-                "import org.jetbrains.annotations.Nullable;\n" +
-                "\n" +
-                "public class SomeInspection extends LocalInspectionTool {\n" +
-                "    @Override\n" +
-                "    public @Nullable JComponent createOptionsPanel() {\n" +
-                "        <caret>return super.createOptionsPanel();\n" +
-                "    }\n" +
-                "}");
+            """
+                import javax.swing.JComponent;
+                import com.intellij.codeInspection.LocalInspectionTool;
+                import org.jetbrains.annotations.Nullable;
+
+                public class SomeInspection extends LocalInspectionTool {
+                    @Override
+                    public @Nullable JComponent createOptionsPanel() {
+                        <caret>return super.createOptionsPanel();
+                    }
+                }""");
 
         assertThat(new CreateInspectionOptionsPanelAction().isValidForFile(getProject(), myFixture.getEditor(), psiFile)).isTrue();
     }
 
     public void testActionIsAvailableOnCreateOptionsPanel() {
         PsiFile psiFile = myFixture.configureByText("SomeInspection.java",
-            "import javax.swing.JComponent;\n" +
-                "import com.intellij.codeInspection.LocalInspectionTool;\n" +
-                "import org.jetbrains.annotations.Nullable;\n" +
-                "\n" +
-                "public class SomeInspection extends LocalInspectionTool {\n" +
-                "    @Override\n" +
-                "    public @Nullable JComponent create<caret>OptionsPanel() {\n" +
-                "        return super.createOptionsPanel();\n" +
-                "    }\n" +
-                "}");
+            """
+                import javax.swing.JComponent;
+                import com.intellij.codeInspection.LocalInspectionTool;
+                import org.jetbrains.annotations.Nullable;
+
+                public class SomeInspection extends LocalInspectionTool {
+                    @Override
+                    public @Nullable JComponent create<caret>OptionsPanel() {
+                        return super.createOptionsPanel();
+                    }
+                }""");
 
         assertThat(new CreateInspectionOptionsPanelAction().isValidForFile(getProject(), myFixture.getEditor(), psiFile)).isTrue();
     }
 
     public void testActionIsNotAvailableWhenInsideCreateOptionsPanel() {
         PsiFile psiFile = myFixture.configureByText("SomeInspection.java",
-            "import javax.swing.JComponent;\n" +
-                "import com.intellij.codeInspection.LocalInspectionTool;\n" +
-                "import org.jetbrains.annotations.Nullable;\n" +
-                "\n" +
-                "public class SomeInspection extends LocalInspectionTool {\n" +
-                "<caret>\n" +
-                "    @Override\n" +
-                "    public @Nullable JComponent createOptionsPanel() {\n" +
-                "        return super.createOptionsPanel();\n" +
-                "    }\n" +
-                "}");
+            """
+                import javax.swing.JComponent;
+                import com.intellij.codeInspection.LocalInspectionTool;
+                import org.jetbrains.annotations.Nullable;
+
+                public class SomeInspection extends LocalInspectionTool {
+                <caret>
+                    @Override
+                    public @Nullable JComponent createOptionsPanel() {
+                        return super.createOptionsPanel();
+                    }
+                }""");
 
         assertThat(new CreateInspectionOptionsPanelAction().isValidForFile(getProject(), myFixture.getEditor(), psiFile)).isFalse();
     }

@@ -23,23 +23,24 @@ public class CallMatcherInspectionTest extends JustKittingInspectionTestBase {
 
     public void testNonExistentMethod() {
         doJavaTest("CallMatcherNonexistentMethod.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherNonexistentMethod {\n" +
-                "   CallMatcher callMatcherInstance1 = CallMatcher.instanceCall(\"java.util.List\", \"add\");\n" +
-                "   CallMatcher callMatcherInstance2 = CallMatcher.instanceCall(\"java.util.List\", \"clear\");\n" +
-                "   CallMatcher callMatcherInstance3 = CallMatcher.instanceCall(\"java.lang.Integer\", <error descr=\"No instance method exists with this name in the referenced class or any of its super classes.\">\"toUnsignedString\"</error>);\n" +
-                "   CallMatcher callMatcherInstance4 = CallMatcher.instanceCall(\"java.util.List\", <error descr=\"No instance method exists with this name in the referenced class or any of its super classes.\">\"asdasd\"</error>);\n" +
-                "\n" +
-                "   CallMatcher callMatcherStatic1 = CallMatcher.staticCall(\"java.text.MessageFormat\", \"format\");\n" +
-                "   CallMatcher callMatcherStatic2 = CallMatcher.staticCall(\"java.lang.String\", <error descr=\"No static method exists with this name in the referenced class or any of its super classes.\">\"chars\"</error>);\n" +
-                "   CallMatcher callMatcherStatic3 = CallMatcher.staticCall(\"java.lang.String\", <error descr=\"No static method exists with this name in the referenced class or any of its super classes.\">\"asdasd\"</error>);\n" +
-                "\n" +
-                "   CallMatcher callMatcherExactInstance1 = CallMatcher.exactInstanceCall(\"java.util.List\", \"add\");\n" +
-                "   CallMatcher callMatcherExactInstance2 = CallMatcher.exactInstanceCall(\"java.util.List\", \"clear\");\n" +
-                "   CallMatcher callMatcherExactInstance3 = CallMatcher.exactInstanceCall(\"java.util.List\", \"isEmpty\");\n" +
-                "   CallMatcher callMatcherExactInstance4 = CallMatcher.exactInstanceCall(\"java.util.List\", <error descr=\"No instance method exists with this name in the referenced class.\">\"removeIf\"</error>);\n" +
-                "   CallMatcher callMatcherExactInstance5 = CallMatcher.exactInstanceCall(\"java.util.List\", <error descr=\"No instance method exists with this name in the referenced class.\">\"asdasd\"</error>);\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherNonexistentMethod {
+                   CallMatcher callMatcherInstance1 = CallMatcher.instanceCall("java.util.List", "add");
+                   CallMatcher callMatcherInstance2 = CallMatcher.instanceCall("java.util.List", "clear");
+                   CallMatcher callMatcherInstance3 = CallMatcher.instanceCall("java.lang.Integer", <error descr="No instance method exists with this name in the referenced class or any of its super classes.">"toUnsignedString"</error>);
+                   CallMatcher callMatcherInstance4 = CallMatcher.instanceCall("java.util.List", <error descr="No instance method exists with this name in the referenced class or any of its super classes.">"asdasd"</error>);
+
+                   CallMatcher callMatcherStatic1 = CallMatcher.staticCall("java.text.MessageFormat", "format");
+                   CallMatcher callMatcherStatic2 = CallMatcher.staticCall("java.lang.String", <error descr="No static method exists with this name in the referenced class or any of its super classes.">"chars"</error>);
+                   CallMatcher callMatcherStatic3 = CallMatcher.staticCall("java.lang.String", <error descr="No static method exists with this name in the referenced class or any of its super classes.">"asdasd"</error>);
+
+                   CallMatcher callMatcherExactInstance1 = CallMatcher.exactInstanceCall("java.util.List", "add");
+                   CallMatcher callMatcherExactInstance2 = CallMatcher.exactInstanceCall("java.util.List", "clear");
+                   CallMatcher callMatcherExactInstance3 = CallMatcher.exactInstanceCall("java.util.List", "isEmpty");
+                   CallMatcher callMatcherExactInstance4 = CallMatcher.exactInstanceCall("java.util.List", <error descr="No instance method exists with this name in the referenced class.">"removeIf"</error>);
+                   CallMatcher callMatcherExactInstance5 = CallMatcher.exactInstanceCall("java.util.List", <error descr="No instance method exists with this name in the referenced class.">"asdasd"</error>);
+                }""");
     }
 }

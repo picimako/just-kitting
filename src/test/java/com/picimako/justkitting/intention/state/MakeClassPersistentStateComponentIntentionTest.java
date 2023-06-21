@@ -15,16 +15,17 @@ public class MakeClassPersistentStateComponentIntentionTest extends JustKittingT
 
     public void testIntentionIsNotAvailableWhenAlreadyPersistentStateComponent() {
         PsiFile psiFile = myFixture.configureByText("SomeComponent.java",
-            "import com.intellij.openapi.components.PersistentStateComponent;\n" +
-                "\n" +
-                "public final class SomeCo<caret>mponent implements PersistentStateComponent<SomeComponent> {\n" +
-                "    public SomeComponent getState() {\n" +
-                "        return this;\n" +
-                "    }\n" +
-                "\n" +
-                "    public void loadState(SomeComponent state) {\n" +
-                "    }\n" +
-                "}");
+            """
+                import com.intellij.openapi.components.PersistentStateComponent;
+
+                public final class SomeCo<caret>mponent implements PersistentStateComponent<SomeComponent> {
+                    public SomeComponent getState() {
+                        return this;
+                    }
+
+                    public void loadState(SomeComponent state) {
+                    }
+                }""");
 
         assertThat(new MakeClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
     }
@@ -55,9 +56,10 @@ public class MakeClassPersistentStateComponentIntentionTest extends JustKittingT
 
     public void testIntentionIsNotAvailableWhenInvokedOnANonPsiClassElement() {
         PsiFile psiFile = myFixture.configureByText("SomeComponent.java",
-            "public final class SomeComponent {\n" +
-                "    public String fie<caret>ld;\n" +
-                "}");
+            """
+                public final class SomeComponent {
+                    public String fie<caret>ld;
+                }""");
 
         assertThat(new MakeClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
     }

@@ -30,222 +30,242 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
 
     public void testNeverChangedIsAddedForEmptyDependency() {
         doQuickFixTest("Add ModificationTracker.NEVER_CHANGED as dependency", "NeverChangedIsAddedForEmptyDependency.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "\n" +
-                "public class NeverChangedIsAddedForEmptyDependency {\n" +
-                "   public void method() {\n" +
-                "       CachedValueProvider.Result.cre<caret>ate(new Object[1]);\n" +
-                "   }\n" +
-                "}",
-            "import com.intellij.openapi.util.ModificationTracker;\n" +
-                "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "\n" +
-                "public class NeverChangedIsAddedForEmptyDependency {\n" +
-                "   public void method() {\n" +
-                "       CachedValueProvider.Result.create(new Object[1], ModificationTracker.NEVER_CHANGED);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+
+                public class NeverChangedIsAddedForEmptyDependency {
+                   public void method() {
+                       CachedValueProvider.Result.cre<caret>ate(new Object[1]);
+                   }
+                }""",
+            """
+                import com.intellij.openapi.util.ModificationTracker;
+                import com.intellij.psi.util.CachedValueProvider;
+
+                public class NeverChangedIsAddedForEmptyDependency {
+                   public void method() {
+                       CachedValueProvider.Result.create(new Object[1], ModificationTracker.NEVER_CHANGED);
+                   }
+                }""");
     }
 
     public void testModificationCountIsAddedForEmptyDependency() {
         doQuickFixTest("Add PsiModificationTracker.MODIFICATION_COUNT as dependency", "ModificationCountIsAddedForEmptyDependency.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "\n" +
-                "public class ModificationCountIsAddedForEmptyDependency {\n" +
-                "   public void method() {\n" +
-                "       CachedValueProvider.Result.cre<caret>ate(new Object[1]);\n" +
-                "   }\n" +
-                "}",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import com.intellij.psi.util.PsiModificationTracker;\n" +
-                "\n" +
-                "public class ModificationCountIsAddedForEmptyDependency {\n" +
-                "   public void method() {\n" +
-                "       CachedValueProvider.Result.create(new Object[1], PsiModificationTracker.MODIFICATION_COUNT);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+
+                public class ModificationCountIsAddedForEmptyDependency {
+                   public void method() {
+                       CachedValueProvider.Result.cre<caret>ate(new Object[1]);
+                   }
+                }""",
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+                import com.intellij.psi.util.PsiModificationTracker;
+
+                public class ModificationCountIsAddedForEmptyDependency {
+                   public void method() {
+                       CachedValueProvider.Result.create(new Object[1], PsiModificationTracker.MODIFICATION_COUNT);
+                   }
+                }""");
     }
 
     public void testNeverChangedIsAddedForEmptyCollectionDependency() {
         doQuickFixTest("Replace empty collection with ModificationTracker.NEVER_CHANGED", "NeverChangedIsAddedForEmptyCollectionDependency.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import java.util.Collections;\n" +
-                "\n" +
-                "public class NeverChangedIsAddedForEmptyCollectionDependency {\n" +
-                "   public void method() {\n" +
-                "       CachedValueProvider.Result.cre<caret>ate(new Object[1], Collections.emptyList());\n" +
-                "   }\n" +
-                "}",
-            "import com.intellij.openapi.util.ModificationTracker;\n" +
-                "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import java.util.Collections;\n" +
-                "\n" +
-                "public class NeverChangedIsAddedForEmptyCollectionDependency {\n" +
-                "   public void method() {\n" +
-                "       CachedValueProvider.Result.create(new Object[1], ModificationTracker.NEVER_CHANGED);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+                import java.util.Collections;
+
+                public class NeverChangedIsAddedForEmptyCollectionDependency {
+                   public void method() {
+                       CachedValueProvider.Result.cre<caret>ate(new Object[1], Collections.emptyList());
+                   }
+                }""",
+            """
+                import com.intellij.openapi.util.ModificationTracker;
+                import com.intellij.psi.util.CachedValueProvider;
+                import java.util.Collections;
+
+                public class NeverChangedIsAddedForEmptyCollectionDependency {
+                   public void method() {
+                       CachedValueProvider.Result.create(new Object[1], ModificationTracker.NEVER_CHANGED);
+                   }
+                }""");
     }
 
     public void testModificationCountIsAddedForEmptyCollectionDependency() {
         doQuickFixTest("Replace empty collection with PsiModificationTracker.MODIFICATION_COUNT", "ModificationCountIsAddedForEmptyCollectionDependency.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import java.util.Collections;\n" +
-                "\n" +
-                "public class ModificationCountIsAddedForEmptyCollectionDependency {\n" +
-                "   public void method() {\n" +
-                "       CachedValueProvider.Result.cre<caret>ate(new Object[1], Collections.emptyList());\n" +
-                "   }\n" +
-                "}",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import com.intellij.psi.util.PsiModificationTracker;\n" +
-                "\n" +
-                "import java.util.Collections;\n" +
-                "\n" +
-                "public class ModificationCountIsAddedForEmptyCollectionDependency {\n" +
-                "   public void method() {\n" +
-                "       CachedValueProvider.Result.create(new Object[1], PsiModificationTracker.MODIFICATION_COUNT);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+                import java.util.Collections;
+
+                public class ModificationCountIsAddedForEmptyCollectionDependency {
+                   public void method() {
+                       CachedValueProvider.Result.cre<caret>ate(new Object[1], Collections.emptyList());
+                   }
+                }""",
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+                import com.intellij.psi.util.PsiModificationTracker;
+
+                import java.util.Collections;
+
+                public class ModificationCountIsAddedForEmptyCollectionDependency {
+                   public void method() {
+                       CachedValueProvider.Result.create(new Object[1], PsiModificationTracker.MODIFICATION_COUNT);
+                   }
+                }""");
     }
 
     public void testNoHighlightForNonEmptyDependencies() {
         doJavaTest("NoHighlightForNonEmptyDependencies.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import com.intellij.psi.PsiClass;\n" +
-                "\n" +
-                "public class NoHighlightForNonEmptyDependencies {\n" +
-                "   public void method(PsiClass psiClass) {\n" +
-                "       CachedValueProvider.Result.create(new Object[1], psiClass);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+                import com.intellij.psi.PsiClass;
+
+                public class NoHighlightForNonEmptyDependencies {
+                   public void method(PsiClass psiClass) {
+                       CachedValueProvider.Result.create(new Object[1], psiClass);
+                   }
+                }""");
     }
 
     public void testNoHighlightForModificationTrackerNeverChangedDependency() {
         doJavaTest("NoHighlightForModificationTrackerNeverChangedDependency.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import com.intellij.openapi.util.ModificationTracker;\n" +
-                "import com.intellij.psi.PsiClass;\n" +
-                "\n" +
-                "public class NoHighlightForModificationTrackerNeverChangedDependency {\n" +
-                "   public void method(PsiClass psiClass) {\n" +
-                "       CachedValueProvider.Result.create(new Object[1], ModificationTracker.NEVER_CHANGED);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+                import com.intellij.openapi.util.ModificationTracker;
+                import com.intellij.psi.PsiClass;
+
+                public class NoHighlightForModificationTrackerNeverChangedDependency {
+                   public void method(PsiClass psiClass) {
+                       CachedValueProvider.Result.create(new Object[1], ModificationTracker.NEVER_CHANGED);
+                   }
+                }""");
     }
 
     public void testNoHighlightForEmptyResultCreateParameterList() {
         doJavaTest("NoHighlightForEmptyResultCreateParameterList.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "\n" +
-                "public class NoHighlightForEmptyResultCreateParameterList {\n" +
-                "   public void method() {\n" +
-                "       CachedValueProvider.Result.create<error descr=\"Cannot resolve method 'create()'\">()</error>;\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+
+                public class NoHighlightForEmptyResultCreateParameterList {
+                   public void method() {
+                       CachedValueProvider.Result.create<error descr="Cannot resolve method 'create()'">()</error>;
+                   }
+                }""");
     }
 
     public void testNoHighlightForMoreThanTwoDependencies() {
         doJavaTest("NoHighlightForMoreThanTwoDependencies.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import com.intellij.psi.PsiMethod;\n" +
-                "import com.intellij.psi.PsiClass;\n" +
-                "\n" +
-                "public class NoHighlightForMoreThanTwoDependencies {\n" +
-                "   public void method(PsiClass psiClass, PsiMethod psiMethod) {\n" +
-                "       CachedValueProvider.Result.create(new Object[1], psiClass, psiMethod);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+                import com.intellij.psi.PsiMethod;
+                import com.intellij.psi.PsiClass;
+
+                public class NoHighlightForMoreThanTwoDependencies {
+                   public void method(PsiClass psiClass, PsiMethod psiMethod) {
+                       CachedValueProvider.Result.create(new Object[1], psiClass, psiMethod);
+                   }
+                }""");
     }
 
     //new Result()
 
     public void testNeverChangedIsAddedForEmptyDependencyNewResult() {
         doQuickFixTest("Add ModificationTracker.NEVER_CHANGED as dependency", "NeverChangedIsAddedForEmptyDependency.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "\n" +
-                "public class NeverChangedIsAddedForEmptyDependency {\n" +
-                "   public void method() {\n" +
-                "       new CachedValueProvider.Res<caret>ult<>(new Object[1]);\n" +
-                "   }\n" +
-                "}",
-            "import com.intellij.openapi.util.ModificationTracker;\n" +
-                "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "\n" +
-                "public class NeverChangedIsAddedForEmptyDependency {\n" +
-                "   public void method() {\n" +
-                "       new CachedValueProvider.Result<>(new Object[1], ModificationTracker.NEVER_CHANGED);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+
+                public class NeverChangedIsAddedForEmptyDependency {
+                   public void method() {
+                       new CachedValueProvider.Res<caret>ult<>(new Object[1]);
+                   }
+                }""",
+            """
+                import com.intellij.openapi.util.ModificationTracker;
+                import com.intellij.psi.util.CachedValueProvider;
+
+                public class NeverChangedIsAddedForEmptyDependency {
+                   public void method() {
+                       new CachedValueProvider.Result<>(new Object[1], ModificationTracker.NEVER_CHANGED);
+                   }
+                }""");
     }
 
     public void testNeverChangedIsAddedForEmptyCollectionDependencyNewResult() {
         doQuickFixTest("Replace empty collection with ModificationTracker.NEVER_CHANGED", "NeverChangedIsAddedForEmptyCollectionDependency.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import java.util.Collections;\n" +
-                "\n" +
-                "public class NeverChangedIsAddedForEmptyCollectionDependency {\n" +
-                "   public void method() {\n" +
-                "       new CachedValueProvider.Res<caret>ult<>(new Object[1], Collections.emptyList());\n" +
-                "   }\n" +
-                "}",
-            "import com.intellij.openapi.util.ModificationTracker;\n" +
-                "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import java.util.Collections;\n" +
-                "\n" +
-                "public class NeverChangedIsAddedForEmptyCollectionDependency {\n" +
-                "   public void method() {\n" +
-                "       new CachedValueProvider.Res<caret>ult<>(new Object[1], ModificationTracker.NEVER_CHANGED);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+                import java.util.Collections;
+
+                public class NeverChangedIsAddedForEmptyCollectionDependency {
+                   public void method() {
+                       new CachedValueProvider.Res<caret>ult<>(new Object[1], Collections.emptyList());
+                   }
+                }""",
+            """
+                import com.intellij.openapi.util.ModificationTracker;
+                import com.intellij.psi.util.CachedValueProvider;
+                import java.util.Collections;
+
+                public class NeverChangedIsAddedForEmptyCollectionDependency {
+                   public void method() {
+                       new CachedValueProvider.Res<caret>ult<>(new Object[1], ModificationTracker.NEVER_CHANGED);
+                   }
+                }""");
     }
 
     public void testNoHighlightForNonEmptyDependenciesNewResult() {
         doJavaTest("NoHighlightForNonEmptyDependencies.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import com.intellij.psi.PsiClass;\n" +
-                "\n" +
-                "public class NoHighlightForNonEmptyDependencies {\n" +
-                "   public void method(PsiClass psiClass) {\n" +
-                "       new CachedValueProvider.Result<>(new Object[1], psiClass);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+                import com.intellij.psi.PsiClass;
+
+                public class NoHighlightForNonEmptyDependencies {
+                   public void method(PsiClass psiClass) {
+                       new CachedValueProvider.Result<>(new Object[1], psiClass);
+                   }
+                }""");
     }
 
     public void testNoHighlightForModificationTrackerNeverChangedDependencyNewResult() {
         doJavaTest("NoHighlightForModificationTrackerNeverChangedDependency.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import com.intellij.openapi.util.ModificationTracker;\n" +
-                "import com.intellij.psi.PsiClass;\n" +
-                "\n" +
-                "public class NoHighlightForModificationTrackerNeverChangedDependency {\n" +
-                "   public void method(PsiClass psiClass) {\n" +
-                "       new CachedValueProvider.Result<>(new Object[1], ModificationTracker.NEVER_CHANGED);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+                import com.intellij.openapi.util.ModificationTracker;
+                import com.intellij.psi.PsiClass;
+
+                public class NoHighlightForModificationTrackerNeverChangedDependency {
+                   public void method(PsiClass psiClass) {
+                       new CachedValueProvider.Result<>(new Object[1], ModificationTracker.NEVER_CHANGED);
+                   }
+                }""");
     }
 
     public void testNoHighlightForEmptyResultCreateParameterListNewResult() {
         doJavaTest("NoHighlightForEmptyResultCreateParameterList.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "\n" +
-                "public class NoHighlightForEmptyResultCreateParameterList {\n" +
-                "   public void method() {\n" +
-                "       new CachedValueProvider.Result<><error descr=\"Cannot resolve constructor 'Result()'\">()</error>;\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+
+                public class NoHighlightForEmptyResultCreateParameterList {
+                   public void method() {
+                       new CachedValueProvider.Result<><error descr="Cannot resolve constructor 'Result()'">()</error>;
+                   }
+                }""");
     }
 
     public void testNoHighlightForMoreThanTwoDependenciesNewResult() {
         doJavaTest("NoHighlightForMoreThanTwoDependencies.java",
-            "import com.intellij.psi.util.CachedValueProvider;\n" +
-                "import com.intellij.psi.PsiMethod;\n" +
-                "import com.intellij.psi.PsiClass;\n" +
-                "\n" +
-                "public class NoHighlightForMoreThanTwoDependencies {\n" +
-                "   public void method(PsiClass psiClass, PsiMethod psiMethod) {\n" +
-                "       new CachedValueProvider.Result<>(new Object[1], psiClass, psiMethod);\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.intellij.psi.util.CachedValueProvider;
+                import com.intellij.psi.PsiMethod;
+                import com.intellij.psi.PsiClass;
+
+                public class NoHighlightForMoreThanTwoDependencies {
+                   public void method(PsiClass psiClass, PsiMethod psiMethod) {
+                       new CachedValueProvider.Result<>(new Object[1], psiClass, psiMethod);
+                   }
+                }""");
     }
 }

@@ -29,11 +29,12 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
 
     public void testClassReferenceWithNoMethodNameSpecified() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   CallMatcher callMatcher = CallMatcher.instanceCall(\"java.uti<caret>l.List\");\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   CallMatcher callMatcher = CallMatcher.instanceCall("java.uti<caret>l.List");
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
@@ -44,11 +45,12 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
 
     public void testClassReferenceWithMethodNameSpecified() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   CallMatcher callMatcher = CallMatcher.instanceCall(\"java.uti<caret>l.List\", \"add\");\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   CallMatcher callMatcher = CallMatcher.instanceCall("java.uti<caret>l.List", "add");
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
@@ -59,11 +61,12 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
 
     public void testNoClassReference() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   CallMatcher callMatcher = CallMatcher.instanceCall(\"<caret>List\", \"add\");\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   CallMatcher callMatcher = CallMatcher.instanceCall("<caret>List", "add");
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         assertThat(element.getReferences()).isEmpty();
@@ -73,11 +76,12 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
 
     public void testSingleMethodReferenceResult() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   CallMatcher callMatcher = CallMatcher.instanceCall(\"java.util.List\", \"cl<caret>ear\");\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   CallMatcher callMatcher = CallMatcher.instanceCall("java.util.List", "cl<caret>ear");
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
@@ -89,12 +93,12 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
     
     public void testSingleMethodReferenceResultEvaluated() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   private static final String CALL_MATCHER = \"com.siyeh.ig.callMatcher.CallMatcher\"" +
-                "   CallMatcher callMatcher = CallMatcher.instanceCall(CALL_MATCHER, \"na<caret>mes\");\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   private static final String CALL_MATCHER = "com.siyeh.ig.callMatcher.CallMatcher"   CallMatcher callMatcher = CallMatcher.instanceCall(CALL_MATCHER, "na<caret>mes");
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
@@ -105,11 +109,12 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
 
     public void testMultipleMethodReferenceResults() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   CallMatcher callMatcher = CallMatcher.instanceCall(\"java.util.List\", \"a<caret>dd\");\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   CallMatcher callMatcher = CallMatcher.instanceCall("java.util.List", "a<caret>dd");
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
@@ -122,11 +127,12 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
 
     public void testNoMethodReferenceResult() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   CallMatcher callMatcher = CallMatcher.instanceCall(\"java.util.List\", \"asda<caret>sd\");\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   CallMatcher callMatcher = CallMatcher.instanceCall("java.util.List", "asda<caret>sd");
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
@@ -136,21 +142,22 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
 
     public void testMethodReferenceInExactClass() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   CallMatcher callMatcher = CallMatcher.exactInstanceCall(\"CallMatcherChecker.Inner\", \"some<caret>Method\");\n" +
-                "\n" +
-                "   private static final class Inner extends SuperInner {\n" +
-                "       public void someMethod() {\n" +
-                "       }\n" +
-                "   }\n" +
-                "\n" +
-                "   private static class SuperInner {\n" +
-                "       public void someMethod(int i) {\n" +
-                "      }\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   CallMatcher callMatcher = CallMatcher.exactInstanceCall("CallMatcherChecker.Inner", "some<caret>Method");
+
+                   private static final class Inner extends SuperInner {
+                       public void someMethod() {
+                       }
+                   }
+
+                   private static class SuperInner {
+                       public void someMethod(int i) {
+                      }
+                   }
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
@@ -161,21 +168,22 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
 
     public void testMethodReferenceInExactAndSuperClass() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   CallMatcher callMatcher = CallMatcher.instanceCall(\"CallMatcherChecker.Inner\", \"some<caret>Method\");\n" +
-                "\n" +
-                "   private static final class Inner extends SuperInner {\n" +
-                "       public void someMethod() {\n" +
-                "       }\n" +
-                "   }\n" +
-                "\n" +
-                "   private static class SuperInner {\n" +
-                "       public void someMethod(int i) {\n" +
-                "      }\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   CallMatcher callMatcher = CallMatcher.instanceCall("CallMatcherChecker.Inner", "some<caret>Method");
+
+                   private static final class Inner extends SuperInner {
+                       public void someMethod() {
+                       }
+                   }
+
+                   private static class SuperInner {
+                       public void someMethod(int i) {
+                      }
+                   }
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
@@ -187,18 +195,19 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
 
     public void testMethodReferenceForStaticMethod() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   CallMatcher callMatcher = CallMatcher.staticCall(\"CallMatcherChecker.Inner\", \"some<caret>Method\");\n" +
-                "\n" +
-                "   private static final class Inner {\n" +
-                "       public void someMethod() {\n" +
-                "       }\n" +
-                "       public static void someMethod() {\n" +
-                "       }\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   CallMatcher callMatcher = CallMatcher.staticCall("CallMatcherChecker.Inner", "some<caret>Method");
+
+                   private static final class Inner {
+                       public void someMethod() {
+                       }
+                       public static void someMethod() {
+                       }
+                   }
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
@@ -209,21 +218,22 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
 
     public void testMethodReferenceForStaticInterfaceMethod() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   CallMatcher callMatcher = CallMatcher.staticCall(\"CallMatcherChecker.InnerInt\", \"some<caret>Method\");\n" +
-                "\n" +
-                "   private static final class Inner {\n" +
-                "       public void someMethod() {\n" +
-                "       }\n" +
-                "       public static void someMethod() {\n" +
-                "       }\n" +
-                "   }\n" +
-                "   private static final interface InnerInt {\n" +
-                "       public static void someMethod();\n" +
-                "   }\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   CallMatcher callMatcher = CallMatcher.staticCall("CallMatcherChecker.InnerInt", "some<caret>Method");
+
+                   private static final class Inner {
+                       public void someMethod() {
+                       }
+                       public static void someMethod() {
+                       }
+                   }
+                   private static final interface InnerInt {
+                       public static void someMethod();
+                   }
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
@@ -234,11 +244,12 @@ public class CallMatcherReferenceContributorTest extends JustKittingTestBase {
 
     public void testMethodReferenceFoExternalStaticMethod() {
         myFixture.configureByText("CallMatcherChecker.java",
-            "import com.siyeh.ig.callMatcher.CallMatcher;\n" +
-                "\n" +
-                "public class CallMatcherChecker {\n" +
-                "   CallMatcher callMatcher = CallMatcher.staticCall(\"java.lang.Integer\", \"toUnsignedSt<caret>ring\");\n" +
-                "}");
+            """
+                import com.siyeh.ig.callMatcher.CallMatcher;
+
+                public class CallMatcherChecker {
+                   CallMatcher callMatcher = CallMatcher.staticCall("java.lang.Integer", "toUnsignedSt<caret>ring");
+                }""");
 
         PsiElement element = myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
         ResolveResult[] resolveResults = ((PsiPolyVariantReference) element.getReferences()[0]).multiResolve(false);
