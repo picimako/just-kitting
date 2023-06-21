@@ -7,8 +7,13 @@
 ## [0.4.0]
 ### Changed
 - Updated plugin configuration to match version 1.7.0 of the platform plugin template.
-- Removed support for IJ 2022.1.
+- The plugin is now built with JDK 17.
 - Added `qodana.yml` to the list diffable plugin configuration files.
+- Improved the inlay hint logic to find and classify light services in Kotlin classes, including nested classes.
+
+### Removed
+- Removed support for IJ 2022.1.
+- Removed some deprecated and internal API usage.
 
 ## [0.3.0]
 ### Added

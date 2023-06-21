@@ -103,6 +103,62 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.APP);
     }
 
+    //Nested Kotlin classes
+
+    public void testServiceForNestedKotlinClass() {
+        KtFile psiFile = (KtFile) myFixture.configureByText("AnApplicationServiceInNestedKotlinClass.kt",
+            """
+                import com.intellij.openapi.components.Service
+                                
+                @Service
+                class AnApplicationServiceInNestedKotlinClass {
+                    @com.intellij.openapi.components.Service(Service.Level.PROJECT)
+                    class NestedClass {
+                    }
+                }
+                """);
+
+        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0].findInnerClassByName("NestedClass", false));
+        assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
+    }
+
+    public void testServiceForNestedKotlinClassInCompanionObject() {
+        KtFile psiFile = (KtFile) myFixture.configureByText("AnApplicationServiceInNestedKotlinClassInCompanionObject.kt",
+            """
+                import com.intellij.openapi.components.Service
+                     
+                @Service
+                class AnApplicationServiceInNestedKotlinClassInCompanionObject {
+                    companion object {
+                        @Service(Service.Level.PROJECT)
+                        internal class NestedClass {
+                        }
+                    }
+                }
+                """);
+
+        var serviceLevel = ServiceLevelDecider.getServiceLevel(
+            psiFile.getClasses()[0].getInnerClasses()[0].findInnerClassByName("NestedClass", false));
+        assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
+    }
+
+    //With multiple annotations
+
+    public void testServiceForClassWithOtherAnnotationsOnIt() {
+        KtFile psiFile = (KtFile) myFixture.configureByText("AnApplicationServiceInNestedKotlinClass.kt",
+            """
+                import com.intellij.openapi.components.Service
+                
+                @Deprecated
+                @com.intellij.openapi.components.Service(Service.Level.PROJECT)
+                class AnApplicationServiceInNestedKotlinClass {
+                }
+                """);
+
+        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
+        assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
+    }
+
     //Not sure
 
     public void testNotSureWhatServiceLevel() {
