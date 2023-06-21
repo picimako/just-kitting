@@ -7,7 +7,7 @@
     <resource-bundle>messages.JustKittingBundle</resource-bundle>
 
     <!-- https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="221"/>
+    <idea-version since-build="222"/>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
