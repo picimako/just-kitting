@@ -10,6 +10,7 @@
 - The plugin is now built with JDK 17.
 - Added `qodana.yml` to the list diffable plugin configuration files.
 - Improved the inlay hint logic to find and classify light services in Kotlin classes, including nested classes.
+- Added Kotlin file support for generating a `getInstance()` function in companion objects for services, components, etc.
 
 ### Removed
 - Removed support for IJ 2022.1.

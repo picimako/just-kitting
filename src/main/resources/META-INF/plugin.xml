@@ -50,7 +50,7 @@
 
     <actions>
         <action id="JustKitting.generate.service.static.getter"
-                class="com.picimako.justkitting.action.GenerateStaticGetInstanceAction"
+                class="com.picimako.justkitting.action.getinstance.GenerateStaticGetInstanceAction"
                 text="Service getInstance()" description="${project.description}">
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
         </action>

@@ -5,7 +5,7 @@ package com.picimako.justkitting;
 import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReferenceExpression;
 import com.picimako.justkitting.resources.JustKittingBundle;
 import kotlin.Pair;
@@ -47,7 +47,7 @@ public final class ServiceLevelDecider {
      * @param targetClass the class of which the service level is determined
      */
     @NotNull
-    public static <T extends PsiNameIdentifierOwner> ServiceLevel getServiceLevel(@NotNull T targetClass) {
+    public static <T extends PsiNamedElement> ServiceLevel getServiceLevel(@Nullable T targetClass) {
         var specifiedServiceLevels = getSpecifiedServiceLevels(targetClass);
 
         final var levels = specifiedServiceLevels != null
@@ -75,7 +75,7 @@ public final class ServiceLevelDecider {
      * <p>
      * These values are then handled in {@link #convertToServiceLevelNames(List, Project)}.
      */
-    private static <T extends PsiNameIdentifierOwner> @Nullable List<?> getSpecifiedServiceLevels(@NotNull T targetClass) {
+    private static <T extends PsiNamedElement> @Nullable List<?> getSpecifiedServiceLevels(@Nullable T targetClass) {
         if (targetClass instanceof PsiClass javaServiceClass) {
             var serviceAnnotation = javaServiceClass.getAnnotation(SERVICE_ANNOTATION);
             return serviceAnnotation != null
