@@ -29,6 +29,8 @@ class LightServicesInlayHintsProviderTest : InlayHintsProviderTestCase() {
     }
 
     private fun loadLightServiceFiles() {
+        //This file is included to test that references of the Service class are not taken into account when not used as part of an annotation.
+        myFixture.copyFileToProject("ANonServiceClassWithServiceLevelParameter.kt")
         myFixture.copyFileToProject("AProjectService.java")
         myFixture.copyFileToProject("AnApplicationService.java")
         myFixture.copyFileToProject("AProjectAndApplicationService.kt")

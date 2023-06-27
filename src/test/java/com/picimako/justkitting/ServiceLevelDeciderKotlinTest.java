@@ -25,7 +25,6 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
 
         var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
-
     }
 
     public void testApplicationServiceForAnnotation() {

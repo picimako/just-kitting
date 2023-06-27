@@ -11,16 +11,17 @@ import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.search.ProjectScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Query;
 import com.picimako.justkitting.PlatformPsiCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference;
+import org.jetbrains.kotlin.psi.KtAnnotationEntry;
 import org.jetbrains.kotlin.psi.KtClass;
 
 import java.util.Collection;
 import java.util.Objects;
 
+import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -46,14 +47,41 @@ public final class LightServiceLookup {
         return ApplicationManager.getApplication().runReadAction((Computable<Boolean>) () -> getServiceAnnotationQuery(project).findFirst() != null);
     }
 
+    /**
+     * Takes into account only those references of the @Service annotation class that are used as part of an annotation. E.g.:
+     * <pre>
+     * &#064;Service
+     * class SomeService { }
+     * </pre>
+     * or
+     * <pre>
+     * &#064;Service(Service.Level.APP)
+     * class SomeService { }
+     * </pre>
+     * <p>
+     * This will filter out reference like the one below:
+     * <pre>
+     * class SomeClass(serviceLevel: Service.Level)
+     * </pre>
+     */
     @NotNull
     private static Query<? extends PsiNameIdentifierOwner> getServiceAnnotationQuery(Project project) {
         return ReferencesSearch.search(PlatformPsiCache.getInstance(project).getServiceAnnotation(), ProjectScope.getProjectScope(project))
-            .filtering(ref -> ref instanceof PsiJavaCodeReferenceElement || ref instanceof KtSimpleNameReference)
+            //Take into account only those references of the @Service annotation class that are used as part of an annotation.
+            .filtering(ref -> {
+                if (ref instanceof PsiJavaCodeReferenceElement)
+                    return getParentOfType(ref.getElement(), PsiAnnotation.class) != null;
+
+                if (ref instanceof KtSimpleNameReference)
+                    return getParentOfType(ref.getElement(), KtAnnotationEntry.class) != null;
+
+                return false;
+            })
+            //Maps the reference to its parent class, so the query returns the light service classes, also filtering out null classes.
             .mapping(ref ->
                 ref.getElement().getParent() instanceof PsiAnnotation
-                    ? PsiTreeUtil.getParentOfType(ref.getElement().getParent(), PsiClass.class)
-                    : PsiTreeUtil.getParentOfType(ref.getElement(), KtClass.class))
+                    ? getParentOfType(ref.getElement().getParent(), PsiClass.class)
+                    : getParentOfType(ref.getElement(), KtClass.class))
             .filtering(Objects::nonNull);
     }
 
