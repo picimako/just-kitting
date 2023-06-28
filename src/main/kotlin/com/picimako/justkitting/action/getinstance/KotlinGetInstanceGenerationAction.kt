@@ -12,10 +12,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.SlowOperations
 import com.picimako.justkitting.PlatformNames
+import com.picimako.justkitting.importIfNotAlreadyAdded
 import org.jetbrains.kotlin.idea.core.getOrCreateCompanionObject
-import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
-import org.jetbrains.kotlin.resolve.ImportPath
 import java.text.MessageFormat
 
 /**
@@ -60,9 +59,9 @@ internal class KotlinGetInstanceGenerationAction(serviceLevel: Service.Level) : 
 
                 //Import service and Project if they are not yet imported for other functionality
                 //Project must be imported only when we are generating the getInstance() for a project service
-                importIfNotAlready(file as KtFile, "com.intellij.openapi.components.service")
+                importIfNotAlreadyAdded(file as KtFile, "com.intellij.openapi.components.service")
                 if (serviceLevel == Service.Level.PROJECT)
-                    importIfNotAlready(file, PlatformNames.PROJECT)
+                    importIfNotAlreadyAdded(file, PlatformNames.PROJECT)
             }
         }
     }
@@ -76,25 +75,6 @@ internal class KotlinGetInstanceGenerationAction(serviceLevel: Service.Level) : 
         return KtPsiFactory(project, false).createFunction(MessageFormat.format(
             if (serviceLevel == Service.Level.PROJECT) PROJECT_GET_INSTANCE_PATTERN else APP_GET_INSTANCE_PATTERN,
             psiClass?.name))
-    }
-
-    /**
-     * Imports the provided fully qualified name, if it is not already imported in the given Kotlin file.
-     *
-     * NOTE: it doesn't take into account existing star imports.
-     *
-     * @param file the Kotlin file in which the import would happen
-     * @param fqNameToImport the FQN of the class, function, etc. to import
-     */
-    private fun importIfNotAlready(file: KtFile, fqNameToImport: String) {
-        val fqName = FqName(fqNameToImport)
-        val isAlreadyImported = file.importDirectives
-            .mapNotNull { directive -> directive.importPath }
-            .any { importPath -> importPath.fqName == fqName }
-
-        if (!isAlreadyImported) {
-            file.importList?.add(KtPsiFactory(file.project, false).createImportDirective(ImportPath.fromString(fqNameToImport)))
-        }
     }
 
     companion object {

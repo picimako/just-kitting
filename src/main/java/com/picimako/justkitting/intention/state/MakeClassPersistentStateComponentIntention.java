@@ -7,27 +7,23 @@ import static com.picimako.justkitting.PlatformNames.PERSISTENT_STATE_COMPONENT;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.codeInspection.util.IntentionName;
-import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiIdentifier;
-import com.intellij.psi.PsiModifier;
+import com.intellij.psi.*;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.picimako.justkitting.ListPopupHelper;
-import com.picimako.justkitting.intention.state.ConversionActions.WithSelfAsState;
-import com.picimako.justkitting.intention.state.ConversionActions.WithStandaloneStateObject;
 import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.kotlin.lexer.KtTokens;
+import org.jetbrains.kotlin.psi.KtClass;
+import org.jetbrains.kotlin.psi.KtFile;
 
 import java.util.List;
 
 /**
- * Converts a class to a {@link com.intellij.openapi.components.PersistentStateComponent} by implementing that interface
+ * Converts a Java or Kotlin class to a {@link com.intellij.openapi.components.PersistentStateComponent} by implementing that interface
  * and generating a simple implementation for its methods.
  * <p>
  * There are two options now, based on the
@@ -40,11 +36,16 @@ import java.util.List;
  * <p>
  * For now, only non-abstract classes are supported.
  *
- * @see ConversionActions
+ * @see JavaConversionActions
  * @since 0.1.0
  */
 public class MakeClassPersistentStateComponentIntention extends BaseIntentionAction {
-    private static final List<AnAction> ACTIONS = List.of(WithStandaloneStateObject.INSTANCE, WithSelfAsState.INSTANCE);
+    private static final List<AnAction> JAVA_ACTIONS = List.of(
+        new JavaConversionActions.WithStandaloneStateObject(),
+        new JavaConversionActions.WithSelfAsState());
+    private static final List<AnAction> KOTLIN_ACTIONS = List.of(
+        new KotlinConversionActions.WithStandaloneStateObject(),
+        new KotlinConversionActions.WithSelfAsState());
 
     @Override
     public @IntentionName @NotNull String getText() {
@@ -58,22 +59,32 @@ public class MakeClassPersistentStateComponentIntention extends BaseIntentionAct
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-        if (!file.getFileType().equals(JavaFileType.INSTANCE)) {
-            return false;
+        if (file instanceof PsiJavaFile) {
+            final var element = file.findElementAt(editor.getCaretModel().getOffset());
+            if (element instanceof PsiIdentifier && element.getParent() instanceof PsiClass parentClass) {
+                return !parentClass.isInterface()
+                    && !parentClass.hasModifierProperty(PsiModifier.ABSTRACT)
+                    && !parentClass.isEnum()
+                    && !InheritanceUtil.isInheritor(parentClass, true, PERSISTENT_STATE_COMPONENT);
+            }
+        } else if (file instanceof KtFile) {
+            final var element = file.findElementAt(editor.getCaretModel().getOffset());
+            if (element != null && element.getNode().getElementType() == KtTokens.IDENTIFIER && element.getParent() instanceof KtClass parentClass) {
+                return !parentClass.isInterface()
+                    && !parentClass.isEnum()
+                    && !parentClass.hasModifier(KtTokens.ABSTRACT_KEYWORD)
+                    && !parentClass.isValue()
+                    && parentClass.getSuperTypeListEntries().stream()
+                    .noneMatch(entry -> entry.getTypeAsUserType() != null && "PersistentStateComponent".equals(entry.getTypeAsUserType().getReferencedName()));
+            }
         }
-        final PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
-        if (element instanceof PsiIdentifier && element.getParent() instanceof PsiClass parentClass) {
-            return !parentClass.isInterface()
-                && !parentClass.isEnum()
-                && !parentClass.hasModifierProperty(PsiModifier.ABSTRACT)
-                && !InheritanceUtil.isInheritor(parentClass, true, PERSISTENT_STATE_COMPONENT);
-        }
+
         return false;
     }
 
     @Override
     public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-        ListPopupHelper.showActionsInListPopup("", ACTIONS, editor);
+        ListPopupHelper.showActionsInListPopup("", file instanceof PsiJavaFile ? JAVA_ACTIONS : KOTLIN_ACTIONS, editor);
     }
 
     @Override

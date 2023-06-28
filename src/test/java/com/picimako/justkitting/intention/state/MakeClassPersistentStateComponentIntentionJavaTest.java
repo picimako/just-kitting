@@ -6,15 +6,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.picimako.justkitting.JustKittingTestBase;
 
-import com.intellij.psi.PsiFile;
-
 /**
- * Functional test for {@link MakeClassPersistentStateComponentIntention}.
+ * Integration test for {@link MakeClassPersistentStateComponentIntention}.
  */
-public class MakeClassPersistentStateComponentIntentionTest extends JustKittingTestBase {
+public class MakeClassPersistentStateComponentIntentionJavaTest extends JustKittingTestBase {
+
+    //Not available
 
     public void testIntentionIsNotAvailableWhenAlreadyPersistentStateComponent() {
-        PsiFile psiFile = myFixture.configureByText("SomeComponent.java",
+        var psiFile = myFixture.configureByText("SomeComponent.java",
             """
                 import com.intellij.openapi.components.PersistentStateComponent;
 
@@ -31,7 +31,7 @@ public class MakeClassPersistentStateComponentIntentionTest extends JustKittingT
     }
 
     public void testIntentionIsNotAvailableForInterface() {
-        PsiFile psiFile = myFixture.configureByText("SomeComponent.java",
+        var psiFile = myFixture.configureByText("SomeComponent.java",
             "public interface SomeCo<caret>mponent {\n" +
                 "}");
 
@@ -39,7 +39,7 @@ public class MakeClassPersistentStateComponentIntentionTest extends JustKittingT
     }
 
     public void testIntentionIsNotAvailableForEnum() {
-        PsiFile psiFile = myFixture.configureByText("SomeComponent.java",
+        var psiFile = myFixture.configureByText("SomeComponent.java",
             "public enum SomeCo<caret>mponent {\n" +
                 "}");
 
@@ -47,7 +47,7 @@ public class MakeClassPersistentStateComponentIntentionTest extends JustKittingT
     }
 
     public void testIntentionIsNotAvailableForAbstractClass() {
-        PsiFile psiFile = myFixture.configureByText("SomeComponent.java",
+        var psiFile = myFixture.configureByText("SomeComponent.java",
             "public abstract class SomeCo<caret>mponent {\n" +
                 "}");
 
@@ -55,12 +55,24 @@ public class MakeClassPersistentStateComponentIntentionTest extends JustKittingT
     }
 
     public void testIntentionIsNotAvailableWhenInvokedOnANonPsiClassElement() {
-        PsiFile psiFile = myFixture.configureByText("SomeComponent.java",
+        var psiFile = myFixture.configureByText("SomeComponent.java",
             """
                 public final class SomeComponent {
                     public String fie<caret>ld;
                 }""");
 
         assertThat(new MakeClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
+    }
+
+    //Available
+
+    public void testIntentionIsAvailableForClass() {
+        var psiFile = myFixture.configureByText("SomeComponent.java",
+            """
+                public final class SomeComp<caret>onent {
+                    public String field;
+                }""");
+
+        assertThat(new MakeClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isTrue();
     }
 }

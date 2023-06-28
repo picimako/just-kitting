@@ -6,9 +6,9 @@ import com.picimako.justkitting.ThirdPartyLibraryLoader;
 import com.picimako.justkitting.action.JustKittingActionTestBase;
 
 /**
- * Functional test for {@link ConversionActions}.
+ * Functional test for {@link JavaConversionActions}.
  */
-public class ConversionActionsTest extends JustKittingActionTestBase {
+public class JavaConversionActionsTest extends JustKittingActionTestBase {
 
     @Override
     protected void setUp() throws Exception {
@@ -17,7 +17,7 @@ public class ConversionActionsTest extends JustKittingActionTestBase {
     }
 
     public void testConvertsClassWithStandaloneStateObject() {
-        checkAction("SomeComponent.java", ConversionActions.WithStandaloneStateObject::new,
+        checkAction("SomeComponent.java", JavaConversionActions.WithStandaloneStateObject::new,
             "public final class SomeCom<caret>ponent {\n" +
                 "}",
             """
@@ -46,7 +46,7 @@ public class ConversionActionsTest extends JustKittingActionTestBase {
     }
 
     public void testConvertsClassWithSelfAsState() {
-        checkAction("SomeComponent.java", ConversionActions.WithSelfAsState::new,
+        checkAction("SomeComponent.java", JavaConversionActions.WithSelfAsState::new,
             "public final class SomeC<caret>omponent {\n" +
                 "}",
             """

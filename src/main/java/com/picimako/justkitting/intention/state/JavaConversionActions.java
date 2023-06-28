@@ -2,9 +2,10 @@
 
 package com.picimako.justkitting.intention.state;
 
+import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
+
 import com.intellij.codeInsight.CodeInsightActionHandler;
 import com.intellij.openapi.actionSystem.Presentation;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
@@ -17,9 +18,9 @@ import org.jetbrains.annotations.NotNull;
  * Code generation is based on the <a href="https://plugins.jetbrains.com/docs/intellij/persisting-state-of-components.html#implementing-the-persistentstatecomponent-interface">
  * Plugin SDK > Persisting State of Components > Implementing the PersistentStateComponent Interface</a> document.
  */
-final class ConversionActions {
+final class JavaConversionActions {
 
-    private ConversionActions() {
+    private JavaConversionActions() {
     }
 
     /**
@@ -59,23 +60,7 @@ final class ConversionActions {
      *
      * @since 0.1.0
      */
-    static final class WithStandaloneStateObject extends BasePersistentStateComponentConversionIntention {
-        static final WithStandaloneStateObject INSTANCE = new WithStandaloneStateObject();
-        private static final CodeInsightActionHandler HANDLER = (project, editor, file) -> {
-            ConversionContext context = createContext(project, editor, file);
-
-            WriteCommandAction.runWriteCommandAction(project, () -> {
-                addStateAnnotation(context);
-                addPersistentStateComponentToImplementsList(context, context.targetClass.getName() + ".State");
-                addStandaloneStateClass(context);
-                //Add getState() and loadState() methods with the corresponding state field
-                context.targetClass.add(context.factory.createFieldFromText("private State myState = new State();", context.targetClass));
-                context.targetClass.add(context.factory.createMethodFromText("@Override\npublic State getState() {return myState;}", context.targetClass));
-                context.targetClass.add(context.factory.createMethodFromText("@Override\npublic void loadState(State state) {myState = state;}", context.targetClass));
-
-            });
-        };
-
+    static final class WithStandaloneStateObject extends BaseJavaPersistentStateComponentConversionIntention {
         @Override
         protected void update(@NotNull Presentation presentation, @NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) {
             super.update(presentation, project, editor, file);
@@ -84,7 +69,20 @@ final class ConversionActions {
 
         @Override
         protected @NotNull CodeInsightActionHandler getHandler() {
-            return HANDLER;
+            return (project, editor, file) -> {
+                var context = createContext(project, editor, file);
+
+                runWriteCommandAction(project, () -> {
+                    addStateAnnotation(context);
+                    addPersistentStateComponentToImplementsList(context, context.targetClass.getName() + ".State");
+                    addStandaloneStateClass(context);
+                    //Add getState() and loadState() methods with the corresponding state field
+                    context.targetClass.add(context.factory.createFieldFromText("private State myState = new State();", context.targetClass));
+                    context.targetClass.add(context.factory.createMethodFromText("@Override\npublic State getState() {return myState;}", context.targetClass));
+                    context.targetClass.add(context.factory.createMethodFromText("@Override\npublic void loadState(State state) {myState = state;}", context.targetClass));
+
+                });
+            };
         }
     }
 
@@ -121,22 +119,7 @@ final class ConversionActions {
      *
      * @since 0.1.0
      */
-    static final class WithSelfAsState extends BasePersistentStateComponentConversionIntention {
-        static final WithSelfAsState INSTANCE = new WithSelfAsState();
-        private static final CodeInsightActionHandler HANDLER = (project, editor, file) -> {
-            ConversionContext context = createContext(project, editor, file);
-
-            WriteCommandAction.runWriteCommandAction(project, () -> {
-                addStateAnnotation(context);
-                String className = context.targetClass.getName();
-                addPersistentStateComponentToImplementsList(context, className);
-                //Add getState() and loadState() methods
-                context.targetClass.add(context.factory.createMethodFromText("@Override\npublic " + className + " getState() {return this;}", context.targetClass));
-                context.targetClass.add(context.styleManager.shortenClassReferences(context.factory
-                    .createMethodFromText("@Override\npublic void loadState(" + className + " state) {com.intellij.util.xmlb.XmlSerializerUtil.copyBean(state, this);}", context.targetClass)));
-            });
-        };
-
+    static final class WithSelfAsState extends BaseJavaPersistentStateComponentConversionIntention {
         @Override
         protected void update(@NotNull Presentation presentation, @NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) {
             super.update(presentation, project, editor, file);
@@ -145,7 +128,19 @@ final class ConversionActions {
 
         @Override
         protected @NotNull CodeInsightActionHandler getHandler() {
-            return HANDLER;
+            return (project, editor, file) -> {
+                var context = createContext(project, editor, file);
+
+                runWriteCommandAction(project, () -> {
+                    addStateAnnotation(context);
+                    String className = context.targetClass.getName();
+                    addPersistentStateComponentToImplementsList(context, className);
+                    //Add getState() and loadState() methods
+                    context.targetClass.add(context.factory.createMethodFromText("@Override\npublic " + className + " getState() {return this;}", context.targetClass));
+                    context.targetClass.add(context.styleManager.shortenClassReferences(context.factory
+                        .createMethodFromText("@Override\npublic void loadState(" + className + " state) {com.intellij.util.xmlb.XmlSerializerUtil.copyBean(state, this);}", context.targetClass)));
+                });
+            };
         }
     }
 }

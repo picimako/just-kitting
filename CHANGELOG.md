@@ -9,6 +9,7 @@
 - Added `qodana.yml` to the list diffable plugin configuration files.
 - Improved the inlay hint logic to find and classify light services in Kotlin classes, including nested classes.
 - Added Kotlin file support for generating a `getInstance()` function in companion objects for services, components, etc.
+- Added support for converting a Kotlin class to a `PersistentStateComponent`.
 - **CONF:** Updated plugin configuration to match version 1.7.0 of the platform plugin template.
 - **CONF:** The plugin is now built with JDK 17.
 

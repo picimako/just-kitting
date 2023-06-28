@@ -2,31 +2,29 @@
 
 package com.picimako.justkitting.intention.state;
 
-import static com.picimako.justkitting.PlatformNames.PERSISTENT_STATE_COMPONENT;
-import static com.picimako.justkitting.PlatformNames.STATE_ANNOTATION;
-
 import com.intellij.codeInsight.actions.BaseCodeInsightAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import org.jetbrains.annotations.NotNull;
 
+import static com.picimako.justkitting.PlatformNames.PERSISTENT_STATE_COMPONENT;
+import static com.picimako.justkitting.PlatformNames.STATE_ANNOTATION;
+
 /**
- * Base class for the child intention actions for converting classes to {@code PersistentStateComponent}s.
+ * Base class for the child intention actions for converting Java classes to {@code PersistentStateComponent}s.
  * <p>
  * These intentions are available whenever {@link MakeClassPersistentStateComponentIntention} is available,
  * and not context-dependent individually.
  *
  * @see MakeClassPersistentStateComponentIntention
- * @see ConversionActions
+ * @see JavaConversionActions
  */
-abstract class BasePersistentStateComponentConversionIntention extends BaseCodeInsightAction {
+abstract class BaseJavaPersistentStateComponentConversionIntention extends BaseCodeInsightAction {
 
     /**
      * Adds the {@link com.intellij.openapi.components.State} annotation to the target class with some default values.
@@ -44,17 +42,17 @@ abstract class BasePersistentStateComponentConversionIntention extends BaseCodeI
      * import com.intellij.openapi.components.State;
      * import com.intellij.openapi.components.Storage;
      *
-     * &#064;State(name = "SomeComponent", storages = @Storage("TODO: INSERT STORAGE NAME"))
+     * &#064;State(name = "SomeComponent", storages = @Storage("&lt;storage name>"))
      * public class SomeComponent {
      * }
      * </pre>
      */
     protected static void addStateAnnotation(ConversionContext context) {
         // add @State annotation to class
-        PsiAnnotation stateAnnotation = context.targetClass.getModifierList().addAnnotation(STATE_ANNOTATION);
+        var stateAnnotation = context.targetClass.getModifierList().addAnnotation(STATE_ANNOTATION);
         stateAnnotation.setDeclaredAttributeValue("name", context.factory.createExpressionFromText("\"" + context.targetClass.getName() + "\"", stateAnnotation));
         stateAnnotation.setDeclaredAttributeValue("storages", context.factory.createAnnotationFromText("@com.intellij.openapi.components.Storage(\"TODO: INSERT STORAGE NAME\")", stateAnnotation));
-        PsiElement psiElement = context.styleManager.shortenClassReferences(stateAnnotation);
+        var psiElement = context.styleManager.shortenClassReferences(stateAnnotation);
         stateAnnotation.replace(psiElement);
     }
 
@@ -99,7 +97,7 @@ abstract class BasePersistentStateComponentConversionIntention extends BaseCodeI
      * </pre>
      */
     protected static void addStandaloneStateClass(ConversionContext context) {
-        PsiClass stateClass = context.factory.createClassFromText("", context.targetClass);
+        var stateClass = context.factory.createClassFromText("", context.targetClass);
         stateClass.setName("State");
         stateClass.getModifierList().setModifierProperty(PsiModifier.STATIC, true);
         stateClass.getModifierList().setModifierProperty(PsiModifier.FINAL, true);
@@ -107,7 +105,7 @@ abstract class BasePersistentStateComponentConversionIntention extends BaseCodeI
     }
 
     protected static ConversionContext createContext(@NotNull Project project, Editor editor, PsiFile file) {
-        ConversionContext context = new ConversionContext();
+        var context = new ConversionContext();
         context.factory = PsiElementFactory.getInstance(project);
         context.styleManager = JavaCodeStyleManager.getInstance(project);
         context.targetClass = (PsiClass) file.findElementAt(editor.getCaretModel().getOffset()).getParent();
