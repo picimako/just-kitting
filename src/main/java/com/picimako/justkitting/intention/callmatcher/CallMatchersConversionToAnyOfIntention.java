@@ -44,7 +44,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This intention combines multiple CallMatcher.&lt;matches> calls to a single CallMatcher.anyOf() constant.
