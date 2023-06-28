@@ -38,7 +38,7 @@ final class JavaConversionActions {
      * import com.intellij.openapi.components.Storage;
      * import com.intellij.openapi.components.PersistentStateComponent;
      *
-     * &#064;State(name = "SomeComponent", storages = @Storage("TODO: INSERT STORAGE NAME"))
+     * &#064;State(name = "SomeComponent", storages = @Storage("&lt;storage name>"))
      * public class SomeComponent implements PersistentStateComponent&lt;SomeComponent.State> {
      *
      *   private State myState = new State();
@@ -102,7 +102,7 @@ final class JavaConversionActions {
      * import com.intellij.openapi.components.PersistentStateComponent;
      * import com.intellij.util.xmlb.XmlSerializerUtil;
      *
-     * &#064;State(name = "SomeComponent", storages = @Storage("TODO: INSERT STORAGE NAME"))
+     * &#064;State(name = "SomeComponent", storages = @Storage("&lt;storage name>"))
      * public class SomeComponent implements PersistentStateComponent&lt;SomeComponent> {
      *
      *   &#064;Override

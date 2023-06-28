@@ -51,7 +51,7 @@ abstract class BaseJavaPersistentStateComponentConversionIntention extends BaseC
         // add @State annotation to class
         var stateAnnotation = context.targetClass.getModifierList().addAnnotation(STATE_ANNOTATION);
         stateAnnotation.setDeclaredAttributeValue("name", context.factory.createExpressionFromText("\"" + context.targetClass.getName() + "\"", stateAnnotation));
-        stateAnnotation.setDeclaredAttributeValue("storages", context.factory.createAnnotationFromText("@com.intellij.openapi.components.Storage(\"TODO: INSERT STORAGE NAME\")", stateAnnotation));
+        stateAnnotation.setDeclaredAttributeValue("storages", context.factory.createAnnotationFromText("@com.intellij.openapi.components.Storage(\"<storage name>\")", stateAnnotation));
         var psiElement = context.styleManager.shortenClassReferences(stateAnnotation);
         stateAnnotation.replace(psiElement);
     }

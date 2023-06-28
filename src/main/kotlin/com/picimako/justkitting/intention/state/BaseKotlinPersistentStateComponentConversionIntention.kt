@@ -39,7 +39,7 @@ abstract class BaseKotlinPersistentStateComponentConversionIntention : BaseCodeI
          * import com.intellij.openapi.components.State
          * import com.intellij.openapi.components.Storage
          *
-         * @State(name = "SomeComponent", storages = @Storage("<storage name>"))
+         * @State(name = "SomeComponent", storages = [Storage("<storage name>")])
          * class SomeComponent {
          * }
          * ```
@@ -47,7 +47,7 @@ abstract class BaseKotlinPersistentStateComponentConversionIntention : BaseCodeI
         @JvmStatic
         protected fun addStateAnnotation(context: ConversionContext) {
             val annotationEntry = context.factory.createAnnotationEntry("""
-                @State(name = "${context.targetClass?.name}", storages = @Storage("<storage name>"))
+                @State(name = "${context.targetClass?.name}", storages = [Storage("<storage name>")])
             """.trimIndent())
 
             context.targetClass?.addAnnotationEntry(annotationEntry)

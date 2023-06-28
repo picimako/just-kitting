@@ -25,18 +25,18 @@ class ConversionActionsKotlinTest : JustKittingActionTestBase() {
                 import com.intellij.openapi.components.State
                 import com.intellij.openapi.components.Storage
                 import com.intellij.openapi.components.PersistentStateComponent
-                                
-                @State(name = "SomeComponent", storages = @Storage("<storage name>"))
+                
+                @State(name = "SomeComponent", storages = [Storage("<storage name>")])
                 class SomeComponent : PersistentStateComponent<SomeComponent.State> {
                     private var myState: State = State()
-                    override fun getState() {
+                    override fun getState(): State {
                         return myState
                     }
-                                
+                
                     override fun loadState(state: State) {
                         myState = state
                     }
-                                
+                
                     class State {
                     }
                 }
@@ -54,13 +54,13 @@ class ConversionActionsKotlinTest : JustKittingActionTestBase() {
                 import com.intellij.openapi.components.Storage
                 import com.intellij.openapi.components.PersistentStateComponent
                 import com.intellij.util.xmlb.XmlSerializerUtil
-                                
-                @State(name = "SomeComponent", storages = @Storage("<storage name>"))
+                
+                @State(name = "SomeComponent", storages = [Storage("<storage name>")])
                 class SomeComponent : PersistentStateComponent<SomeComponent> {
-                    override fun getState() {
+                    override fun getState(): SomeComponent {
                         return this
                     }
-                                
+                
                     override fun loadState(state: SomeComponent) {
                         XmlSerializerUtil.copyBean(state, this)
                     }

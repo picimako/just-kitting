@@ -25,7 +25,7 @@ public class JavaConversionActionsTest extends JustKittingActionTestBase {
                 import com.intellij.openapi.components.State;
                 import com.intellij.openapi.components.Storage;
 
-                @State(name = "SomeComponent", storages = @Storage("TODO: INSERT STORAGE NAME"))
+                @State(name = "SomeComponent", storages = @Storage("<storage name>"))
                 public final class SomeComponent implements PersistentStateComponent<SomeComponent.State> {
                     private State myState = new State();
 
@@ -55,7 +55,7 @@ public class JavaConversionActionsTest extends JustKittingActionTestBase {
                 import com.intellij.openapi.components.Storage;
                 import com.intellij.util.xmlb.XmlSerializerUtil;
 
-                @State(name = "SomeComponent", storages = @Storage("TODO: INSERT STORAGE NAME"))
+                @State(name = "SomeComponent", storages = @Storage("<storage name>"))
                 public final class SomeComponent implements PersistentStateComponent<SomeComponent> {
                     @Override
                     public SomeComponent getState() {

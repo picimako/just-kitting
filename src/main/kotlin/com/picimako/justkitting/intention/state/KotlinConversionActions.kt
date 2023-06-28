@@ -37,7 +37,7 @@ class KotlinConversionActions private constructor() {
      * import com.intellij.openapi.components.Storage
      * import com.intellij.openapi.components.PersistentStateComponent
      *
-     * @State(name = "SomeComponent", storages = @Storage("<storage name>"))
+     * @State(name = "SomeComponent", storages = [Storage("<storage name>")])
      * class SomeComponent : PersistentStateComponent<SomeComponent.State> {
      *
      *     private var myState: State = new State()
@@ -71,7 +71,7 @@ class KotlinConversionActions private constructor() {
                     addStandaloneStateClass(this)
                     with(targetClass.body) {
                         val myStateField = this?.addAfter(factory.createProperty("private var myState: State = State()"), this.lBrace)
-                        val getStateFunction = this?.addAfter(factory.createFunction("override fun getState() {return myState}: State"), myStateField)
+                        val getStateFunction = this?.addAfter(factory.createFunction("override fun getState(): State {return myState}"), myStateField)
                         val loadStateFunction = this?.addAfter(factory.createFunction("override fun loadState(state: State) {myState = state}"), getStateFunction)
                         CodeStyleManager.getInstance(project).reformatRange(this!!.psiOrParent, myStateField!!.startOffset, loadStateFunction!!.endOffset, true)
                     }
@@ -97,7 +97,7 @@ class KotlinConversionActions private constructor() {
      * import com.intellij.openapi.components.PersistentStateComponent
      * import com.intellij.util.xmlb.XmlSerializerUtil
      *
-     * @State(name = "SomeComponent", storages = @Storage("<storage name>"))
+     * @State(name = "SomeComponent", storages = [Storage("<storage name>")])
      * class SomeComponent : PersistentStateComponent<SomeComponent> {
      *
      *     override fun getState(): SomeComponent {
@@ -127,7 +127,7 @@ class KotlinConversionActions private constructor() {
 
                     //Add getState() and loadState() methods
                     with(targetClass.body) {
-                        val getStateFunction = this?.addAfter(factory.createFunction("override fun getState() {return this}: $className)"), this.lBrace)
+                        val getStateFunction = this?.addAfter(factory.createFunction("override fun getState(): $className {return this}"), this.lBrace)
                         val loadStateFunction = this?.addAfter(factory.createFunction("override fun loadState(state: $className) {XmlSerializerUtil.copyBean(state, this)}"), getStateFunction)
                         importIfNotAlreadyAdded(file as KtFile, "com.intellij.util.xmlb.XmlSerializerUtil", factory)
 
