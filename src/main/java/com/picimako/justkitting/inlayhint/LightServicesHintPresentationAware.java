@@ -69,7 +69,7 @@ public abstract class LightServicesHintPresentationAware {
      */
     public <T extends PsiNameIdentifierOwner> InlayPresentation viewAllServicesPresentation(Supplier<List<T>> classes, int startOffset) {
         return factory.referenceOnHover(factory.smallText(JustKittingBundle.inlayHints("light.services.view.all.light.services")), (mouseEvent, point) -> {
-            var step = new BaseListPopupStep<T>(JustKittingBundle.inlayHints("light.services.view.all.popup.title"), classes.get()) {
+            var step = new BaseListPopupStep<>(JustKittingBundle.inlayHints("light.services.view.all.popup.title"), classes.get()) {
                 @Override
                 public @Nullable PopupStep<?> onChosen(T selectedValue, boolean finalChoice) {
                     if (selectedValue instanceof PsiClass || selectedValue instanceof KtClass) {

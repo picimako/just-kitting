@@ -15,11 +15,13 @@ public class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
 
     public void testProjectServiceForAnnotation() {
         PsiJavaFile psiFile = (PsiJavaFile) myFixture.configureByText("SomeService.java",
-            "import com.intellij.openapi.components.Service;\n" +
-                "\n" +
-                "@Service(Service.Level.PROJECT)\n" +
-                "public final class SomeService {\n" +
-                "}\n");
+            """
+                import com.intellij.openapi.components.Service;
+
+                @Service(Service.Level.PROJECT)
+                public final class SomeService {
+                }
+                """);
 
         var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
@@ -28,11 +30,13 @@ public class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
 
     public void testApplicationServiceForAnnotation() {
         PsiJavaFile psiFile = (PsiJavaFile) myFixture.configureByText("SomeService.java",
-            "import com.intellij.openapi.components.Service;\n" +
-                "\n" +
-                "@Service(Service.Level.APP)\n" +
-                "public final class SomeService {\n" +
-                "}\n");
+            """
+                import com.intellij.openapi.components.Service;
+
+                @Service(Service.Level.APP)
+                public final class SomeService {
+                }
+                """);
 
         var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.APP);
@@ -40,11 +44,13 @@ public class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
 
     public void testProjectAndApplicationServiceForAnnotation() {
         PsiJavaFile psiFile = (PsiJavaFile) myFixture.configureByText("SomeService.java",
-            "import com.intellij.openapi.components.Service;\n" +
-                "\n" +
-                "@Service({ Service.Level.PROJECT, Service.Level.APP })\n" +
-                "public final class SomeService {\n" +
-                "}\n");
+            """
+                import com.intellij.openapi.components.Service;
+
+                @Service({ Service.Level.PROJECT, Service.Level.APP })
+                public final class SomeService {
+                }
+                """);
 
         var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT_AND_APP);
@@ -54,11 +60,13 @@ public class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
 
     public void testProjectServiceForClassName() {
         PsiJavaFile psiFile = (PsiJavaFile) myFixture.configureByText("AProjectService.java",
-            "import com.intellij.openapi.components.Service;\n" +
-                "\n" +
-                "@Service\n" +
-                "public final class AProjectService {\n" +
-                "}\n");
+            """
+                import com.intellij.openapi.components.Service;
+
+                @Service
+                public final class AProjectService {
+                }
+                """);
 
         var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
@@ -66,11 +74,13 @@ public class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
 
     public void testApplicationServiceForClassName() {
         PsiJavaFile psiFile = (PsiJavaFile) myFixture.configureByText("AnApplicationService.java",
-            "import com.intellij.openapi.components.Service;\n" +
-                "\n" +
-                "@Service\n" +
-                "public final class AnApplicationService {\n" +
-                "}\n");
+            """
+                import com.intellij.openapi.components.Service;
+
+                @Service
+                public final class AnApplicationService {
+                }
+                """);
 
         var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.APP);
@@ -80,11 +90,13 @@ public class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
 
     public void testNotSureWhatServiceLevel() {
         PsiJavaFile psiFile = (PsiJavaFile) myFixture.configureByText("SomeService.java",
-            "import com.intellij.openapi.components.Service;\n" +
-                "\n" +
-                "@Service\n" +
-                "public final class SomeService {\n" +
-                "}\n");
+            """
+                import com.intellij.openapi.components.Service;
+
+                @Service
+                public final class SomeService {
+                }
+                """);
 
         var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.NOT_SURE);

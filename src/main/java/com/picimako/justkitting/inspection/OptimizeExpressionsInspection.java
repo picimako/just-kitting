@@ -84,8 +84,8 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
              * Returns whether the operands represent a comparison between a call to PsiExpressionList.getExpressions().length and 0.
              */
             private boolean isGetExpressionsLength(PsiExpression operand1, PsiExpression operand2) {
-                return operand1 instanceof PsiReferenceExpression
-                    && "length".equals(((PsiReferenceExpression) operand1).getReferenceName())
+                return operand1 instanceof PsiReferenceExpression operand1Ref
+                    && "length".equals(operand1Ref.getReferenceName())
                     && getGetArgumentList(operand1).isPresent()
                     && isZero(operand2);
             }
@@ -143,8 +143,8 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
     private static Optional<PsiExpression> getGetArgumentList(PsiExpression parent) {
         var getArgumentList = new Ref<PsiExpression>();
         PsiTreeUtil.processElements(parent, element -> {
-            if ((element instanceof PsiMethodCallExpression && GET_ARGUMENT_LIST.matches((PsiMethodCallExpression) element))
-                || (element instanceof PsiReferenceExpression && TypeUtils.typeEquals(PlatformNames.PSI_EXPRESSION_LIST, ((PsiReferenceExpression) element).getType()))) {
+            if ((element instanceof PsiMethodCallExpression methodCall && GET_ARGUMENT_LIST.matches(methodCall))
+                || (element instanceof PsiReferenceExpression reference && TypeUtils.typeEquals(PlatformNames.PSI_EXPRESSION_LIST, (reference).getType()))) {
                 getArgumentList.set((PsiExpression) element);
                 return false;
             }

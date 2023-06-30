@@ -4,6 +4,7 @@ package com.picimako.justkitting.intention.callmatcher;
 
 import static com.picimako.justkitting.PlatformNames.CALL_MATCHER;
 import static com.siyeh.ig.callMatcher.CallMatcher.instanceCall;
+import static java.util.stream.Collectors.joining;
 
 import com.intellij.codeInsight.CodeInsightUtil;
 import com.intellij.codeInsight.intention.IntentionAction;
@@ -43,7 +44,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This intention combines multiple CallMatcher.&lt;matches> calls to a single CallMatcher.anyOf() constant.
@@ -91,15 +91,14 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
             return false;
         }
         var expressionInRange = getExpressionInRange(editor, file);
-        if (expressionInRange instanceof PsiPolyadicExpression) {
-            var polyadicExpr = (PsiPolyadicExpression) expressionInRange;
+        if (expressionInRange instanceof PsiPolyadicExpression polyadicExpr) {
             if (!JavaTokenType.OROR.equals(polyadicExpr.getOperationTokenType())) {
                 return false;
             }
-            return expressionInRange instanceof PsiBinaryExpression
+            return expressionInRange instanceof PsiBinaryExpression binaryExpr
                 //Both side is a method call to one of the CallMatcher.<matches> methods, with the same parameter expression
-                ? MATCHES_MATCHERS.stream().anyMatch(matchesType -> areBothOperandsCallToMatches((PsiBinaryExpression) expressionInRange, matchesType))
-                && firstArgumentOf(((PsiBinaryExpression) expressionInRange).getLOperand()).textMatches(firstArgumentOf(((PsiBinaryExpression) expressionInRange).getROperand()))
+                ? MATCHES_MATCHERS.stream().anyMatch(matchesType -> areBothOperandsCallToMatches(binaryExpr, matchesType))
+                && firstArgumentOf(binaryExpr.getLOperand()).textMatches(firstArgumentOf(binaryExpr.getROperand()))
                 //All operands are method calls to one of the CallMatcher.<matches> methods, with the same parameter expression
                 : Arrays.stream(polyadicExpr.getOperands()).allMatch(PsiMethodCallExpression.class::isInstance)
                 && MATCHES_MATCHERS.stream().anyMatch(matchesType -> Arrays.stream(polyadicExpr.getOperands()).allMatch(operand -> isCallToCallMatcher(operand, matchesType)))
@@ -198,11 +197,9 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
      * The returned string will be something like: {@code MATCHER_1, MATCHER_2}.
      */
     private String callMatcherAnyOfParamListFrom(PsiExpression expressionInRange) {
-        if (expressionInRange instanceof PsiBinaryExpression) {
-            var binaryExpression = (PsiBinaryExpression) expressionInRange;
-            return getQualifierText(binaryExpression.getLOperand()) + ", " + getQualifierText(binaryExpression.getROperand());
-        }
-        return Arrays.stream(((PsiPolyadicExpression) expressionInRange).getOperands()).map(this::getQualifierText).collect(Collectors.joining(","));
+        return expressionInRange instanceof PsiBinaryExpression binaryExpression
+            ? getQualifierText(binaryExpression.getLOperand()) + ", " + getQualifierText(binaryExpression.getROperand())
+            : Arrays.stream(((PsiPolyadicExpression) expressionInRange).getOperands()).map(this::getQualifierText).collect(joining(","));
     }
 
     /**

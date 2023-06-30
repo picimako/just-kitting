@@ -4,7 +4,7 @@ package com.picimako.justkitting;
 
 import com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess;
 import com.intellij.testFramework.PsiTestUtil;
-import com.intellij.testFramework.fixtures.JavaCodeInsightTestFixture;
+import com.intellij.testFramework.fixtures.CodeInsightTestFixture;
 import com.intellij.util.PathUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,19 +19,19 @@ public final class ThirdPartyLibraryLoader {
 
     //Libraries are from IC-2021.3
 
-    public static void loadPlatformApi(@NotNull JavaCodeInsightTestFixture fixture) {
+    public static void loadPlatformApi(@NotNull CodeInsightTestFixture fixture) {
         loadLibrary(fixture, "platform-api", "platform-api.jar");
     }
 
-    public static void loadUtil(@NotNull JavaCodeInsightTestFixture fixture) {
+    public static void loadUtil(@NotNull CodeInsightTestFixture fixture) {
         loadLibrary(fixture, "util", "util.jar");
     }
 
-    public static void loadJavaImpl(@NotNull JavaCodeInsightTestFixture fixture) {
+    public static void loadJavaImpl(@NotNull CodeInsightTestFixture fixture) {
         loadLibrary(fixture, "java-impl", "java-impl.jar");
     }
 
-    public static void loadJavaApi(@NotNull JavaCodeInsightTestFixture fixture) {
+    public static void loadJavaApi(@NotNull CodeInsightTestFixture fixture) {
         loadLibrary(fixture, "java-api", "java-api.jar");
     }
 
@@ -41,10 +41,10 @@ public final class ThirdPartyLibraryLoader {
      * @param libraryName       the name of the library
      * @param libraryJarName    the filename to load
      */
-    public static void loadLibrary(@NotNull JavaCodeInsightTestFixture fixture, String libraryName, String libraryJarName) {
+    public static void loadLibrary(@NotNull CodeInsightTestFixture fixture, String libraryName, String libraryJarName) {
         String libPath = PathUtil.toSystemIndependentName(new File(THIRD_PARTY_LIB_DIRECTORY).getAbsolutePath());
-        VfsRootAccess.allowRootAccess(fixture.getProjectDisposable(), libPath);
-        PsiTestUtil.addLibrary(fixture.getProjectDisposable(), fixture.getModule(), libraryName, libPath, libraryJarName);
+        VfsRootAccess.allowRootAccess(fixture.getTestRootDisposable(), libPath);
+        PsiTestUtil.addLibrary(fixture.getTestRootDisposable(), fixture.getModule(), libraryName, libPath, libraryJarName);
     }
 
     private ThirdPartyLibraryLoader() {

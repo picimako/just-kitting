@@ -45,6 +45,7 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
     private static final Set<String> DIFFABLE_FILE_PATHS = Set.of(
             "build.gradle.kts",
             "gradle.properties",
+            "qodana.yml",
             ".github/dependabot.yml",
             ".github/workflows/build.yml",
             ".github/workflows/release.yml",

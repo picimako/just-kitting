@@ -9,6 +9,9 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.util.ui.JBInsets;
 import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.PropertyKey;
+
+import static com.picimako.justkitting.resources.JustKittingBundle.JUST_KITTING_BUNDLE;
 
 /**
  * Utility for showing balloons via {@link JBPopupFactory}.
@@ -21,7 +24,7 @@ final class BalloonHelper {
      * @param e          the event containing the data context for calculating the popup location
      * @param messageKey the message key to fetch from the {@link JustKittingBundle} to display in the balloon
      */
-    static void showBalloonForAction(@NotNull AnActionEvent e, String messageKey) {
+    static void showBalloonForAction(@NotNull AnActionEvent e, @PropertyKey(resourceBundle = JUST_KITTING_BUNDLE) String messageKey) {
         if (e.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT) != null) {
             var relativePoint = JBPopupFactory.getInstance().guessBestPopupLocation(e.getDataContext());
             JBPopupFactory.getInstance().createHtmlTextBalloonBuilder(JustKittingBundle.message(messageKey), MessageType.WARNING, null)

@@ -2,80 +2,106 @@
 
 package com.picimako.justkitting.inlayhint
 
-import com.picimako.justkitting.JustKittingTestBase
-import com.intellij.codeInsight.hints.CollectorWithSettings
-import com.intellij.codeInsight.hints.InlayHintsSinkImpl
-import org.assertj.core.api.Assertions.assertThat
+import com.intellij.testFramework.LightProjectDescriptor
+import com.intellij.testFramework.utils.inlays.InlayHintsProviderTestCase
+import com.picimako.justkitting.ThirdPartyLibraryLoader
 
 /**
  * Functional test for [LightServicesInlayHintsProvider].
  */
 @Suppress("UnstableApiUsage")
-class LightServicesInlayHintsProviderTest : JustKittingTestBase() {
+class LightServicesInlayHintsProviderTest : InlayHintsProviderTestCase() {
+
+    override fun setUp() {
+        super.setUp()
+        ThirdPartyLibraryLoader.loadPlatformApi(myFixture)
+    }
 
     override fun getTestDataPath(): String {
         return "src/test/testData/inlayproject"
     }
 
+    override fun getProjectDescriptor(): LightProjectDescriptor {
+        //When executing the entire test class without a project descriptor (the same project being used for each test),
+        // something in the background is stuck, and some tests fail.
+        //Thus, a new project descriptor (essentially a new project) is created for each test that solves the issue.
+        return LightProjectDescriptor()
+    }
+
     private fun loadLightServiceFiles() {
+        //This file is included to test that references of the Service class are not taken into account when not used as part of an annotation.
+        myFixture.copyFileToProject("ANonServiceClassWithServiceLevelParameter.kt")
         myFixture.copyFileToProject("AProjectService.java")
         myFixture.copyFileToProject("AnApplicationService.java")
         myFixture.copyFileToProject("AProjectAndApplicationService.kt")
     }
 
     fun testNoHint() {
-        doTest()
+        doTestProvider(
+            "plugin.xml",
+            """
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+    </extensions>
+</idea-plugin>
+""".trimIndent(),
+            LightServicesInlayHintsProvider(),
+            Settings(),
+            false)
     }
 
     fun testListOfServicesWithoutViewAll() {
         loadLightServiceFiles()
-        doTest(Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 3), 1,
-            """-- Project light services --
+        doTestProvider(
+            "plugin.xml",
+            """
+<idea-plugin>
+<# block -- Project light services --
 AProjectService
 -- Application light services --
 AnApplicationService
 -- Project and application light services --
-AProjectAndApplicationService
-""".trimIndent())
+AProjectAndApplicationService #>
+    <extensions defaultExtensionNs="com.intellij">
+    </extensions>
+</idea-plugin>
+""".trimIndent(),
+            LightServicesInlayHintsProvider(),
+            Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 3),
+            false)
     }
 
     fun testListOfServicesWithViewAll() {
         loadLightServiceFiles()
-        doTest(Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 1), 1,
-            """-- Project light services --
+        doTestProvider(
+            "plugin.xml",
+            """
+<idea-plugin>
+<# block -- Project light services --
 AProjectService
-View all light services...
-""".trimIndent())
+View all light services... #>
+    <extensions defaultExtensionNs="com.intellij">
+    </extensions>
+</idea-plugin>
+""".trimIndent(),
+            LightServicesInlayHintsProvider(),
+            Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 1),
+            false)
     }
 
     fun testViewAllOnly() {
         loadLightServiceFiles()
-        doTest(Settings(lightServicesDisplayMode = InlayDisplayMode.ViewAllOnly), 1,
-            """View all light services...
-""".trimIndent())
-    }
-
-    /**
-     * This method is an attempt to marry the logic in [com.intellij.testFramework.utils.inlays.InlayHintsProviderTestCase]
-     * (in which I couldn't add platform-api.jar to the test project) and have the ability via [com.intellij.testFramework.fixtures.JavaCodeInsightFixtureTestCase]
-     * to add platform-api.jar, so that the [com.intellij.openapi.components.Service] annotation becomes available.
-     */
-    private fun doTest(settings: Settings = Settings(), expectedInlayBlockCount: Int = 0, expectedInlayBlockText: String = "") {
-        myFixture.configureByText("plugin.xml", """
-            <idea-plugin>
-                <id>a.plugin.id</id>
-                <extensions defaultExtensionNs="com.intellij">
-                </extensions>
-            </idea-plugin>
-        """.trimIndent())
-        val sink = InlayHintsSinkImpl(myFixture.editor)
-        val provider = LightServicesInlayHintsProvider()
-        val collector = provider.getCollectorFor(myFixture.file, myFixture.editor, settings, sink)
-        CollectorWithSettings(collector, provider.key, myFixture.file.language, sink).collectTraversingAndApply(myFixture.editor, myFixture.file, true)
-        val lightServicesHints = myFixture.editor.inlayModel.getBlockElementsInRange(39, 39)
-        assertThat(lightServicesHints).hasSize(expectedInlayBlockCount)
-        if (expectedInlayBlockCount == 1) {
-            assertThat(lightServicesHints[0].renderer).hasToString(expectedInlayBlockText)
-        }
+        doTestProvider(
+            "plugin.xml",
+            """
+<idea-plugin>
+<# block View all light services... #>
+    <extensions defaultExtensionNs="com.intellij">
+    </extensions>
+</idea-plugin>
+""".trimIndent(),
+            LightServicesInlayHintsProvider(),
+            Settings(lightServicesDisplayMode = InlayDisplayMode.ViewAllOnly),
+            false)
     }
 }

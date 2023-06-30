@@ -14,7 +14,7 @@ import org.jetbrains.annotations.PropertyKey;
 public class JustKittingBundle extends DynamicBundle {
 
     @NonNls
-    private static final String JUST_KITTING_BUNDLE = "messages.JustKittingBundle";
+    public static final String JUST_KITTING_BUNDLE = "messages.JustKittingBundle";
     private static final JustKittingBundle INSTANCE = new JustKittingBundle();
 
     private JustKittingBundle() {

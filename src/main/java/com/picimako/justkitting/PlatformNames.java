@@ -17,6 +17,7 @@ public final class PlatformNames {
     //Persistence
     public static final String STATE_ANNOTATION = "com.intellij.openapi.components.State";
     public static final String PERSISTENT_STATE_COMPONENT = "com.intellij.openapi.components.PersistentStateComponent";
+    public static final String STORAGE_ANNOTATION = "com.intellij.openapi.components.Storage";
     
     //Method calls
     public static final String CALL_MATCHER = "com.siyeh.ig.callMatcher.CallMatcher";

@@ -44,23 +44,25 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testAvailableOnMethodIdentifier() {
         PsiFile psiFile = myFixture.configureByText("Available.java",
-            "public class Available {\n" +
-                "    public void met<caret>hod() {\n" +
-                "    }\n" +
-                "}");
+            """
+                public class Available {
+                    public void met<caret>hod() {
+                    }
+                }""");
 
         checkIfAvailableIn(psiFile);
     }
 
     public void testAvailableOnMethodCallIdentifier() {
         PsiFile psiFile = myFixture.configureByText("Available.java",
-            "public class Available {\n" +
-                "    public void met<caret>hod() {\n" +
-                "       methodToC<caret>all();\n" +
-                "    }\n" +
-                "    public void methodToCall() {\n" +
-                "    }\n" +
-                "}");
+            """
+                public class Available {
+                    public void met<caret>hod() {
+                       methodToC<caret>all();
+                    }
+                    public void methodToCall() {
+                    }
+                }""");
 
         checkIfAvailableIn(psiFile);
     }
@@ -69,10 +71,11 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromNoParameterMethod() {
         PsiFile psiFile = myFixture.configureByText("NoParameter.java",
-            "public class NoParameter {\n" +
-                "    public void noParam<caret>eterMethod() {\n" +
-                "    }\n" +
-                "}");
+            """
+                public class NoParameter {
+                    public void noParam<caret>eterMethod() {
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -81,11 +84,12 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromOneParameterMethod() {
         PsiFile psiFile = myFixture.configureByText("OneParameter.java",
-            "package generate.call.matcher;\n" +
-                "public class OneParameter {\n" +
-                "    public void oneParam<caret>eterMethod(String singleStringParam) {\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                public class OneParameter {
+                    public void oneParam<caret>eterMethod(String singleStringParam) {
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -94,13 +98,14 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromMultipleParameterMethod() {
         PsiFile psiFile = myFixture.configureByText("MultipleParameters.java",
-            "package generate.call.matcher;\n" +
-                "import java.util.List;\n" +
-                "\n" +
-                "public class MultipleParameters {\n" +
-                "    public void multipleParam<caret>eterMethod(String stringParam, int intParam, List listParam) {\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                import java.util.List;
+
+                public class MultipleParameters {
+                    public void multipleParam<caret>eterMethod(String stringParam, int intParam, List listParam) {
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -109,11 +114,12 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromVarargParameterMethod() {
         PsiFile psiFile = myFixture.configureByText("VarargParameter.java",
-            "package generate.call.matcher;\n" +
-                "public class VarargParameter {\n" +
-                "    public void varargParam<caret>eterMethod(int intParam, String... stringParam) {\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                public class VarargParameter {
+                    public void varargParam<caret>eterMethod(int intParam, String... stringParam) {
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -122,11 +128,12 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromGenericParameterMethod() {
         PsiFile psiFile = myFixture.configureByText("GenericParameter.java",
-            "package generate.call.matcher;\n" +
-                "public class GenericParameter<T> {\n" +
-                "    public void genericParam<caret>eterMethod(T genericParameter) {\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                public class GenericParameter<T> {
+                    public void genericParam<caret>eterMethod(T genericParameter) {
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -135,13 +142,14 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromParameterWithGenericTypeMethod() {
         PsiFile psiFile = myFixture.configureByText("ParameterWithGenericType.java",
-            "package generate.call.matcher;\n" +
-                "import java.util.List;\n" +
-                "\n" +
-                "public class ParameterWithGenericType {\n" +
-                "    public void <T> parameterWith<caret>GenericTypeMethod(List<T> genericTypeParameter) {\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                import java.util.List;
+
+                public class ParameterWithGenericType {
+                    public void <T> parameterWith<caret>GenericTypeMethod(List<T> genericTypeParameter) {
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -150,13 +158,14 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromParameterWithExactGenericTypeMethod() {
         PsiFile psiFile = myFixture.configureByText("ParameterWithExactGenericType.java",
-            "package generate.call.matcher;\n" +
-                "import java.util.List;\n" +
-                "\n" +
-                "public class ParameterWithExactGenericType {\n" +
-                "    public void parameterWith<caret>ExactGenericTypeMethod(List<Integer> genericTypeParameter) {\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                import java.util.List;
+
+                public class ParameterWithExactGenericType {
+                    public void parameterWith<caret>ExactGenericTypeMethod(List<Integer> genericTypeParameter) {
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -165,12 +174,13 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromParameterWithBoundGenericTypeMethod() {
         PsiFile psiFile = myFixture.configureByText("ParameterWithBoundGenericType.java",
-            "package generate.call.matcher;\n" +
-                "\n" +
-                "public class ParameterWithBoundGenericType {\n" +
-                "    public void parameterWith<caret>BoundGenericTypeMethod(java.lang.Class<? extends java.lang.Throwable> genericTypeParameter) {\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+
+                public class ParameterWithBoundGenericType {
+                    public void parameterWith<caret>BoundGenericTypeMethod(java.lang.Class<? extends java.lang.Throwable> genericTypeParameter) {
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -179,13 +189,14 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromParameterWithWildcardGenericTypeMethod() {
         PsiFile psiFile = myFixture.configureByText("ParameterWithWildcardGenericType.java",
-            "package generate.call.matcher;\n" +
-                "import java.util.List;\n" +
-                "\n" +
-                "public class ParameterWithWildcardGenericType {\n" +
-                "    public void parameterWith<caret>WildcardTypeMethod(List<?> genericTypeParameter) {\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                import java.util.List;
+
+                public class ParameterWithWildcardGenericType {
+                    public void parameterWith<caret>WildcardTypeMethod(List<?> genericTypeParameter) {
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -194,11 +205,12 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromArrayParameterMethod() {
         PsiFile psiFile = myFixture.configureByText("ArrayParameter.java",
-            "package generate.call.matcher;\n" +
-                "public class ArrayParameter {\n" +
-                "    public void array<caret>ParameterMethod(String[] stringArray) {\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                public class ArrayParameter {
+                    public void array<caret>ParameterMethod(String[] stringArray) {
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -207,13 +219,14 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromNestedClassMethod() {
         PsiFile psiFile = myFixture.configureByText("NestedClass.java",
-            "package generate.call.matcher;\n" +
-                "public class NestedClassMethod {\n" +
-                "    public static final class NestedClass {\n" +
-                "        public void nested<caret>ClassMethod(String string) {\n" +
-                "        }\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                public class NestedClassMethod {
+                    public static final class NestedClass {
+                        public void nested<caret>ClassMethod(String string) {
+                        }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -222,11 +235,12 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromStaticMethod() {
         PsiFile psiFile = myFixture.configureByText("StaticMethod.java",
-            "package generate.call.matcher;\n" +
-                "public class StaticMethod {\n" +
-                "    public static void aStatic<caret>Method(String singleStringParam) {\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                public class StaticMethod {
+                    public static void aStatic<caret>Method(String singleStringParam) {
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -250,15 +264,16 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromNoParameterMethodFromCall() {
         PsiFile psiFile = myFixture.configureByText("NoParameter.java",
-            "public class NoParameter {\n" +
-                "    public void callingNoParameterMethod() {\n" +
-                "       new InnerClass().noP<caret>arameterMethod();\n" +
-                "    }\n" +
-                "    public static class InnerClass {\n" +
-                "       public void noParameterMethod() {\n" +
-                "       }\n" +
-                "    }\n" +
-                "}");
+            """
+                public class NoParameter {
+                    public void callingNoParameterMethod() {
+                       new InnerClass().noP<caret>arameterMethod();
+                    }
+                    public static class InnerClass {
+                       public void noParameterMethod() {
+                       }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -267,16 +282,17 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromOneParameterMethodFromCall() {
         PsiFile psiFile = myFixture.configureByText("OneParameter.java",
-            "package generate.call.matcher;\n" +
-                "public class OneParameter {\n" +
-                "    public void callingOneParameterMethod(String singleStringParam) {\n" +
-                "       new InnerClass().oneParam<caret>eterMethod(singleStringParam);\n" +
-                "    }\n" +
-                "    public static class InnerClass {\n" +
-                "       public void oneParameterMethod(String singleStringParam) {\n" +
-                "       }\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                public class OneParameter {
+                    public void callingOneParameterMethod(String singleStringParam) {
+                       new InnerClass().oneParam<caret>eterMethod(singleStringParam);
+                    }
+                    public static class InnerClass {
+                       public void oneParameterMethod(String singleStringParam) {
+                       }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -285,18 +301,19 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromMultipleParameterMethodFromCall() {
         PsiFile psiFile = myFixture.configureByText("MultipleParameters.java",
-            "package generate.call.matcher;\n" +
-                "import java.util.List;\n" +
-                "\n" +
-                "public class MultipleParameters {\n" +
-                "    public void callingMultipleParameterMethod(String stringParam, int intParam, List listParam) {\n" +
-                "       new InnerClass().multipleParam<caret>eterMethod(stringParam, intParam, listParam);\n" +
-                "    }\n" +
-                "    public static class InnerClass {\n" +
-                "       public void multipleParameterMethod(String stringParam, int intParam, List listParam) {\n" +
-                "       }\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                import java.util.List;
+
+                public class MultipleParameters {
+                    public void callingMultipleParameterMethod(String stringParam, int intParam, List listParam) {
+                       new InnerClass().multipleParam<caret>eterMethod(stringParam, intParam, listParam);
+                    }
+                    public static class InnerClass {
+                       public void multipleParameterMethod(String stringParam, int intParam, List listParam) {
+                       }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -305,16 +322,17 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromVarargParameterMethodFromCall() {
         PsiFile psiFile = myFixture.configureByText("VarargParameter.java",
-            "package generate.call.matcher;\n" +
-                "public class VarargParameter {\n" +
-                "    public void varargParam<caret>eterMethod(int intParam, String... stringParam) {\n" +
-                "       new InnerClass().varargParam<caret>eterMethod(intParam, stringParam);\n" +
-                "    }\n" +
-                "    public static class InnerClass {\n" +
-                "       public void varargParameterMethod(int intParam, String... stringParam) {\n" +
-                "       }\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                public class VarargParameter {
+                    public void varargParam<caret>eterMethod(int intParam, String... stringParam) {
+                       new InnerClass().varargParam<caret>eterMethod(intParam, stringParam);
+                    }
+                    public static class InnerClass {
+                       public void varargParameterMethod(int intParam, String... stringParam) {
+                       }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -323,16 +341,17 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromGenericParameterMethodFromCall() {
         PsiFile psiFile = myFixture.configureByText("GenericParameter.java",
-            "package generate.call.matcher;\n" +
-                "public class GenericParameter<T> {\n" +
-                "    public void genericParameterMethod(T genericParameter) {\n" +
-                "       new InnerClass().genericParam<caret>eterMethod(genericParameter);\n" +
-                "    }\n" +
-                "    public static class InnerClass {\n" +
-                "       public void genericParameterMethod(T genericParameter) {\n" +
-                "       }\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                public class GenericParameter<T> {
+                    public void genericParameterMethod(T genericParameter) {
+                       new InnerClass().genericParam<caret>eterMethod(genericParameter);
+                    }
+                    public static class InnerClass {
+                       public void genericParameterMethod(T genericParameter) {
+                       }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -361,18 +380,19 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromParameterWithGenericClassTypeMethodFromCall() {
         PsiFile psiFile = myFixture.configureByText("ParameterWithGenericType.java",
-            "package generate.call.matcher;\n" +
-                "import java.util.List;\n" +
-                "\n" +
-                "public class ParameterWithGenericType {\n" +
-                "    public void parameterWithGenericTypeMethod() {\n" +
-                "       new InnerClass<String>().parameterWith<caret>GenericTypeMethod(List.of());\n" +
-                "    }\n" +
-                "    public static class InnerClass<T> {\n" +
-                "       public void parameterWithGenericTypeMethod(List<T> genericTypeParameter) {\n" +
-                "       }\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                import java.util.List;
+
+                public class ParameterWithGenericType {
+                    public void parameterWithGenericTypeMethod() {
+                       new InnerClass<String>().parameterWith<caret>GenericTypeMethod(List.of());
+                    }
+                    public static class InnerClass<T> {
+                       public void parameterWithGenericTypeMethod(List<T> genericTypeParameter) {
+                       }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -381,18 +401,19 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromParameterWithExactGenericTypeMethodFromCall() {
         PsiFile psiFile = myFixture.configureByText("ParameterWithExactGenericType.java",
-            "package generate.call.matcher;\n" +
-                "import java.util.List;\n" +
-                "\n" +
-                "public class ParameterWithExactGenericType {\n" +
-                "    public void parameterWithExactGenericTypeMethod(List<Integer> genericTypeParameter) {\n" +
-                "       new InnerClass().parameterWith<caret>ExactGenericTypeMethod(genericTypeParameter);\n" +
-                "    }\n" +
-                "    public static class InnerClass {\n" +
-                "       public void parameterWithExactGenericTypeMethod(List<Integer> genericTypeParameter) {\n" +
-                "       }\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                import java.util.List;
+
+                public class ParameterWithExactGenericType {
+                    public void parameterWithExactGenericTypeMethod(List<Integer> genericTypeParameter) {
+                       new InnerClass().parameterWith<caret>ExactGenericTypeMethod(genericTypeParameter);
+                    }
+                    public static class InnerClass {
+                       public void parameterWithExactGenericTypeMethod(List<Integer> genericTypeParameter) {
+                       }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -401,17 +422,18 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromParameterWithBoundGenericTypeMethodFromCall() {
         PsiFile psiFile = myFixture.configureByText("ParameterWithBoundGenericType.java",
-            "package generate.call.matcher;\n" +
-                "\n" +
-                "public class ParameterWithBoundGenericType {\n" +
-                "    public void parameterWithBoundGenericTypeMethod(java.lang.Class<? extends java.lang.Throwable> genericTypeParameter) {\n" +
-                "       new InnerClass().parameterWith<caret>BoundGenericTypeMethod(genericTypeParameter);\n" +
-                "    }\n" +
-                "    public static class InnerClass {\n" +
-                "       public void parameterWithBoundGenericTypeMethod(java.lang.Class<? extends java.lang.Throwable> genericTypeParameter) {\n" +
-                "       }\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+
+                public class ParameterWithBoundGenericType {
+                    public void parameterWithBoundGenericTypeMethod(java.lang.Class<? extends java.lang.Throwable> genericTypeParameter) {
+                       new InnerClass().parameterWith<caret>BoundGenericTypeMethod(genericTypeParameter);
+                    }
+                    public static class InnerClass {
+                       public void parameterWithBoundGenericTypeMethod(java.lang.Class<? extends java.lang.Throwable> genericTypeParameter) {
+                       }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -420,18 +442,19 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromParameterWithWildcardGenericTypeMethodFromCall() {
         PsiFile psiFile = myFixture.configureByText("ParameterWithWildcardGenericType.java",
-            "package generate.call.matcher;\n" +
-                "import java.util.List;\n" +
-                "\n" +
-                "public class ParameterWithWildcardGenericType {\n" +
-                "    public void parameterWithWildcardTypeMethod(List<?> genericTypeParameter) {\n" +
-                "       new InnerClass().parameterWith<caret>WildcardTypeMethod(genericTypeParameter);\n" +
-                "    }\n" +
-                "    public static class InnerClass {\n" +
-                "       public void parameterWithWildcardTypeMethod(List<?> genericTypeParameter) {\n" +
-                "       }\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                import java.util.List;
+
+                public class ParameterWithWildcardGenericType {
+                    public void parameterWithWildcardTypeMethod(List<?> genericTypeParameter) {
+                       new InnerClass().parameterWith<caret>WildcardTypeMethod(genericTypeParameter);
+                    }
+                    public static class InnerClass {
+                       public void parameterWithWildcardTypeMethod(List<?> genericTypeParameter) {
+                       }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -440,16 +463,17 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromArrayParameterMethodFromCall() {
         PsiFile psiFile = myFixture.configureByText("ArrayParameter.java",
-            "package generate.call.matcher;\n" +
-                "public class ArrayParameter {\n" +
-                "    public void arrayParameterMethod(String[] stringArray) {\n" +
-                "       new InnerClass().array<caret>ParameterMethod(stringArray);\n" +
-                "    }\n" +
-                "    public static class InnerClass {\n" +
-                "       public void arrayParameterMethod(String[] stringArray) {\n" +
-                "       }\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                public class ArrayParameter {
+                    public void arrayParameterMethod(String[] stringArray) {
+                       new InnerClass().array<caret>ParameterMethod(stringArray);
+                    }
+                    public static class InnerClass {
+                       public void arrayParameterMethod(String[] stringArray) {
+                       }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(
@@ -458,16 +482,17 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     public void testGeneratesMatcherFromStaticMethodFromCall() {
         PsiFile psiFile = myFixture.configureByText("StaticMethod.java",
-            "package generate.call.matcher;\n" +
-                "public class StaticMethod {\n" +
-                "    public static void aStaticMethod(String singleStringParam) {\n" +
-                "       InnerClass.aStatic<caret>Method(singleStringParam);\n" +
-                "    }\n" +
-                "    public static class InnerClass {\n" +
-                "       public static void aStaticMethod(String singleStringParam) {\n" +
-                "       }\n" +
-                "    }\n" +
-                "}");
+            """
+                package generate.call.matcher;
+                public class StaticMethod {
+                    public static void aStaticMethod(String singleStringParam) {
+                       InnerClass.aStatic<caret>Method(singleStringParam);
+                    }
+                    public static class InnerClass {
+                       public static void aStaticMethod(String singleStringParam) {
+                       }
+                    }
+                }""");
         runIntentionOn(psiFile, getIntention());
 
         assertThat(ClipboardUtil.getTextInClipboard()).isEqualTo(

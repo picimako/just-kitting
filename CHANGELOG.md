@@ -4,6 +4,22 @@
 
 ## [Unreleased]
 
+## [0.4.0]
+### Added
+- [#22](https://github.com/picimako/just-kitting/issues/22): Added code folding for `extensions.localInspection` tags in plugin descriptor files.
+
+### Changed
+- Added `qodana.yml` to the list diffable plugin configuration files.
+- Improved the inlay hint logic to find and classify light services in Kotlin classes, including nested classes.
+- [#2](https://github.com/picimako/just-kitting/issues/2): Added Kotlin file support for generating a `getInstance()` function in companion objects for services, components, etc.
+- [#2](https://github.com/picimako/just-kitting/issues/2): Added support for converting a Kotlin class to a `PersistentStateComponent`.
+- **CONF:** Updated plugin configuration to match version 1.7.0 of the platform plugin template.
+- **CONF:** The plugin is now built with JDK 17.
+
+### Removed
+- Removed support for IJ 2022.1.
+- Removed some deprecated and internal API usage.
+
 ## [0.3.0]
 ### Added
 - Added support for IJ 2023.2.

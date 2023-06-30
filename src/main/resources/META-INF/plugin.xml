@@ -3,11 +3,11 @@
     <id>picimako.justkitting</id>
     <name>Just Kitting</name>
     <vendor url="https://github.com/picimako/just-kitting">Tamás Balog</vendor>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
     <resource-bundle>messages.JustKittingBundle</resource-bundle>
 
     <!-- https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="221"/>
+    <idea-version since-build="222"/>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
@@ -46,11 +46,17 @@
         <psi.referenceContributor language="JAVA" implementation="com.picimako.justkitting.reference.CallMatcherReferenceContributor"/>
 
         <defaultLiveTemplates file="/liveTemplates/JustKitting.xml"/>
+
+        <lang.foldingBuilder language="XML"
+                             implementationClass="com.picimako.justkitting.codefolding.PluginDescriptorTagsFoldingBuilder"/>
+        <codeFoldingOptionsProvider instance="com.picimako.justkitting.codefolding.JustKittingCodeFoldingOptionsProvider"/>
+        <applicationService serviceInterface="com.picimako.justkitting.codefolding.JustKittingCodeFoldingSettings"
+                            serviceImplementation="com.picimako.justkitting.codefolding.JustKittingCodeFoldingSettingsImpl"/>
     </extensions>
 
     <actions>
         <action id="JustKitting.generate.service.static.getter"
-                class="com.picimako.justkitting.action.GenerateStaticGetInstanceAction"
+                class="com.picimako.justkitting.action.getinstance.GenerateStaticGetInstanceAction"
                 text="Service getInstance()" description="${project.description}">
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
         </action>

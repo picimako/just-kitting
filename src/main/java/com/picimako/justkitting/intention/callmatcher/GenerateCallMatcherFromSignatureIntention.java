@@ -69,8 +69,7 @@ public class GenerateCallMatcherFromSignatureIntention implements IntentionActio
     @Override
     public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         var elementAtCaret = file.findElementAt(editor.getCaretModel().getOffset());
-        if (elementAtCaret.getParent() instanceof PsiMethod) {
-            var targetMethod = (PsiMethod) elementAtCaret.getParent();
+        if (elementAtCaret.getParent() instanceof PsiMethod targetMethod) {
             new JavaCallMatcherGenerator(project, editor)
                 .generateCallMatcherForMethod(targetMethod,
                     callMatcher -> CopyPasteManager.getInstance().setContents(new SimpleTransferable(callMatcher, DataFlavor.stringFlavor)));

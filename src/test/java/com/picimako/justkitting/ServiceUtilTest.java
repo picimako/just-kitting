@@ -19,11 +19,12 @@ public class ServiceUtilTest extends JustKittingTestBase {
 
     public void testIsLightService() {
         myFixture.configureByText("LightService.java",
-            "import com.intellij.openapi.components.Service;\n" +
-                "\n" +
-                "@Service(Service.Level.PROJECT)\n" +
-                "public final class SomeProje<caret>ctService {\n" +
-                "}");
+            """
+                import com.intellij.openapi.components.Service;
+
+                @Service(Service.Level.PROJECT)
+                public final class SomeProje<caret>ctService {
+                }""");
         PsiClass psiClass = (PsiClass) myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
 
         assertThat(ServiceUtil.isLightService(psiClass)).isTrue();
