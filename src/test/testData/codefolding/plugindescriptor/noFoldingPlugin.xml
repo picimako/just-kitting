@@ -1,0 +1,102 @@
+<idea-plugin<fold text='...' expand='true'>>
+<id>dummy</id>
+<vendor>test</vendor>
+
+<extensions defaultExtensionNs="com.intellij"<fold text='...' expand='true'>>
+
+    <!-- No folding for non-foldable attributes-->
+
+    <localInspection/>
+
+    <localInspection implementationClass="com.picimako.justkitting.inspection.CallMatcherInspection"/>
+
+    <localInspection<fold text='...' expand='true'>
+        implementationClass="com.picimako.justkitting.inspection.CallMatcherInspection"/</fold>>
+
+    <!-- Folding for only individual attributes -->
+
+    <localInspection language="JAVA"/>
+
+    <localInspection<fold text='...' expand='true'>
+        language="JAVA"/</fold>>
+
+    <localInspection groupPath="Some,Path"/>
+
+    <localInspection<fold text='...' expand='true'>
+        groupPath="Some,Path"/</fold>>
+
+    <localInspection groupPathKey="some.path"/>
+
+    <localInspection<fold text='...' expand='true'>
+        groupPathKey="some.path"/</fold>>
+
+    <localInspection groupName="The group name"/>
+
+    <localInspection<fold text='...' expand='true'>
+        groupName="The group name"/</fold>>
+
+    <localInspection groupKey="group.key"/>
+
+    <localInspection<fold text='...' expand='true'>
+        groupKey="group.key"/</fold>>
+
+    <localInspection displayName="This is the inspection title"/>
+
+    <localInspection<fold text='...' expand='true'>
+        displayName="This is the inspection title"/</fold>>
+
+    <localInspection key="inspection.title.key"/>
+
+    <localInspection<fold text='...' expand='true'>
+        key="inspection.title.key"/</fold>>
+
+    <!-- Combined foldable attributes -->
+
+    <localInspection language="JAVA" groupPath="Some"/>
+
+    <localInspection language="JAVA" groupPath="Some,Path"/>
+
+    <localInspection language="JAVA"<fold text='...' expand='true'>
+        groupPath="Some,Path"/</fold>>
+
+    <localInspection language="JAVA" groupKey="group.key"/>
+
+    <localInspection language="JAVA"<fold text='...' expand='true'>
+        groupKey="group.key"/</fold>>
+
+    <localInspection language="JAVA" groupName="The group name"/>
+
+    <localInspection language="JAVA"<fold text='...' expand='true'>
+        groupName="The group name"/</fold>>
+
+    <localInspection language="JAVA" groupPath="Some" groupName="The group name"/>
+
+    <localInspection language="JAVA" groupPath="Some,Path"<fold text='...' expand='true'>
+        groupName="The group name"/</fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        language="JAVA" groupPath="Some,Path"
+        groupName="The group name"/</fold>>
+
+    <localInspection language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key"/>
+
+    <localInspection language="JAVA" groupPath="Some,Path"<fold text='...' expand='true'>
+        groupName="The group name" key="inspection.title.key"/</fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        language="JAVA" groupPath="Some,Path"
+        groupName="The group name" key="inspection.title.key"/</fold>>
+
+    <!-- Combined foldable and non-foldable attributes -->
+
+    <localInspection language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key" enabledByDefault="true"/>
+
+    <localInspection<fold text='...' expand='true'>
+        language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key" enabledByDefault="true"/</fold>>
+
+    <localInspection implementationClass="com.some.InspectionImpl" language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key" enabledByDefault="true"/>
+
+    <localInspection<fold text='...' expand='true'>
+        implementationClass="com.some.InspectionImpl" language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key" enabledByDefault="true"/</fold>>
+</extensions</fold>>
+        </idea-plugin</fold>>

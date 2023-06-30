@@ -1,0 +1,102 @@
+<idea-plugin<fold text='...' expand='true'>>
+<id>dummy</id>
+<vendor>test</vendor>
+
+<extensions defaultExtensionNs="com.intellij"<fold text='...' expand='true'>>
+
+    <!-- No folding for non-foldable attributes-->
+
+    <localInspection/>
+
+    <localInspection implementationClass="com.picimako.justkitting.inspection.CallMatcherInspection"/>
+
+    <localInspection<fold text='...' expand='true'>
+        implementationClass="com.picimako.justkitting.inspection.CallMatcherInspection"/</fold>>
+
+    <!-- Folding for only individual attributes -->
+
+    <localInspection <fold text='for JAVA' expand='false'>language="JAVA"/</fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        <fold text='for JAVA' expand='false'>language="JAVA"/</fold></fold>>
+
+    <localInspection <fold text='at Some / Path' expand='false'>groupPath="Some,Path"/</fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        <fold text='at Some / Path' expand='false'>groupPath="Some,Path"/</fold></fold>>
+
+    <localInspection <fold text='at {some.path}' expand='false'>groupPathKey="some.path"/</fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        <fold text='at {some.path}' expand='false'>groupPathKey="some.path"/</fold></fold>>
+
+    <localInspection <fold text='at The group name' expand='false'>groupName="The group name"/</fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        <fold text='at The group name' expand='false'>groupName="The group name"/</fold></fold>>
+
+    <localInspection <fold text='at {group.key}' expand='false'>groupKey="group.key"/</fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        <fold text='at {group.key}' expand='false'>groupKey="group.key"/</fold></fold>>
+
+    <localInspection <fold text='at 'This is the inspection title'' expand='false'>displayName="This is the inspection title"/>
+
+    <localInspection
+    <fold text='at 'This is the inspection title'' expand='false'>displayName="This is the inspection title"/>
+
+    <localInspection <fold text='at {inspection.title.key}' expand='false'>key="inspection.title.key"/</fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        <fold text='at {inspection.title.key}' expand='false'>key="inspection.title.key"/</fold></fold>>
+
+    <!-- Combined foldable attributes -->
+
+    <localInspection <fold text='for JAVA at Some' expand='false'>language="JAVA" groupPath="Some"/</fold>>
+
+    <localInspection <fold text='for JAVA at Some / Path' expand='false'>language="JAVA" groupPath="Some,Path"/</fold>>
+
+    <localInspection <fold text='for JAVA at Some / Path' expand='false'>language="JAVA"<fold text='...' expand='true'>
+        groupPath="Some,Path"/</fold></fold>>
+
+    <localInspection <fold text='for JAVA at {group.key}' expand='false'>language="JAVA" groupKey="group.key"/</fold>>
+
+    <localInspection <fold text='for JAVA at {group.key}' expand='false'>language="JAVA"<fold text='...' expand='true'>
+        groupKey="group.key"/</fold></fold>>
+
+    <localInspection <fold text='for JAVA at The group name' expand='false'>language="JAVA" groupName="The group name"/</fold>>
+
+    <localInspection <fold text='for JAVA at The group name' expand='false'>language="JAVA"<fold text='...' expand='true'>
+        groupName="The group name"/</fold></fold>>
+
+    <localInspection <fold text='for JAVA at Some / The group name' expand='false'>language="JAVA" groupPath="Some" groupName="The group name"/</fold>>
+
+    <localInspection <fold text='for JAVA at Some / Path / The group name' expand='false'>language="JAVA" groupPath="Some,Path"<fold text='...' expand='true'>
+        groupName="The group name"/</fold></fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        <fold text='for JAVA at Some / Path / The group name' expand='false'>language="JAVA" groupPath="Some,Path"
+            groupName="The group name"/</fold></fold>>
+
+    <localInspection <fold text='for JAVA at Some / The group name / {inspection.title.key}' expand='false'>language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key"/</fold>>
+
+    <localInspection <fold text='for JAVA at Some / Path / The group name / {inspection.title.key}' expand='false'>language="JAVA" groupPath="Some,Path"<fold text='...' expand='true'>
+        groupName="The group name" key="inspection.title.key"/</fold></fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        <fold text='for JAVA at Some / Path / The group name / {inspection.title.key}' expand='false'>language="JAVA" groupPath="Some,Path"
+            groupName="The group name" key="inspection.title.key"/</fold></fold>>
+
+    <!-- Combined foldable and non-foldable attributes -->
+
+    <localInspection <fold text='for JAVA at Some / The group name / {inspection.title.key}' expand='false'>language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key" enabledByDefault="true"/</fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        <fold text='for JAVA at Some / The group name / {inspection.title.key}' expand='false'>language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key" enabledByDefault="true"/</fold></fold>>
+
+    <localInspection <fold text='for JAVA at Some / The group name / {inspection.title.key}' expand='false'>implementationClass="com.some.InspectionImpl" language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key" enabledByDefault="true"/</fold>>
+
+    <localInspection<fold text='...' expand='true'>
+        <fold text='for JAVA at Some / The group name / {inspection.title.key}' expand='false'>implementationClass="com.some.InspectionImpl" language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key" enabledByDefault="true"/</fold></fold>>
+</extensions</fold>>
+        </idea-plugin</fold>>
