@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.5.0]
+### Changed
+- The check for non-existent method for `CallMatcher`s now works also when the class name is specified as a constant.
+
 ## [0.4.0]
 ### Added
 - [#22](https://github.com/picimako/just-kitting/issues/22): Added code folding for `extensions.localInspection` tags in plugin descriptor files.

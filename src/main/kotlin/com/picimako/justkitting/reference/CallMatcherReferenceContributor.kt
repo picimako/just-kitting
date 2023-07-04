@@ -84,8 +84,9 @@ class CallMatcherReferenceContributor : PsiReferenceContributor() {
 
     companion object {
         @JvmStatic
-        fun findClass(element: PsiElement): PsiClass? {
-            return findClass(JsonPsiUtil.stripQuotes(element.text), element.project)
+        fun findClass(expression: PsiExpression): PsiClass? {
+            val evaluated = evaluate(expression)
+            return if (evaluated != null) findClass(evaluated.toString(), expression.project) else null
         }
 
         private fun evaluate(expression: PsiExpression): Any? {
