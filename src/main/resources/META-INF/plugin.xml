@@ -48,7 +48,7 @@
         <defaultLiveTemplates file="/liveTemplates/JustKitting.xml"/>
 
         <lang.foldingBuilder language="XML"
-                             implementationClass="com.picimako.justkitting.codefolding.PluginDescriptorTagsFoldingBuilder"/>
+                             implementationClass="com.picimako.justkitting.codefolding.plugindescriptor.PluginDescriptorTagsFoldingBuilder"/>
         <codeFoldingOptionsProvider instance="com.picimako.justkitting.codefolding.JustKittingCodeFoldingOptionsProvider"/>
         <applicationService serviceInterface="com.picimako.justkitting.codefolding.JustKittingCodeFoldingSettings"
                             serviceImplementation="com.picimako.justkitting.codefolding.JustKittingCodeFoldingSettingsImpl"/>
