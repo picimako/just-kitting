@@ -7,6 +7,8 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.picimako.justkitting.codefolding.plugindescriptor.PluginDescriptorTagsFoldingBuilder;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,6 +23,8 @@ public class JustKittingCodeFoldingSettingsImpl extends JustKittingCodeFoldingSe
      * @see PluginDescriptorTagsFoldingBuilder
      * @since 0.4.0
      */
+    @Getter
+    @Setter
     private boolean collapsePluginDescriptorTags = true;
 
     //---- Service state handling ----
@@ -33,17 +37,5 @@ public class JustKittingCodeFoldingSettingsImpl extends JustKittingCodeFoldingSe
     @Override
     public void loadState(@NotNull final JustKittingCodeFoldingSettingsImpl state) {
         XmlSerializerUtil.copyBean(state, this);
-    }
-
-    //---- Service property manipulation ----
-
-    @Override
-    public boolean isCollapsePluginDescriptorTags() {
-        return collapsePluginDescriptorTags;
-    }
-
-    @Override
-    public void setCollapsePluginDescriptorTags(boolean value) {
-        collapsePluginDescriptorTags = value;
     }
 }
