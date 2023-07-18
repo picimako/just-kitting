@@ -1,30 +1,13 @@
 # Just Kitting IntelliJ plugin
 
-![](https://img.shields.io/badge/since-IJ2022.1-blue) ![](https://img.shields.io/badge/until-IJ2023.2-blue)
+[![Version](https://img.shields.io/jetbrains/plugin/v/21139-just-kitting.svg)](https://plugins.jetbrains.com/plugin/21139-just-kitting)
+![Build](https://github.com/picimako/mockitools/workflows/Build/badge.svg)
 
 <!-- Plugin description -->
 A plugin for JetBrains IDE plugin developers to provide them with extra functionality during plugin development, besides the official DevKit plugin.
 
-It provides utilities (inspections, intentions for code generation, etc.) that wouldn't/couldn't necessarily be a part of the original DevKit plugin,
-but can still be useful to improve the plugin development process.
-
-Detailed documentation can be found on the [project's GitHub](https://github.com/picimako/just-kitting) repository.
-<!-- Plugin description end -->
-
-## Disclaimer
-
-The features in this plugin are based on the IntelliJ Platform SDK documentation, and personal experience, and what I personally find useful.
-There are many subtleties to using DevKit and the IntelliJ Platform, that are not covered here, and I don't know of.
-
-Please use your best judgement when using these features to make sure they actually suit your specific needs.
-
-## Contributions
-
-If you'd like to contribute, first please check whether the functionality you are implementing would be a better fit for the
-official DevKit plugin, and whether there is already a [JetBrains YouTrack ticket](https://youtrack.jetbrains.com/issues?q=Subsystem:%20%7BPlugin%20Development%20(DevKit)%7D) for that.
-This is to minimize the chance of clashing with the development of the DevKit plugin.
-
-## Documentation
+It provides functionality that wouldn't/couldn't necessarily be a part of the original DevKit plugin,
+but can still be useful to improve the plugin development process. They are in the following feature areas:
 
 - [Light Services](docs/services.md)
 - [Caching](docs/caching.md)
@@ -33,12 +16,26 @@ This is to minimize the chance of clashing with the development of the DevKit pl
 - [Inspections](docs/inspections.md)
 - [Plugin Configuration](docs/plugin_configuration.md)
 - [Miscellaneous](docs/misc.md)
+<!-- Plugin description end -->
 
-- [Developer docs](/docs/dev_docs.md)
+## Disclaimer
+
+The features in this plugin are based on the IntelliJ Platform SDK documentation, and personal experience, and what I personally find useful.
+There are many subtleties to using DevKit and the IntelliJ Platform that are not covered here, and I don't know of.
+
+Please use your best judgement when using these features to make sure they actually suit your specific needs.
+
+## Contributions
+
+If you'd like to contribute, first please check whether the functionality you are implementing would be a better fit for the
+official DevKit plugin, and whether there is already a [JetBrains YouTrack ticket](https://youtrack.jetbrains.com/issues?q=Subsystem:%20%7BPlugin%20Development%20(DevKit)%7D) for that.
+This is to minimize the chance of clashing with the roadmap and development of the DevKit plugin.
+
+You can find the developer documentation [here](/docs/dev_docs.md).
 
 ## Kotlin support
 
-As of now, all functionality in this plugin is implemented only for Java code, but at least some Kotlin support is planned in the long run.
+Most of the functionality in this plugin is implemented for Java code, with some also supporting Kotlin as well.
 
 ## License
 

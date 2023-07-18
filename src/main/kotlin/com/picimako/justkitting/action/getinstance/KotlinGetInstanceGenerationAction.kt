@@ -72,7 +72,7 @@ internal class KotlinGetInstanceGenerationAction(serviceLevel: Service.Level) : 
      * The service level, for which the function is generated, is determined by [serviceLevel].
      */
     override fun createMethod(psiClass: KtClass?, project: Project?): KtFunction {
-        return KtPsiFactory(project, false).createFunction(MessageFormat.format(
+        return KtPsiFactory(project!!, false).createFunction(MessageFormat.format(
             if (serviceLevel == Service.Level.PROJECT) PROJECT_GET_INSTANCE_PATTERN else APP_GET_INSTANCE_PATTERN,
             psiClass?.name))
     }

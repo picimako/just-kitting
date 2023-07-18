@@ -44,7 +44,7 @@ under <kbd>Settings</kbd> > <kbd>Editor</kbd> > <kbd>General</kbd> > <kbd>Code F
 
 #### extensions.localInspection
 
-The `<localInspection>` tag within `<extensions defaultExtensionNs="com.intellij">` folds in the form of **'for [language] at [path]'**,
+The `<localInspection>` and `<globalInspection>` tag within `<extensions defaultExtensionNs="com.intellij">` folds in the form of **'for [language] at [path]'**,
 and supports the following attributes for folding:
 
 | Attribute      | Attribute value example  | Placeholder text           |

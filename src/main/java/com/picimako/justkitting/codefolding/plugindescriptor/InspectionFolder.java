@@ -1,23 +1,16 @@
 //Copyright 2023 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
-package com.picimako.justkitting.codefolding;
+package com.picimako.justkitting.codefolding.plugindescriptor;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.folding.CustomFoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.XmlRecursiveElementVisitor;
 import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.SmartList;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.idea.devkit.util.DescriptorUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,14 +21,12 @@ import static com.intellij.openapi.util.text.StringUtil.defaultIfEmpty;
 import static com.intellij.openapi.util.text.StringUtil.isEmpty;
 
 /**
- * Provides code folding for various XML tags within plugin descriptor files.
- * <p>
- * Descriptor files other than {@code plugin.xml} are also supported.
+ * Handles the folding and placeholder text creation for the {@code localInspection} and {@code globalInspection} extensions.
  *
- * @since 0.4.0
+ * @since 0.5.0
  */
-public class PluginDescriptorTagsFoldingBuilder extends CustomFoldingBuilder {
-
+@RequiredArgsConstructor
+public final class InspectionFolder implements PluginDescriptorTagFolder {
     /**
      * Folding happens only when at least one these attributes is specified. Otherwise, there is nothing to fold.
      */
@@ -43,70 +34,49 @@ public class PluginDescriptorTagsFoldingBuilder extends CustomFoldingBuilder {
         "language", "groupPath", "groupPathKey", "groupName", "groupKey", "displayName", "key"
     );
 
+    /**
+     * {@code localInspection} or {@code globalInspection}.
+     */
+    private final String inspectionEPName;
+
     @Override
-    protected void buildLanguageFoldRegions(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiElement root, @NotNull Document document, boolean quick) {
-        //All plugin descriptor files are supported, not just plugin.xml
-        if (root instanceof XmlFile xmlFile
-            && isPluginDescriptor(xmlFile)
-            && JustKittingCodeFoldingSettings.getInstance().isCollapsePluginDescriptorTags()) {
-            root.accept(new XmlRecursiveElementVisitor() {
-                @Override
-                public void visitXmlTag(XmlTag tag) {
-                    if ("extensions".equals(tag.getName()) && "com.intellij".equals(tag.getAttributeValue("defaultExtensionNs"))) {
-                        for (var localInspection : tag.findSubTags("localInspection")) {
-                            var attributes = localInspection.getAttributes();
+    public void createFolding(XmlTag extensions, @NotNull List<FoldingDescriptor> descriptors) {
+        for (var localInspection : extensions.findSubTags(inspectionEPName)) {
+            var attributes = localInspection.getAttributes();
 
-                            //If no attribute or no foldable attribute, continue processing the rest of the localInspection tags
-                            if (attributes.length == 0 || !hasAtLeastOneFoldableAttribute(attributes))
-                                continue;
+            //If no attribute or no foldable attribute, continue processing the rest of the localInspection tags
+            if (attributes.length == 0 || !hasAtLeastOneFoldableAttribute(attributes))
+                continue;
 
-                            descriptors.add(new FoldingDescriptor(
-                                localInspection.getNode(),
-                                /*
-                                 * Folding starts at the first attribute's start offset, and ends at before the tag's closing > symbol.
-                                 * This handles the both cases when the first attribute is on the same line as the tag name,
-                                 * and also when it is in the next line.
-                                 */
-                                TextRange.create(attributes[0].getNameElement().getTextOffset(), localInspection.getTextRange().getEndOffset() - 1),
-                                FoldingGroup.newGroup("localInspection")));
-                        }
-                    } else {
-                        //Essential to visit children nodes, and to only go to children nodes
-                        // when we haven't found the tag that we want to fold. Otherwise, the folding won't work for the desired tag.
-                        super.visitXmlTag(tag);
-                    }
-                }
-            });
+            descriptors.add(new FoldingDescriptor(
+                localInspection.getNode(),
+                /*
+                 * Folding starts at the first attribute's start offset, and ends at before the tag's closing > symbol.
+                 * This handles the both cases when the first attribute is on the same line as the tag name,
+                 * and also when it is in the next line.
+                 */
+                TextRange.create(attributes[0].getNameElement().getTextOffset(), localInspection.getTextRange().getEndOffset() - 1),
+                FoldingGroup.newGroup(inspectionEPName)));
         }
     }
 
-    /**
-     * This is a workaround because {@link DescriptorUtil#isPluginXml} doesn't seem to work in unit test mode.
-     */
-    private static boolean isPluginDescriptor(XmlFile xmlFile) {
-        return ApplicationManager.getApplication().isUnitTestMode()
-            ? xmlFile.getName().toLowerCase().endsWith("plugin.xml")
-            : DescriptorUtil.isPluginXml(xmlFile);
-    }
-
-    private static boolean hasAtLeastOneFoldableAttribute(XmlAttribute[] attributes) {
+    @Override
+    public boolean hasAtLeastOneFoldableAttribute(XmlAttribute[] attributes) {
         return Arrays.stream(attributes).anyMatch(attribute -> FOLDABLE_LOCAL_INSPECTION_ATTRIBUTES.contains(attribute.getName()));
     }
 
-    //Placeholder text
+    @Override
+    public boolean isTagFolderFor(XmlTag tag) {
+        return inspectionEPName.equals(tag.getName());
+    }
 
     @Override
-    protected String getLanguagePlaceholderText(@NotNull ASTNode node, @NotNull TextRange range) {
-        var psi = node.getPsi();
-        if (psi instanceof XmlTag localInspection) {
-            var language = getOrEmpty(localInspection.getAttributeValue("language"));
-            String placeholderLanguage = buildLanguage(language);
-            String placeholderPath = buildPath(localInspection);
+    public String getPlaceholderText(XmlTag inspection) {
+        var language = getOrEmpty(inspection.getAttributeValue("language"));
+        String placeholderLanguage = buildLanguage(language);
+        String placeholderPath = buildPath(inspection);
 
-            return placeholderLanguage + (!placeholderLanguage.isEmpty() && !placeholderPath.isEmpty() ? " " + placeholderPath : placeholderPath);
-        }
-
-        return "...";
+        return placeholderLanguage + (!placeholderLanguage.isEmpty() && !placeholderPath.isEmpty() ? " " + placeholderPath : placeholderPath);
     }
 
     /**
@@ -201,10 +171,5 @@ public class PluginDescriptorTagsFoldingBuilder extends CustomFoldingBuilder {
      */
     private static String asKey(@Nullable String attributeValue) {
         return attributeValue != null && !attributeValue.isBlank() ? "{" + attributeValue + "}" : "";
-    }
-
-    @Override
-    protected boolean isRegionCollapsedByDefault(@NotNull ASTNode node) {
-        return true;
     }
 }

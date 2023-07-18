@@ -3,6 +3,7 @@
 package com.picimako.justkitting.inlayhint;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
 import com.intellij.psi.PsiAnnotation;
@@ -11,8 +12,10 @@ import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.search.ProjectScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
+import com.intellij.util.EmptyQuery;
 import com.intellij.util.Query;
 import com.picimako.justkitting.PlatformPsiCache;
+import com.picimako.justkitting.action.diff.CompareConfigFileWithPluginTemplateAction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference;
 import org.jetbrains.kotlin.psi.KtAnnotationEntry;
@@ -29,6 +32,8 @@ import static java.util.stream.Collectors.toList;
  */
 @SuppressWarnings("UnstableApiUsage")
 public final class LightServiceLookup {
+
+    private static final Logger LOG = Logger.getInstance(LightServiceLookup.class);
 
     /**
      * Returns the collection of {@link PsiClass}es or {@link KtClass}es that are annotated as {@link com.intellij.openapi.components.Service}.
@@ -66,7 +71,13 @@ public final class LightServiceLookup {
      */
     @NotNull
     private static Query<? extends PsiNameIdentifierOwner> getServiceAnnotationQuery(Project project) {
-        return ReferencesSearch.search(PlatformPsiCache.getInstance(project).getServiceAnnotation(), ProjectScope.getProjectScope(project))
+        var serviceAnnotation = PlatformPsiCache.getInstance(project).getServiceAnnotation();
+        if (serviceAnnotation == null) {
+            LOG.warn("Could not find class 'com.intellij.openapi.components.Service'. This will result in no light service being shown in plugin descriptors.");
+            return new EmptyQuery<>();
+        }
+
+        return ReferencesSearch.search(serviceAnnotation, ProjectScope.getProjectScope(project))
             //Take into account only those references of the @Service annotation class that are used as part of an annotation.
             .filtering(ref -> {
                 if (ref instanceof PsiJavaCodeReferenceElement)

@@ -4,6 +4,16 @@
 
 ## [Unreleased]
 
+## [0.5.0]
+### Added
+- [#29](https://github.com/picimako/just-kitting/issues/29): Added code folding for `extensions.globalInspection` tags in plugin descriptor files.
+
+### Changed
+- The check for non-existent method for `CallMatcher`s now works also when the class name is specified as a constant.
+
+### Fixed
+- Fixed an NPE that occurred when looking up the `com.intellij.openapi.components.Service` class for showing the light services inlay hint.
+
 ## [0.4.0]
 ### Added
 - [#22](https://github.com/picimako/just-kitting/issues/22): Added code folding for `extensions.localInspection` tags in plugin descriptor files.

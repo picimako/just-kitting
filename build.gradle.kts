@@ -28,10 +28,12 @@ kotlin {
 }
 
 dependencies {
-    testImplementation("org.assertj:assertj-core:3.24.2")
     //https://kotlinlang.org/docs/reflection.html#jvm-dependency
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
+
+    //Testing
     testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22")
+    testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
@@ -77,7 +79,11 @@ tasks {
                 if (!containsAll(listOf(start, end))) {
                     throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
                 }
-                subList(indexOf(start) + 1, indexOf(end)).joinToString("\n").let(::markdownToHTML)
+                subList(indexOf(start) + 1, indexOf(end))
+                        .joinToString("\n")
+                        //In order to be able to open documentation links in the plugin description from the IDE Plugin page and the JetBrains Marketplace
+                        .replace("docs/", "https://github.com/picimako/just-kitting/blob/main/docs/")
+                        .let(::markdownToHTML)
             }
         }
 
@@ -105,9 +111,9 @@ tasks {
         include("**/*Test.class")
     }
 
-//    runPluginVerifier {
-//        ideVersions.set(listOf("IC-2023.1"))
-//    }
+    runPluginVerifier {
+        ideVersions.set(listOf("IC-232.7754.73"))
+    }
 
     signPlugin {
         certificateChain = environment("CERTIFICATE_CHAIN")
