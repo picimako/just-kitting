@@ -32,7 +32,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
 
     //Testing
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22")
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10")
     testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
