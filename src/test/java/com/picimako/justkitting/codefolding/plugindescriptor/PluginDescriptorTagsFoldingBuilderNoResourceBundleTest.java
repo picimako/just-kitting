@@ -9,12 +9,12 @@ import com.picimako.justkitting.codefolding.JustKittingCodeFoldingTestBase;
 /**
  * Integration test for {@link PluginDescriptorTagsFoldingBuilder}.
  */
-@TestDataPath("$CONTENT_ROOT/testData/codefolding/plugindescriptor")
-public class PluginDescriptorTagsFoldingBuilderTest extends JustKittingCodeFoldingTestBase {
+@TestDataPath("$CONTENT_ROOT/testData/codefolding/plugindescriptor/noresourcebundle")
+public class PluginDescriptorTagsFoldingBuilderNoResourceBundleTest extends JustKittingCodeFoldingTestBase {
 
     @Override
     protected String getTestDataPath() {
-        return "src/test/testData/codefolding/plugindescriptor/";
+        return "src/test/testData/codefolding/plugindescriptor/noresourcebundle";
     }
 
     //No folding

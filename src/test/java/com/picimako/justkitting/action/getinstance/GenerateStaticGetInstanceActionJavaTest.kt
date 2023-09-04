@@ -113,6 +113,7 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
     }
 
     //Application-level light service
+
     fun testShouldGenerateAppLevelGetterForServiceLevelApp() {
         myFixture.configureByText("SomeService.java",
             """
@@ -149,6 +150,7 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
     }
 
     //Light service without level
+
     fun testShouldGenerateProjectLevelGetterForEmptyServiceLevelWithProperClassName() {
         myFixture.configureByText("SomeProjectService.java",
             """

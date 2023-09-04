@@ -1,0 +1,32 @@
+<idea-plugin<fold text='...' expand='true'>>
+<id>dummy</id>
+<vendor>test</vendor>
+
+<extensions defaultExtensionNs="com.intellij"<fold text='...' expand='true'>>
+
+    <localInspection <fold text='at Some group from lower' expand='false'>groupKey="some.group.key" groupBundle="messages.LowerLevelBundle"/</fold>>
+    <localInspection <fold text='at Some group from lower' expand='false'>groupKey="some.group.key" bundle="messages.LowerLevelBundle"/</fold>>
+    <localInspection <fold text='at {some.group.key}' expand='false'>groupKey="some.group.key"/</fold>>
+
+    <localInspection <fold text='at Some path from lower' expand='false'>groupPathKey="some.group.path.key" groupBundle="messages.LowerLevelBundle"/</fold>>
+    <localInspection <fold text='at Some path from lower' expand='false'>groupPathKey="some.group.path.key" bundle="messages.LowerLevelBundle"/</fold>>
+    <localInspection <fold text='at {some.group.path.key}' expand='false'>groupPathKey="some.group.path.key"/</fold>>
+
+    <localInspection <fold text='at {some.key}' expand='false'>key="some.key" groupBundle="messages.LowerLevelBundle"/</fold>>
+    <localInspection <fold text='at Some key from lower' expand='false'>key="some.key" bundle="messages.LowerLevelBundle"/</fold>>
+    <localInspection <fold text='at {some.key}' expand='false'>key="some.key"/</fold>>
+
+    <globalInspection <fold text='at Some group from lower' expand='false'>groupKey="some.group.key" groupBundle="messages.LowerLevelBundle"/</fold>>
+    <globalInspection <fold text='at Some group from lower' expand='false'>groupKey="some.group.key" bundle="messages.LowerLevelBundle"/</fold>>
+    <globalInspection <fold text='at {some.group.key}' expand='false'>groupKey="some.group.key"/</fold>>
+
+    <globalInspection <fold text='at Some path from lower' expand='false'>groupPathKey="some.group.path.key" groupBundle="messages.LowerLevelBundle"/</fold>>
+    <globalInspection <fold text='at Some path from lower' expand='false'>groupPathKey="some.group.path.key" bundle="messages.LowerLevelBundle"/</fold>>
+    <globalInspection <fold text='at {some.group.path.key}' expand='false'>groupPathKey="some.group.path.key"/</fold>>
+
+    <globalInspection <fold text='at {some.key}' expand='false'>key="some.key" groupBundle="messages.LowerLevelBundle"/</fold>>
+    <globalInspection <fold text='at Some key from lower' expand='false'>key="some.key" bundle="messages.LowerLevelBundle"/</fold>>
+    <globalInspection <fold text='at {some.key}' expand='false'>key="some.key"/</fold>>
+
+</extensions</fold>>
+        </idea-plugin</fold>>

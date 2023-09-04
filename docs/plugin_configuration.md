@@ -1,5 +1,12 @@
 # Plugin Configuration
 
+<!-- TOC -->
+* [Configuration file diffs with the IntelliJ Platform Plugin Template](#configuration-file-diffs-with-the-intellij-platform-plugin-template)
+* [XML tag folding in plugin descriptor files](#xml-tag-folding-in-plugin-descriptor-files)
+  * [Supported tags](#supported-tags)
+    * [extensions.localInspection / extensions.globalInspection](#extensionslocalinspection--extensionsglobalinspection)
+<!-- TOC -->
+
 ## Configuration file diffs with the IntelliJ Platform Plugin Template
 
 ![](https://img.shields.io/badge/diffview-orange) ![](https://img.shields.io/badge/since-0.3.0-blue) [![](https://img.shields.io/badge/implementation-CompareConfigFileWithPluginTemplateAction-blue)](../src/main/java/com/picimako/justkitting/action/diff/CompareConfigFileWithPluginTemplateAction.java)
@@ -10,7 +17,6 @@ and it opens a two-sided diff view comparing the local version of the file with 
 | Project view context menu                                                                                                    | Editor context menu                                                                                              |
 |------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
 | ![compare_with_template_project_view_context_menu_action](assets/compare_with_template_project_view_context_menu_action.png) | ![compare_with_template_editor_context_menu_action](assets/compare_with_template_editor_context_menu_action.png) |
-
 
 The action is available for the following configuration files:
 - `build.gradle.kts`
@@ -32,7 +38,7 @@ If the remote contents cannot be downloaded, a balloon is displayed, and a log e
 
 ## XML tag folding in plugin descriptor files
 
-![](https://img.shields.io/badge/codefolding-orange) ![](https://img.shields.io/badge/since-0.4.0-blue) [![](https://img.shields.io/badge/implementation-PluginDescriptorTagsFoldingBuilder-blue)](../src/main/java/com/picimako/justkitting/codefolding/PluginDescriptorTagsFoldingBuilder.java)
+![](https://img.shields.io/badge/codefolding-orange) ![](https://img.shields.io/badge/since-0.4.0-blue) [![](https://img.shields.io/badge/implementation-PluginDescriptorTagsFoldingBuilder-blue)](../src/main/java/com/picimako/justkitting/codefolding/plugindescriptor/PluginDescriptorTagsFoldingBuilder.java)
 
 There are certain extensions, and XML tags in general, in `plugin.xml` and other plugin descriptor files that can hold a lot of information.
 Having many such tags can make it more difficult for users to parse them, find the one they are looking for, or just scroll through them.
@@ -42,24 +48,29 @@ under <kbd>Settings</kbd> > <kbd>Editor</kbd> > <kbd>General</kbd> > <kbd>Code F
 
 ### Supported tags
 
-#### extensions.localInspection
+#### extensions.localInspection / extensions.globalInspection
 
-The `<localInspection>` and `<globalInspection>` tag within `<extensions defaultExtensionNs="com.intellij">` folds in the form of **'for [language] at [path]'**,
+The `<localInspection>` and `<globalInspection>` tags within `<extensions defaultExtensionNs="com.intellij">` folds in the form of **'for [language] at [path]'**,
 and supports the following attributes for folding:
 
-| Attribute      | Attribute value example  | Placeholder text           |
-|----------------|--------------------------|----------------------------|
-| `language`     | JAVA                     | for JAVA                   |
-| `groupPath`    | Group<br/>Group,Path     | Group<br/>Group / Path     |
-| `groupPathKey` | group.path.key           | {group.path.key}           |
-| `groupName`    | Group Name               | Group Name                 |
-| `groupKey`     | group.name.key           | {group.name.key}           |
-| `displayName`  | Looks for invalid things | 'Looks for invalid things' |
-| `key`          | display.name.key         | {display.name.key}         |
+| Attribute      | Attribute value example  | Placeholder text                         |
+|----------------|--------------------------|------------------------------------------|
+| `language`     | JAVA                     | *for JAVA*                               |
+| `groupPath`    | Group<br/>Group,Path     | *Group*<br/>*Group / Path*               |
+| `groupPathKey` | group.path.key           | *{group.path.key}* (when not resolved)   |
+| `groupName`    | Group Name               | *Group Name*                             |
+| `groupKey`     | group.name.key           | *{group.name.key}* (when not resolved)   |
+| `displayName`  | Looks for invalid things | *'Looks for invalid things'*             |
+| `key`          | display.name.key         | *{display.name.key}* (when not resolved) |
+
+Resource bundle keys are resolved according to their resolution fallback chain:
+- `key`: `bundle` attribute -> `<resource-bundle>` tag
+- `groupPathKey`: `groupBundle` attribute -> `bundle` attribute -> `<resource-bundle>` tag
+- `groupKey`: `groupBundle` attribute ->  `bundle` attribute -> `<resource-bundle>` tag
 
 **Notes:**
 - group path comma delimiters are replaced with forward-slashes for better visuals
-- the placeholder text for keys show the keys themselves enclosed in `{` and `}`. They are not resolved to the actual messages, for now. 
+- the placeholder text for keys show the keys themselves enclosed in `{` and `}`.
 
 **Example:**
 
