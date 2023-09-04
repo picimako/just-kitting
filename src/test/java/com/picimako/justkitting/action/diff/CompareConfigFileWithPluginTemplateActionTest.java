@@ -84,7 +84,7 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
         assertThat(simpleDiffRequest.getContentTitles())
                 .containsExactly("Platform Plugin Template", "Local");
         assertThat(simpleDiffRequest.toString())
-                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[null], \\{}:DocumentImpl\\[temp:///src/gradle\\.properties]]");
+                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[(null|LightVirtualFile: diff\\.properties)], \\{}:DocumentImpl\\[temp:///src/gradle\\.properties]]");
     }
 
     public void testDiffViewForFileInFolder() {
