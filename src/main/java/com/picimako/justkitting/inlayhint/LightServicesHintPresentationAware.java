@@ -2,6 +2,8 @@
 
 package com.picimako.justkitting.inlayhint;
 
+import static java.util.Comparator.comparing;
+
 import com.intellij.codeInsight.hints.InlayPresentationFactory;
 import com.intellij.codeInsight.hints.presentation.InlayPresentation;
 import com.intellij.codeInsight.hints.presentation.PresentationFactory;
@@ -72,7 +74,10 @@ public abstract class LightServicesHintPresentationAware {
      */
     public <T extends PsiNameIdentifierOwner> InlayPresentation viewAllServicesPresentation(Supplier<List<T>> classes, int startOffset) {
         return factory.referenceOnHover(factory.smallText(JustKittingBundle.inlayHints("light.services.view.all.light.services")), (mouseEvent, point) -> {
-            var step = new BaseListPopupStep<>(JustKittingBundle.inlayHints("light.services.view.all.popup.title"), classes.get()) {
+            var step = new BaseListPopupStep<>(
+                JustKittingBundle.inlayHints("light.services.view.all.popup.title"),
+                //Sorts the list items alphabetically by class names
+                classes.get().stream().sorted(comparing(PsiNameIdentifierOwner::getName)).toList()) {
                 @Override
                 public @Nullable PopupStep<?> onChosen(T selectedValue, boolean finalChoice) {
                     if (selectedValue instanceof PsiClass || selectedValue instanceof KtClass) {

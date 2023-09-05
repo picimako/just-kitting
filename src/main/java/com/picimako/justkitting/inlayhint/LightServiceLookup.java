@@ -2,6 +2,8 @@
 
 package com.picimako.justkitting.inlayhint;
 
+import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
+
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -15,7 +17,6 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.EmptyQuery;
 import com.intellij.util.Query;
 import com.picimako.justkitting.PlatformPsiCache;
-import com.picimako.justkitting.action.diff.CompareConfigFileWithPluginTemplateAction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference;
 import org.jetbrains.kotlin.psi.KtAnnotationEntry;
@@ -23,9 +24,6 @@ import org.jetbrains.kotlin.psi.KtClass;
 
 import java.util.Collection;
 import java.util.Objects;
-
-import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Utility to search for light service classes in the current project.
@@ -42,7 +40,7 @@ public final class LightServiceLookup {
         return ApplicationManager.getApplication()
             .runReadAction((Computable<Collection<? extends PsiNameIdentifierOwner>>)
                 //distinct() is called because Kotlin classes are displayed duplicated
-                () -> getServiceAnnotationQuery(project).findAll().stream().distinct().collect(toList()));
+                () -> getServiceAnnotationQuery(project).findAll().stream().distinct().toList());
     }
 
     /**

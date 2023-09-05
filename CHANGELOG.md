@@ -8,6 +8,10 @@
 ### Changed
 - [#29](https://github.com/picimako/just-kitting/issues/29): Code folding of `extensions.localInspection` and `extensions.globalInspection` tags
 is extended with resource bundle message resolution with fallback logic based on where bundle names are specified in the EP or in the plugin descriptor file.
+- The light service class names are now sorted alphabetically in the **View all light services** inlay hint list popup.
+
+### Fixed
+- Fixed the issue that the **View all light services** inlay hint list popup didn't appear because it didn't handle rendering of KtClasses.
 
 ## [0.5.0]
 ### Added
