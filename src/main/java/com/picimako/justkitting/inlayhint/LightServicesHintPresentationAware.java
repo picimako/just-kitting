@@ -5,12 +5,14 @@ package com.picimako.justkitting.inlayhint;
 import com.intellij.codeInsight.hints.InlayPresentationFactory;
 import com.intellij.codeInsight.hints.presentation.InlayPresentation;
 import com.intellij.codeInsight.hints.presentation.PresentationFactory;
-import com.intellij.ide.util.PsiClassListCellRenderer;
+import com.intellij.ide.util.DelegatingPsiElementCellRenderer;
+import com.intellij.ide.util.PsiElementRenderingInfo;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ex.util.EditorUtil;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.openapi.util.NlsSafe;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDocumentManager;
@@ -18,6 +20,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.xml.XmlToken;
 import com.picimako.justkitting.resources.JustKittingBundle;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.psi.KtClass;
 
@@ -82,7 +85,11 @@ public abstract class LightServicesHintPresentationAware {
 
             //Moving the caret to the beginning of the <extensions> tag, so that the popup list is displayed right at the element's inlay hint.
             editor.getCaretModel().moveToOffset(startOffset);
-            JBPopupFactory.getInstance().createListPopup(file.getProject(), step, renderer -> new PsiClassListCellRenderer()).showInBestPositionFor(editor);
+            JBPopupFactory.getInstance()
+                //DelegatingPsiElementCellRenderer and ClassRenderingInfo replaces PsiClassListCellRenderer,
+                // so that both PsiClasses and KtClasses can be rendered.
+                .createListPopup(file.getProject(), step, renderer -> new DelegatingPsiElementCellRenderer<>(ClassRenderingInfo.INSTANCE))
+                .showInBestPositionFor(editor);
         });
     }
 
@@ -92,5 +99,19 @@ public abstract class LightServicesHintPresentationAware {
         var line = document.getLineNumber(element.getParent().getTextRange().getStartOffset());
         var startOffset = document.getLineStartOffset(line);
         return (element.getParent().getTextRange().getStartOffset() - startOffset) * width;
+    }
+
+    /**
+     * Rendering info for various classes.
+     */
+    private static final class ClassRenderingInfo implements PsiElementRenderingInfo<PsiNameIdentifierOwner> {
+        public static final ClassRenderingInfo INSTANCE = new ClassRenderingInfo();
+
+        private ClassRenderingInfo() { }
+        
+        @Override
+        public @NlsSafe @NotNull String getPresentableText(@NotNull PsiNameIdentifierOwner element) {
+            return element.getName();
+        }
     }
 }
