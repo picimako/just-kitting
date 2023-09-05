@@ -11,7 +11,7 @@ enum class InlayDisplayMode(val displayName: String) {
     /**
      * No hint is displayed.
      */
-    Disabled(JustKittingBundle.inlayHints("light.services.settings.display.mode.disabled")),
+    Disabled(JustKittingBundle.message("inlay.hints.light.services.settings.display.mode.disabled")),
 
     /**
      * Shows a user-defined max number of light services grouped by the service level.
@@ -19,12 +19,12 @@ enum class InlayDisplayMode(val displayName: String) {
      * This option can display up to [Settings.MAX_NO_OF_SERVICES] services with an optional 'View All' hint that is displayed
      * when there is more light services in the project than [Settings.MAX_NO_OF_SERVICES].
      */
-    ListOfLightServices(JustKittingBundle.inlayHints("light.services.settings.display.mode.list.of.services")),
+    ListOfLightServices(JustKittingBundle.message("inlay.hints.light.services.settings.display.mode.list.of.services")),
 
     /**
      * Displays only a View All... hint.
      */
-    ViewAllOnly(JustKittingBundle.inlayHints("light.services.settings.display.mode.view.all.only"))
+    ViewAllOnly(JustKittingBundle.message("inlay.hints.light.services.settings.display.mode.view.all.only"))
 }
 
 data class Settings(

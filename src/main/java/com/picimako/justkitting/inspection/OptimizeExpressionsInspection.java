@@ -61,7 +61,7 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
                 //If it's a new Type[0] array creation and Type has an empty array constant called EMPTY_ARRAY
                 if (expression.isArrayCreation() && expression.getArrayDimensions().length == 1 && isZero(expression.getArrayDimensions()[0]) && hasEmptyArrayConstantField(expression.getClassReference())) {
                     holder.registerProblem(expression,
-                        JustKittingBundle.inspection("empty.array.creation", expression.getClassReference().getReferenceName()),
+                        JustKittingBundle.message("inspection.empty.array.creation", expression.getClassReference().getReferenceName()),
                         ProblemHighlightType.WEAK_WARNING,
                         new ReplaceWithEmptyArrayConstantQuickFix(expression.getClassReference().getReferenceName()));
                 }
@@ -73,9 +73,9 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
                 //If any of the expression operands is a reference to 'PsiArgumentList.getExpressions().length'
                 if ((isLeftBound = isGetExpressionsLength(expr.getLOperand(), expr.getROperand())) || isGetExpressionsLength(expr.getROperand(), expr.getLOperand())) {
                     if (expr.getOperationTokenType() == JavaTokenType.EQEQ) {
-                        holder.registerProblem(expr, JustKittingBundle.inspection("use.expression.list.is.empty", ""), new ReplaceWithIsEmptyQuickFix(false, isLeftBound));
+                        holder.registerProblem(expr, JustKittingBundle.message("inspection.use.expression.list.is.empty", ""), new ReplaceWithIsEmptyQuickFix(false, isLeftBound));
                     } else if (expr.getOperationTokenType() == (isLeftBound ? JavaTokenType.GT : JavaTokenType.LT)) {
-                        holder.registerProblem(expr, JustKittingBundle.inspection("use.expression.list.is.empty", "!"), new ReplaceWithIsEmptyQuickFix(true, isLeftBound));
+                        holder.registerProblem(expr, JustKittingBundle.message("inspection.use.expression.list.is.empty", "!"), new ReplaceWithIsEmptyQuickFix(true, isLeftBound));
                     }
                 }
             }
@@ -126,12 +126,12 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
 
         @Override
         public @IntentionName @NotNull String getName() {
-            return JustKittingBundle.inspection("replace.with.empty.array.constant", arrayType);
+            return JustKittingBundle.message("inspection.replace.with.empty.array.constant", arrayType);
         }
 
         @Override
         public @IntentionFamilyName @NotNull String getFamilyName() {
-            return JustKittingBundle.inspection("optimize.expressions.family");
+            return JustKittingBundle.message("inspection.optimize.expressions.family");
         }
     }
 
@@ -193,12 +193,12 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
 
         @Override
         public @IntentionName @NotNull String getName() {
-            return JustKittingBundle.inspection("replace.with.is.empty", negate);
+            return JustKittingBundle.message("inspection.replace.with.is.empty", negate);
         }
 
         @Override
         public @IntentionFamilyName @NotNull String getFamilyName() {
-            return JustKittingBundle.inspection("optimize.expressions.family");
+            return JustKittingBundle.message("inspection.optimize.expressions.family");
         }
     }
 }

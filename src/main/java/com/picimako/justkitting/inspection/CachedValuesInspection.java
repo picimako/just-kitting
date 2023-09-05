@@ -92,7 +92,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
                 //If only the 'value' parameter is specified, but no dependency
                 if (arguments.getExpressionCount() == 1) {
                     holder.registerProblem(problemElement.get(),
-                        JustKittingBundle.inspection("cached.value.provider.result.without.dependency"),
+                        JustKittingBundle.message("inspection.cached.value.provider.result.without.dependency"),
                         new AddDependencyQuickFix(expressionType, ModificationTracker.MODIFICATION_TRACKER_NEVER_CHANGED),
                         new AddDependencyQuickFix(expressionType, ModificationTracker.PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT));
                 }
@@ -101,7 +101,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
                     && arguments.getExpressions()[1] instanceof PsiMethodCallExpression
                     && EMPTY_COLLECTION_MATCHER.matches(arguments.getExpressions()[1])) {
                     holder.registerProblem(problemElement.get(),
-                        JustKittingBundle.inspection("cached.value.provider.result.without.dependency"),
+                        JustKittingBundle.message("inspection.cached.value.provider.result.without.dependency"),
                         new ReplaceDependencyQuickFix(expressionType, ModificationTracker.MODIFICATION_TRACKER_NEVER_CHANGED),
                         new ReplaceDependencyQuickFix(expressionType, ModificationTracker.PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT));
                 }
@@ -116,7 +116,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
      */
     private static final class AddDependencyQuickFix extends BaseCachingQuickFix {
         public AddDependencyQuickFix(@NotNull Class<? extends PsiCall> expressionType, ModificationTracker modificationTracker) {
-            super(expressionType, modificationTracker, "cached.value.provider.add.dependency.quick.fix");
+            super(expressionType, modificationTracker, "inspection.cached.value.provider.add.dependency.quick.fix");
         }
 
         @Override
@@ -130,7 +130,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
      */
     private static final class ReplaceDependencyQuickFix extends BaseCachingQuickFix {
         public ReplaceDependencyQuickFix(Class<? extends PsiCall> expressionType, ModificationTracker modificationTracker) {
-            super(expressionType, modificationTracker, "cached.value.provider.replace.with.dependency.quick.fix");
+            super(expressionType, modificationTracker, "inspection.cached.value.provider.replace.with.dependency.quick.fix");
         }
 
         @Override
@@ -156,12 +156,12 @@ public class CachedValuesInspection extends LocalInspectionTool {
 
         @Override
         public @IntentionFamilyName @NotNull String getFamilyName() {
-            return JustKittingBundle.inspection("cached.value.provider.add.never.changed.quick.fix.family");
+            return JustKittingBundle.message("inspection.cached.value.provider.add.never.changed.quick.fix.family");
         }
 
         @Override
         public @IntentionName @NotNull String getName() {
-            return JustKittingBundle.inspection(quickFixKey, modificationTracker.name);
+            return JustKittingBundle.message(quickFixKey, modificationTracker.name);
         }
     }
 

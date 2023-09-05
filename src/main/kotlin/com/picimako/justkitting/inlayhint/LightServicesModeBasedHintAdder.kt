@@ -29,8 +29,8 @@ data class LightServicesModeBasedHintAdder(override var settings: Settings,
      */
     fun addPreviewHints(element: XmlToken) {
         when (settings.lightServicesDisplayMode) {
-            InlayDisplayMode.ListOfLightServices -> addLabelHints(element, *JustKittingBundle.inlayHints("light.services.settings.list.display.mode.preview.text").split(",").toTypedArray())
-            InlayDisplayMode.ViewAllOnly -> addLabelHints(element, JustKittingBundle.inlayHints("light.services.view.all.light.services"))
+            InlayDisplayMode.ListOfLightServices -> addLabelHints(element, *JustKittingBundle.message("inlay.hints.light.services.settings.list.display.mode.preview.text").split(",").toTypedArray())
+            InlayDisplayMode.ViewAllOnly -> addLabelHints(element, JustKittingBundle.message("inlay.hints.light.services.view.all.light.services"))
             else -> {
             }
         }

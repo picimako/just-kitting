@@ -73,9 +73,9 @@ public abstract class LightServicesHintPresentationAware {
      * @param startOffset the start offset of the `<extensions>` xml tag
      */
     public <T extends PsiNameIdentifierOwner> InlayPresentation viewAllServicesPresentation(Supplier<List<T>> classes, int startOffset) {
-        return factory.referenceOnHover(factory.smallText(JustKittingBundle.inlayHints("light.services.view.all.light.services")), (mouseEvent, point) -> {
+        return factory.referenceOnHover(factory.smallText(JustKittingBundle.message("inlay.hints.light.services.view.all.light.services")), (mouseEvent, point) -> {
             var step = new BaseListPopupStep<>(
-                JustKittingBundle.inlayHints("light.services.view.all.popup.title"),
+                JustKittingBundle.message("inlay.hints.light.services.view.all.popup.title"),
                 //Sorts the list items alphabetically by class names
                 classes.get().stream().sorted(comparing(PsiNameIdentifierOwner::getName)).toList()) {
                 @Override

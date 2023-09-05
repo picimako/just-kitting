@@ -5,7 +5,6 @@ package com.picimako.justkitting.codefolding.plugindescriptor;
 import com.intellij.testFramework.TestDataPath;
 import com.picimako.justkitting.codefolding.ContentRootsJustKittingCodeFoldingTestBase;
 import com.picimako.justkitting.codefolding.JustKittingCodeFoldingSettings;
-import com.picimako.justkitting.codefolding.JustKittingCodeFoldingTestBase;
 
 /**
  * Integration test for {@link PluginDescriptorTagsFoldingBuilder}.
