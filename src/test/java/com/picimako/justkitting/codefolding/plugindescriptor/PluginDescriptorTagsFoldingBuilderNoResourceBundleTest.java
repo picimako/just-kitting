@@ -19,17 +19,24 @@ public class PluginDescriptorTagsFoldingBuilderNoResourceBundleTest extends Just
 
     //No folding
 
-    public void testNoFoldingPlugin() {
+    public void testNoFoldingInspectionPlugin() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(false);
         doXmlTestFolding();
     }
 
-    //Folding - inspections
+    public void testNoFoldingIntentionPlugin() {
+        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(false);
+        doXmlTestFolding();
+    }
+
+    //Folding - all
 
     public void testPlugin() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
         doXmlTestFolding();
     }
+
+    //Folding - inspections
 
     public void testOtherLocalInspectionPlugin() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
@@ -37,6 +44,13 @@ public class PluginDescriptorTagsFoldingBuilderNoResourceBundleTest extends Just
     }
 
     public void testOtherGlobalInspectionPlugin() {
+        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
+        doXmlTestFolding();
+    }
+
+    //Folding - intention actions
+
+    public void testIntentionPlugin() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
         doXmlTestFolding();
     }

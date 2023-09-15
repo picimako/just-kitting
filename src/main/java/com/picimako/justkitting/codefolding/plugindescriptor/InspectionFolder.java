@@ -2,17 +2,13 @@
 
 package com.picimako.justkitting.codefolding.plugindescriptor;
 
+import static com.intellij.openapi.util.text.StringUtil.isEmpty;
+
 import com.intellij.lang.folding.FoldingDescriptor;
-import com.intellij.lang.properties.IProperty;
-import com.intellij.lang.properties.ResourceBundleReference;
 import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiReferenceService;
 import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.SmartList;
@@ -23,12 +19,8 @@ import org.jetbrains.idea.devkit.util.DescriptorUtil;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.UnaryOperator;
-
-import static com.intellij.openapi.util.text.StringUtil.defaultIfEmpty;
-import static com.intellij.openapi.util.text.StringUtil.isEmpty;
 
 /**
  * Handles the folding and placeholder text creation for the {@code localInspection} and {@code globalInspection} extensions.
@@ -36,7 +28,7 @@ import static com.intellij.openapi.util.text.StringUtil.isEmpty;
  * @since 0.5.0
  */
 @RequiredArgsConstructor
-public final class InspectionFolder implements PluginDescriptorTagFolder {
+public final class InspectionFolder extends PluginDescriptorTagFolder {
     /**
      * Folding happens only when at least one these attributes is specified. Otherwise, there is nothing to fold.
      */
@@ -55,8 +47,7 @@ public final class InspectionFolder implements PluginDescriptorTagFolder {
             var attributes = localInspection.getAttributes();
 
             //If no attribute or no foldable attribute, continue processing the rest of the localInspection tags
-            if (attributes.length == 0 || !hasAtLeastOneFoldableAttribute(attributes))
-                continue;
+            if (!isEligibleForFolding(localInspection)) continue;
 
             descriptors.add(new FoldingDescriptor(
                 localInspection.getNode(),
@@ -71,8 +62,9 @@ public final class InspectionFolder implements PluginDescriptorTagFolder {
     }
 
     @Override
-    public boolean hasAtLeastOneFoldableAttribute(XmlAttribute[] attributes) {
-        return Arrays.stream(attributes).anyMatch(attribute -> FOLDABLE_LOCAL_INSPECTION_ATTRIBUTES.contains(attribute.getName()));
+    public boolean isEligibleForFolding(XmlTag localInspection) {
+        var attributes = localInspection.getAttributes();
+        return attributes.length != 0 && Arrays.stream(attributes).anyMatch(attribute -> FOLDABLE_LOCAL_INSPECTION_ATTRIBUTES.contains(attribute.getName()));
     }
 
     @Override
@@ -132,7 +124,8 @@ public final class InspectionFolder implements PluginDescriptorTagFolder {
          */
         pathElements.add(formatAttributeValue(localInspection,
             "groupPath", "groupPathKey",
-            Bundle.GROUP_BUNDLE, groupPath -> groupPath.replace(",", " / ")));
+            Bundle.GROUP_BUNDLE, groupPath -> groupPath.replace(",", " / "),
+            false));
 
         /*
          * For the attribute [groupName="Group name"], the placeholder text will be 'Group name'.
@@ -141,7 +134,8 @@ public final class InspectionFolder implements PluginDescriptorTagFolder {
          */
         pathElements.add(formatAttributeValue(localInspection,
             "groupName", "groupKey",
-            Bundle.GROUP_BUNDLE, groupName -> groupName));
+            Bundle.GROUP_BUNDLE, groupName -> groupName,
+            false));
 
         /*
          * For the attribute [displayName="Some inspection title"], the placeholder text will be 'Some inspection title'.
@@ -150,7 +144,8 @@ public final class InspectionFolder implements PluginDescriptorTagFolder {
          */
         pathElements.add(formatAttributeValue(localInspection,
             "displayName", "key",
-            Bundle.BUNDLE, displayName -> "'" + displayName + "'"));
+            Bundle.BUNDLE, displayName -> "'" + displayName + "'",
+            true));
 
         /*
          * Path elements are joined together with a forward-slash with spaces around it.
@@ -158,13 +153,6 @@ public final class InspectionFolder implements PluginDescriptorTagFolder {
          */
         String path = String.join(" / ", pathElements.stream().filter(element -> !element.isBlank()).toList());
         return !path.isBlank() ? "at " + path : "";
-    }
-
-    /**
-     * Returns the argument value if it is non-null and non-empty, otherwise, returns empty string.
-     */
-    private static String getOrEmpty(@Nullable String value) {
-        return defaultIfEmpty(value, "");
     }
 
     /**
@@ -178,14 +166,17 @@ public final class InspectionFolder implements PluginDescriptorTagFolder {
      */
     private static String formatAttributeValue(XmlTag localInspection, String literalAttrName, String keyAttrName,
                                                Bundle primaryBundle,
-                                               UnaryOperator<String> literalValueFormatter) {
+                                               UnaryOperator<String> literalValueFormatter,
+                                               boolean wrapInSingleQuotes) {
         String displayName = localInspection.getAttributeValue(literalAttrName);
         return !isEmpty(displayName)
             ? literalValueFormatter.apply(displayName)
-            : resolveMessageFromBundle(localInspection, keyAttrName, primaryBundle);
+            : resolveMessageFromBundle(localInspection, keyAttrName, primaryBundle, wrapInSingleQuotes);
     }
 
-    private static String resolveMessageFromBundle(XmlTag localInspection, String keyAttrName, @NotNull InspectionFolder.Bundle primaryBundle) {
+    private static String resolveMessageFromBundle(XmlTag localInspection, String keyAttrName,
+                                                   @NotNull InspectionFolder.Bundle primaryBundle,
+                                                   boolean wrapInSingleQuotes) {
         var bundle = primaryBundle;
         while (bundle != Bundle.NONE) {
             //GROUP_BUNDLE or BUNDLE
@@ -198,7 +189,7 @@ public final class InspectionFolder implements PluginDescriptorTagFolder {
                     //For now, it always takes the first ResourceBundleReference, regardless if there are e.g. localizations for more languages
                     var resolved = findFirstBundleReference(references);
                     if (resolved.isPresent() && resolved.get() instanceof PropertiesFile propertiesFile) {
-                        return findMessageInPropertiesOrDefaultToKey(propertiesFile, localInspection.getAttributeValue(keyAttrName));
+                        return findMessageInPropertiesOrDefaultToKey(propertiesFile, localInspection.getAttributeValue(keyAttrName), wrapInSingleQuotes);
                     }
                 }
                 bundle = bundle.fallbackTo;
@@ -216,39 +207,12 @@ public final class InspectionFolder implements PluginDescriptorTagFolder {
                 //For now, it always takes the first ResourceBundleReference, regardless if there are e.g. localizations for more languages
                 return findFirstBundleReference(getReferences(resourceBundleTag))
                     .map(resolved -> resolved instanceof PropertiesFile propertiesFile
-                        ? findMessageInPropertiesOrDefaultToKey(propertiesFile, localInspection.getAttributeValue(keyAttrName))
+                        ? findMessageInPropertiesOrDefaultToKey(propertiesFile, localInspection.getAttributeValue(keyAttrName), wrapInSingleQuotes)
                         : null)
                     .orElseGet(() -> asKey(localInspection.getAttributeValue(keyAttrName)));
             }
         }
         return asKey(localInspection.getAttributeValue(keyAttrName));
-    }
-
-    @NotNull
-    private static Optional<PsiElement> findFirstBundleReference(List<PsiReference> references) {
-        return references.stream()
-            .filter(ResourceBundleReference.class::isInstance)
-            .findFirst()
-            .map(PsiReference::resolve);
-    }
-
-    @NotNull
-    private static List<PsiReference> getReferences(XmlElement element) {
-        return PsiReferenceService.getService().getReferences(element, PsiReferenceService.Hints.NO_HINTS);
-    }
-
-    private static String findMessageInPropertiesOrDefaultToKey(PropertiesFile propertiesFile, @Nullable String messageKey) {
-        return Optional.ofNullable(messageKey)
-            .map(propertiesFile::findPropertyByKey)
-            .map(IProperty::getValue)
-            .orElseGet(() -> asKey(messageKey));
-    }
-
-    /**
-     * Encloses the argument attribute value in curly braces. For example: {@code some.key} becomes {@code {some.key}}.
-     */
-    private static String asKey(@Nullable String attributeValue) {
-        return getOrEmpty(attributeValue != null && !attributeValue.isBlank() ? "{" + attributeValue + "}" : "");
     }
 
     /**

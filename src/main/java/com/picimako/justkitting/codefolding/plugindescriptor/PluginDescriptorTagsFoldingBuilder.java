@@ -30,7 +30,8 @@ public class PluginDescriptorTagsFoldingBuilder extends CustomFoldingBuilder {
 
     private static final Set<PluginDescriptorTagFolder> TAG_FOLDERS = Set.of(
         new InspectionFolder("localInspection"),
-        new InspectionFolder("globalInspection"));
+        new InspectionFolder("globalInspection"),
+        new IntentionActionFolder());
 
     @Override
     protected void buildLanguageFoldRegions(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiElement root, @NotNull Document document, boolean quick) {

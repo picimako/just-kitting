@@ -5,6 +5,7 @@
 * [XML tag folding in plugin descriptor files](#xml-tag-folding-in-plugin-descriptor-files)
   * [Supported tags](#supported-tags)
     * [extensions.localInspection / extensions.globalInspection](#extensionslocalinspection--extensionsglobalinspection)
+    * [extensions.intentionAction](#extensionsintentionaction)
 <!-- TOC -->
 
 ## Configuration file diffs with the IntelliJ Platform Plugin Template
@@ -38,7 +39,7 @@ If the remote contents cannot be downloaded, a balloon is displayed, and a log e
 
 ## XML tag folding in plugin descriptor files
 
-![](https://img.shields.io/badge/codefolding-orange) ![](https://img.shields.io/badge/since-0.4.0-blue) [![](https://img.shields.io/badge/implementation-PluginDescriptorTagsFoldingBuilder-blue)](../src/main/java/com/picimako/justkitting/codefolding/plugindescriptor/PluginDescriptorTagsFoldingBuilder.java)
+![](https://img.shields.io/badge/codefolding-orange) [![](https://img.shields.io/badge/implementation-PluginDescriptorTagsFoldingBuilder-blue)](../src/main/java/com/picimako/justkitting/codefolding/plugindescriptor/PluginDescriptorTagsFoldingBuilder.java)
 
 There are certain extensions, and XML tags in general, in `plugin.xml` and other plugin descriptor files that can hold a lot of information.
 Having many such tags can make it more difficult for users to parse them, find the one they are looking for, or just scroll through them.
@@ -50,8 +51,10 @@ under <kbd>Settings</kbd> > <kbd>Editor</kbd> > <kbd>General</kbd> > <kbd>Code F
 
 #### extensions.localInspection / extensions.globalInspection
 
-The `<localInspection>` and `<globalInspection>` tags within `<extensions defaultExtensionNs="com.intellij">` folds in the form of **'for [language] at [path]'**,
-and supports the following attributes for folding:
+![](https://img.shields.io/badge/since-0.4.0-blue) [![](https://img.shields.io/badge/implementation-InspectionFolder-blue)](../src/main/java/com/picimako/justkitting/codefolding/plugindescriptor/InspectionFolder.java)
+
+The `<localInspection>` and `<globalInspection>` tags within `<extensions defaultExtensionNs="com.intellij">` fold in the form of **'for [language] at [path]'**,
+and support the following attributes for folding:
 
 | Attribute      | Attribute value example  | Placeholder text                         |
 |----------------|--------------------------|------------------------------------------|
@@ -75,3 +78,27 @@ Resource bundle keys are resolved according to their resolution fallback chain:
 **Example:**
 
 ![local_inspection_tag_folding](assets/local_inspection_tag_folding.png)
+
+#### extensions.intentionAction
+
+![](https://img.shields.io/badge/since-0.6.0-blue) [![](https://img.shields.io/badge/implementation-IntentionActionFolder-blue)](../src/main/java/com/picimako/justkitting/codefolding/plugindescriptor/IntentionActionFolder.java)
+
+The `<intentionAction>` tags within `<extensions defaultExtensionNs="com.intellij">` fold in the form of
+** for [language] at [category] / [family name or class name] ...**.
+
+The `<intentionAction>` tags are folded regardless of what subtags of them are present and in what order.
+
+If the language is not configured (e.g. not available in earlier platform versions) the tag folds without the language as
+** at [category] / [family name or class name] ...**
+
+**Class names:**
+
+The `<className>` tag is resolved to the short name of the class, or if the plugin, whose project is currently open,
+is also installed in the IDE, thus it has the intention action classes registered, it evaluates their `getFamilyName()`
+methods to provide a better placeholder text.
+
+For now, the plugin cannot evaluate the family name of `IntentionAction` classes in the currently open project.
+
+**Example:**
+
+![intention_action_tag_folding](assets/intention_action_tag_folding.PNG)

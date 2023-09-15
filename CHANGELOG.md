@@ -5,6 +5,9 @@
 ## [Unreleased]
 
 ## [0.6.0]
+### Added
+- [#29](https://github.com/picimako/just-kitting/issues/29): Added code folding for `extensions.intentAction` tags in plugin descriptor files.
+
 ### Changed
 - [#29](https://github.com/picimako/just-kitting/issues/29): Code folding of `extensions.localInspection` and `extensions.globalInspection` tags
 is extended with resource bundle message resolution with fallback logic based on where bundle names are specified in the EP or in the plugin descriptor file.

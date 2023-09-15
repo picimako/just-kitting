@@ -5,6 +5,8 @@
 
 <extensions defaultExtensionNs="com.intellij"<fold text='...' expand='true'>>
 
+    <!-- Inspections -->
+
     <localInspection <fold text='at Some group from lower' expand='false'>groupKey="some.group.key" groupBundle="messages.LowerLevelBundle"/</fold>>
     <localInspection <fold text='at Some group from lower' expand='false'>groupKey="some.group.key" bundle="messages.LowerLevelBundle"/</fold>>
     <localInspection <fold text='at Some group from top' expand='false'>groupKey="some.group.key"/</fold>>
@@ -13,9 +15,9 @@
     <localInspection <fold text='at Some path from lower' expand='false'>groupPathKey="some.group.path.key" bundle="messages.LowerLevelBundle"/</fold>>
     <localInspection <fold text='at Some path from top' expand='false'>groupPathKey="some.group.path.key"/</fold>>
 
-    <localInspection <fold text='at Some key from top' expand='false'>key="some.key" groupBundle="messages.LowerLevelBundle"/</fold>>
-    <localInspection <fold text='at Some key from lower' expand='false'>key="some.key" bundle="messages.LowerLevelBundle"/</fold>>
-    <localInspection <fold text='at Some key from top' expand='false'>key="some.key"/</fold>>
+    <localInspection <fold text='at 'Some key from top'' expand='false'>key="some.key" groupBundle="messages.LowerLevelBundle"/>
+    <localInspection <fold text='at 'Some key from lower'' expand='false'>key="some.key" bundle="messages.LowerLevelBundle"/>
+    <localInspection <fold text='at 'Some key from top'' expand='false'>key="some.key"/>
 
     <globalInspection <fold text='at Some group from lower' expand='false'>groupKey="some.group.key" groupBundle="messages.LowerLevelBundle"/</fold>>
     <globalInspection <fold text='at Some group from lower' expand='false'>groupKey="some.group.key" bundle="messages.LowerLevelBundle"/</fold>>
@@ -25,9 +27,41 @@
     <globalInspection <fold text='at Some path from lower' expand='false'>groupPathKey="some.group.path.key" bundle="messages.LowerLevelBundle"/</fold>>
     <globalInspection <fold text='at Some path from top' expand='false'>groupPathKey="some.group.path.key"/</fold>>
 
-    <globalInspection <fold text='at Some key from top' expand='false'>key="some.key" groupBundle="messages.LowerLevelBundle"/</fold>>
-    <globalInspection <fold text='at Some key from lower' expand='false'>key="some.key" bundle="messages.LowerLevelBundle"/</fold>>
-    <globalInspection <fold text='at Some key from top' expand='false'>key="some.key"/</fold>>
+    <globalInspection <fold text='at 'Some key from top'' expand='false'>key="some.key" groupBundle="messages.LowerLevelBundle"/>
+    <globalInspection <fold text='at 'Some key from lower'' expand='false'>key="some.key" bundle="messages.LowerLevelBundle"/>
+    <globalInspection <fold text='at 'Some key from top'' expand='false'>key="some.key"/>
+
+    <!-- Intention actions   -->
+
+    <intentionAction<fold text='...' expand='true'>><fold text=' for JAVA at Some key from top / DummyIntention ' expand='false'>
+        <language>JAVA</language>
+        <categoryKey>some.key</categoryKey>
+        <bundle>messages.LowerLevelBundle</bundle>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+    </className</fold>>
+    </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
+
+    <intentionAction<fold text='...' expand='true'>><fold text=' for JAVA at {some.non.existent.key} / DummyIntention ' expand='false'>
+        <language>JAVA</language>
+        <categoryKey>some.non.existent.key</categoryKey>
+        <bundle>messages.LowerLevelBundle</bundle>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+    </className</fold>>
+    </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
+
+    <intentionAction<fold text='...' expand='true'>><fold text=' for JAVA at Some key from top / DummyIntention ' expand='false'>
+        <language>JAVA</language>
+        <categoryKey>some.key</categoryKey>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+    </className</fold>>
+    </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
+
+    <intentionAction<fold text='...' expand='true'>><fold text=' for JAVA at {some.non.existent.key} / DummyIntention ' expand='false'>
+        <language>JAVA</language>
+        <categoryKey>some.non.existent.key</categoryKey>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+    </className</fold>>
+    </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
 
 </extensions</fold>>
         </idea-plugin</fold>>
