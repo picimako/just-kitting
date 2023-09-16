@@ -31,7 +31,7 @@ is extended with resource bundle message resolution with fallback logic based on
 - [#22](https://github.com/picimako/just-kitting/issues/22): Added code folding for `extensions.localInspection` tags in plugin descriptor files.
 
 ### Changed
-- Added `qodana.yml` to the list diffable plugin configuration files.
+- Added `qodana.yml` to the list of diffable plugin configuration files.
 - Improved the inlay hint logic to find and classify light services in Kotlin classes, including nested classes.
 - [#2](https://github.com/picimako/just-kitting/issues/2): Added Kotlin file support for generating a `getInstance()` function in companion objects for services, components, etc.
 - [#2](https://github.com/picimako/just-kitting/issues/2): Added support for converting a Kotlin class to a `PersistentStateComponent`.
