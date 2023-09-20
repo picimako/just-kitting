@@ -48,7 +48,7 @@ abstract class LightServicesHintItemAdder(open var settings: Settings,
      */
     fun <T: PsiNameIdentifierOwner> addClassReferenceHints(services: MutableList<T>?, extensionsTag: XmlToken, serviceLevel: String, classCount: MutableInt) {
         if (classCount.value < settings.maxNumberOfServicesToDisplay && services!!.isNotEmpty()) {
-            addLabelHints(extensionsTag, JustKittingBundle.inlayHints("light.services.list.display.mode.group.title", serviceLevel))
+            addLabelHints(extensionsTag, JustKittingBundle.message("inlay.hints.light.services.list.display.mode.group.title", serviceLevel))
             for (service in services.sortedBy { it.name }) {
                 addClassReferenceHint(extensionsTag, service)
                 if (classCount.incrementAndGet() == settings.maxNumberOfServicesToDisplay) return

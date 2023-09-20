@@ -2,15 +2,19 @@
 
 package com.picimako.justkitting.inlayhint;
 
+import static java.util.Comparator.comparing;
+
 import com.intellij.codeInsight.hints.InlayPresentationFactory;
 import com.intellij.codeInsight.hints.presentation.InlayPresentation;
 import com.intellij.codeInsight.hints.presentation.PresentationFactory;
-import com.intellij.ide.util.PsiClassListCellRenderer;
+import com.intellij.ide.util.DelegatingPsiElementCellRenderer;
+import com.intellij.ide.util.PsiElementRenderingInfo;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ex.util.EditorUtil;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.openapi.util.NlsSafe;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDocumentManager;
@@ -18,6 +22,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.xml.XmlToken;
 import com.picimako.justkitting.resources.JustKittingBundle;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.psi.KtClass;
 
@@ -68,8 +73,11 @@ public abstract class LightServicesHintPresentationAware {
      * @param startOffset the start offset of the `<extensions>` xml tag
      */
     public <T extends PsiNameIdentifierOwner> InlayPresentation viewAllServicesPresentation(Supplier<List<T>> classes, int startOffset) {
-        return factory.referenceOnHover(factory.smallText(JustKittingBundle.inlayHints("light.services.view.all.light.services")), (mouseEvent, point) -> {
-            var step = new BaseListPopupStep<>(JustKittingBundle.inlayHints("light.services.view.all.popup.title"), classes.get()) {
+        return factory.referenceOnHover(factory.smallText(JustKittingBundle.message("inlay.hints.light.services.view.all.light.services")), (mouseEvent, point) -> {
+            var step = new BaseListPopupStep<>(
+                JustKittingBundle.message("inlay.hints.light.services.view.all.popup.title"),
+                //Sorts the list items alphabetically by class names
+                classes.get().stream().sorted(comparing(PsiNameIdentifierOwner::getName)).toList()) {
                 @Override
                 public @Nullable PopupStep<?> onChosen(T selectedValue, boolean finalChoice) {
                     if (selectedValue instanceof PsiClass || selectedValue instanceof KtClass) {
@@ -82,7 +90,11 @@ public abstract class LightServicesHintPresentationAware {
 
             //Moving the caret to the beginning of the <extensions> tag, so that the popup list is displayed right at the element's inlay hint.
             editor.getCaretModel().moveToOffset(startOffset);
-            JBPopupFactory.getInstance().createListPopup(file.getProject(), step, renderer -> new PsiClassListCellRenderer()).showInBestPositionFor(editor);
+            JBPopupFactory.getInstance()
+                //DelegatingPsiElementCellRenderer and ClassRenderingInfo replaces PsiClassListCellRenderer,
+                // so that both PsiClasses and KtClasses can be rendered.
+                .createListPopup(file.getProject(), step, renderer -> new DelegatingPsiElementCellRenderer<>(ClassRenderingInfo.INSTANCE))
+                .showInBestPositionFor(editor);
         });
     }
 
@@ -92,5 +104,19 @@ public abstract class LightServicesHintPresentationAware {
         var line = document.getLineNumber(element.getParent().getTextRange().getStartOffset());
         var startOffset = document.getLineStartOffset(line);
         return (element.getParent().getTextRange().getStartOffset() - startOffset) * width;
+    }
+
+    /**
+     * Rendering info for various classes.
+     */
+    private static final class ClassRenderingInfo implements PsiElementRenderingInfo<PsiNameIdentifierOwner> {
+        public static final ClassRenderingInfo INSTANCE = new ClassRenderingInfo();
+
+        private ClassRenderingInfo() { }
+        
+        @Override
+        public @NlsSafe @NotNull String getPresentableText(@NotNull PsiNameIdentifierOwner element) {
+            return element.getName();
+        }
     }
 }

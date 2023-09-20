@@ -1,0 +1,45 @@
+<idea-plugin<fold text='...' expand='true'>>
+<id>dummy</id>
+<vendor>test</vendor>
+
+<extensions defaultExtensionNs="com.intellij"<fold text='...' expand='true'>>
+
+    <intentionAction<fold text='...' expand='true'>>
+        <category>Some category</category>
+    </intentionAction</fold>>
+
+    <intentionAction<fold text='...' expand='true'>>
+        <language>JAVA</language>
+        <category>Some category</category>
+    </intentionAction</fold>>
+
+    <intentionAction<fold text='...' expand='true'>>
+        <category>Some category</category>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+        </className</fold>>
+    </intentionAction</fold>>
+
+    <intentionAction<fold text='...' expand='true'>>
+        <language>JAVA</language>
+        <category>Some category</category>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+        </className</fold>>
+    </intentionAction</fold>>
+
+    <intentionAction<fold text='...' expand='true'>>
+        <category>Some category</category>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+        </className</fold>>
+        <descriptionDirectoryName>directory name</descriptionDirectoryName>
+    </intentionAction</fold>>
+
+    <intentionAction<fold text='...' expand='true'>>
+        <language>JAVA</language>
+        <category>Some category</category>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+        </className</fold>>
+        <descriptionDirectoryName>directory name</descriptionDirectoryName>
+    </intentionAction</fold>>
+
+</extensions</fold>>
+</idea-plugin</fold>>

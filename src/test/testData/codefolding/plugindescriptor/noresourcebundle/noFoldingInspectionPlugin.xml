@@ -98,5 +98,6 @@
 
     <localInspection<fold text='...' expand='true'>
         implementationClass="com.some.InspectionImpl" language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key" enabledByDefault="true"/</fold>>
+
 </extensions</fold>>
         </idea-plugin</fold>>

@@ -38,6 +38,7 @@ internal class JavaGetInstanceGenerationAction(serviceLevel: Service.Level) : Ge
     }
 
     companion object {
+        //The code block brace, {, is enclosed in apostrophes because otherwise MessageFormat would handle it as a placeholder opener
         private const val PROJECT_GET_INSTANCE_PATTERN = "public static {0} getInstance(com.intellij.openapi.project.Project project) '{'return project.getService({0}.class);}"
         private const val APP_GET_INSTANCE_PATTERN = "public static {0} getInstance() '{'return com.intellij.openapi.application.ApplicationManager.getApplication().getService({0}.class);}"
 

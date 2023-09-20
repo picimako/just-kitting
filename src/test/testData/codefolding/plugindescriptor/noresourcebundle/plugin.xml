@@ -98,5 +98,44 @@
 
     <localInspection<fold text='...' expand='true'>
         <fold text='for JAVA at Some / The group name / {inspection.title.key}' expand='false'>implementationClass="com.some.InspectionImpl" language="JAVA" groupPath="Some" groupName="The group name" key="inspection.title.key" enabledByDefault="true"/</fold></fold>>
-</extensions</fold>>
+
+    <!-- Folding for intentionActions -->
+
+    <intentionAction<fold text='...' expand='true'>><fold text=' at Some category /  ' expand='false'>
+        <category>Some category</category>
+    </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
+
+    <intentionAction<fold text='...' expand='true'>><fold text=' for JAVA at Some category /  ' expand='false'>
+        <language>JAVA</language>
+        <category>Some category</category>
+    </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
+
+    <intentionAction<fold text='...' expand='true'>><fold text=' at Some category / DummyIntention ' expand='false'>
+        <category>Some category</category>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+        </className</fold>>
+    </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
+
+    <intentionAction<fold text='...' expand='true'>><fold text=' for JAVA at Some category / DummyIntention ' expand='false'>
+        <language>JAVA</language>
+        <category>Some category</category>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+        </className</fold>>
+</fold><fold text='...' expand='false'></intentionAction</fold></fold>>
+
+    <intentionAction<fold text='...' expand='true'>><fold text=' at Some category / DummyIntention ' expand='false'>
+        <category>Some category</category>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+        </className</fold>>
+        <descriptionDirectoryName>directory name</descriptionDirectoryName>
+<fold text='...' expand='false'></fold></intentionAction</fold></fold>>
+
+    <intentionAction<fold text='...' expand='true'>><fold text=' for JAVA at Some category / DummyIntention ' expand='false'>
+        <language>JAVA</language>
+        <category>Some category</category>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+        </className</fold>>
+    <descriptionDirectoryName>directory name</descriptionDirectoryName>
+    </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
+        </extensions</fold>>
         </idea-plugin</fold>>

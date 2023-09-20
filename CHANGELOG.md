@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+## [0.6.0]
+### Added
+- [#29](https://github.com/picimako/just-kitting/issues/29): Added code folding for `extensions.intentAction` tags in plugin descriptor files.
+
+### Changed
+- [#29](https://github.com/picimako/just-kitting/issues/29): Code folding of `extensions.localInspection` and `extensions.globalInspection` tags
+is extended with resource bundle message resolution with fallback logic based on where bundle names are specified in the EP or in the plugin descriptor file.
+- The light service class names are now sorted alphabetically in the **View all light services** inlay hint list popup.
+
+### Fixed
+- Fixed the issue that the **View all light services** inlay hint list popup didn't appear because it didn't handle rendering of KtClasses.
+
 ## [0.5.0]
 ### Added
 - [#29](https://github.com/picimako/just-kitting/issues/29): Added code folding for `extensions.globalInspection` tags in plugin descriptor files.
@@ -19,7 +31,7 @@
 - [#22](https://github.com/picimako/just-kitting/issues/22): Added code folding for `extensions.localInspection` tags in plugin descriptor files.
 
 ### Changed
-- Added `qodana.yml` to the list diffable plugin configuration files.
+- Added `qodana.yml` to the list of diffable plugin configuration files.
 - Improved the inlay hint logic to find and classify light services in Kotlin classes, including nested classes.
 - [#2](https://github.com/picimako/just-kitting/issues/2): Added Kotlin file support for generating a `getInstance()` function in companion objects for services, components, etc.
 - [#2](https://github.com/picimako/just-kitting/issues/2): Added support for converting a Kotlin class to a `PersistentStateComponent`.

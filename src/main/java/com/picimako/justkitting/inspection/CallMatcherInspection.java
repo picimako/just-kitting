@@ -62,7 +62,7 @@ public class CallMatcherInspection extends LocalInspectionTool {
                         .ifPresent(referencedClass -> {
                             var methodCountAndMessage = getMethodCountAndMessage(literalExpr, referencedClass, parentCall);
                             if (!methodCountAndMessage.equals(Pair.empty()) && methodCountAndMessage.first == 0) {
-                                holder.registerProblem(literalExpr, JustKittingBundle.inspection(methodCountAndMessage.second), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL);
+                                holder.registerProblem(literalExpr, JustKittingBundle.message(methodCountAndMessage.second), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL);
                             }
                         });
                 }
@@ -81,11 +81,11 @@ public class CallMatcherInspection extends LocalInspectionTool {
                 boolean isExactInstance = CALL_MATCHER_EXACT_INSTANCE_MATCHER.matches(parentCall);
                 PsiMethod[] methodsInClass = referencedClass.findMethodsByName(stripQuotes(methodNameArg.getText()), !isExactInstance);
                 if (isExactInstance) {
-                    return Pair.create(filterByNonStatic(methodsInClass).length, "call.matcher.no.exact.instance.method.with.name");
+                    return Pair.create(filterByNonStatic(methodsInClass).length, "inspection.call.matcher.no.exact.instance.method.with.name");
                 } else if (CALL_MATCHER_STATIC_MATCHER.matches(parentCall)) {
-                    return Pair.create(filterByStatic(methodsInClass).length, "call.matcher.no.static.method.with.name");
+                    return Pair.create(filterByStatic(methodsInClass).length, "inspection.call.matcher.no.static.method.with.name");
                 } else if (CALL_MATCHER_INSTANCE_MATCHER.matches(parentCall)) {
-                    return Pair.create(filterByNonStatic(methodsInClass).length, "call.matcher.no.instance.method.with.name");
+                    return Pair.create(filterByNonStatic(methodsInClass).length, "inspection.call.matcher.no.instance.method.with.name");
                 }
                 return Pair.empty();
             }

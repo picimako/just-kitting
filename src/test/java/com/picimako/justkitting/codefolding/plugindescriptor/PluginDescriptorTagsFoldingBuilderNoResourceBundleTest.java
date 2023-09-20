@@ -9,27 +9,34 @@ import com.picimako.justkitting.codefolding.JustKittingCodeFoldingTestBase;
 /**
  * Integration test for {@link PluginDescriptorTagsFoldingBuilder}.
  */
-@TestDataPath("$CONTENT_ROOT/testData/codefolding/plugindescriptor")
-public class PluginDescriptorTagsFoldingBuilderTest extends JustKittingCodeFoldingTestBase {
+@TestDataPath("$CONTENT_ROOT/testData/codefolding/plugindescriptor/noresourcebundle")
+public class PluginDescriptorTagsFoldingBuilderNoResourceBundleTest extends JustKittingCodeFoldingTestBase {
 
     @Override
     protected String getTestDataPath() {
-        return "src/test/testData/codefolding/plugindescriptor/";
+        return "src/test/testData/codefolding/plugindescriptor/noresourcebundle";
     }
 
     //No folding
 
-    public void testNoFoldingPlugin() {
+    public void testNoFoldingInspectionPlugin() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(false);
         doXmlTestFolding();
     }
 
-    //Folding - inspections
+    public void testNoFoldingIntentionPlugin() {
+        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(false);
+        doXmlTestFolding();
+    }
+
+    //Folding - all
 
     public void testPlugin() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
         doXmlTestFolding();
     }
+
+    //Folding - inspections
 
     public void testOtherLocalInspectionPlugin() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
@@ -37,6 +44,13 @@ public class PluginDescriptorTagsFoldingBuilderTest extends JustKittingCodeFoldi
     }
 
     public void testOtherGlobalInspectionPlugin() {
+        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
+        doXmlTestFolding();
+    }
+
+    //Folding - intention actions
+
+    public void testIntentionPlugin() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
         doXmlTestFolding();
     }

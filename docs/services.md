@@ -109,7 +109,7 @@ Clicking on it, a popup list of all light service classes is displayed.
 
 In this mode, hints are displayed for light service classes regardless of they are registered in `plugin.xml` or not.
 
-(The examples are from one of my other plugins called *Terra Support*).
+(The examples are from one of my other plugins called *Gherkin Overview*).
 
 ### View all
 
