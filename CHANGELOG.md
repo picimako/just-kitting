@@ -4,9 +4,14 @@
 
 ## [Unreleased]
 
+## [0.7.0]
+### Changed
+- Supported IDE version range: 2022.3-2023.3
+- Plugin configuration updates.
+
 ## [0.6.0]
 ### Added
-- [#29](https://github.com/picimako/just-kitting/issues/29): Added code folding for `extensions.intentAction` tags in plugin descriptor files.
+- [#29](https://github.com/picimako/just-kitting/issues/29): Added code folding for `extensions.intentionAction` tags in plugin descriptor files.
 
 ### Changed
 - [#29](https://github.com/picimako/just-kitting/issues/29): Code folding of `extensions.localInspection` and `extensions.globalInspection` tags
