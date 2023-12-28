@@ -41,5 +41,13 @@
         <descriptionDirectoryName>directory name</descriptionDirectoryName>
     </intentionAction</fold>>
 
+    <intentionAction<fold text='...' expand='true'>>
+        <language>JAVA</language>
+        <category>Some category/sub-category</category>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+        </className</fold>>
+        <descriptionDirectoryName>directory name</descriptionDirectoryName>
+    </intentionAction</fold>>
+
 </extensions</fold>>
 </idea-plugin</fold>>

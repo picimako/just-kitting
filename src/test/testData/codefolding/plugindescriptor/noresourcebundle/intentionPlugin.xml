@@ -26,7 +26,7 @@
         <category>Some category</category>
         <className<fold text='...' expand='true'>>com.picimako.DummyIntention
         </className</fold>>
-    </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
+    <fold text='...' expand='false'></fold></intentionAction</fold></fold>>
 
     <intentionAction<fold text='...' expand='true'>><fold text=' at Some category / DummyIntention ' expand='false'>
         <category>Some category</category>
@@ -41,6 +41,14 @@
         <className<fold text='...' expand='true'>>com.picimako.DummyIntention
         </className</fold>>
         <descriptionDirectoryName>directory name</descriptionDirectoryName>
+    </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
+
+    <intentionAction<fold text='...' expand='true'>><fold text=' for JAVA at Some category / sub-category / DummyIntention ' expand='false'>
+        <language>JAVA</language>
+        <category>Some category/sub-category</category>
+        <className<fold text='...' expand='true'>>com.picimako.DummyIntention
+    </className</fold>>
+    <descriptionDirectoryName>directory name</descriptionDirectoryName>
     </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
 </extensions</fold>>
 </idea-plugin</fold>>

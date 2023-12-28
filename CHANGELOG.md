@@ -5,6 +5,8 @@
 ## [Unreleased]
 
 ## [0.8.0]
+### Changed
+- Intention action sub-category names are now displayed in `<intentionAction>` tag code folding placeholder texts.
 - Plugin configuration updates.
 
 ## [0.7.0]
