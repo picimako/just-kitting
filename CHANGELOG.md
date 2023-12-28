@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+## [0.8.0]
+- Plugin configuration updates.
+
 ## [0.7.0]
 ### Changed
 - Supported IDE version range: 2022.3-2023.3

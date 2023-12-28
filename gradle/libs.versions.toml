@@ -1,11 +1,11 @@
 [versions]
 # libraries
-annotations = "24.0.1"
+annotations = "24.1.0"
 
 # plugins
-kotlin = "1.9.0"
+kotlin = "1.9.21"
 changelog = "2.2.0"
-gradleIntelliJPlugin = "1.16.0"
+gradleIntelliJPlugin = "1.16.1"
 lombok = "8.3"
 
 [libraries]
