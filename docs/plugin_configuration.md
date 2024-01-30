@@ -84,12 +84,12 @@ Resource bundle keys are resolved according to their resolution fallback chain:
 ![](https://img.shields.io/badge/since-0.6.0-blue) [![](https://img.shields.io/badge/implementation-IntentionActionFolder-blue)](../src/main/java/com/picimako/justkitting/codefolding/plugindescriptor/IntentionActionFolder.java)
 
 The `<intentionAction>` tags within `<extensions defaultExtensionNs="com.intellij">` fold in the form of
-** for [language] at [category] / [family name or class name] ...**.
+**for [language] at [category] / [family name or class name] ...**.
 
 The `<intentionAction>` tags are folded regardless of what subtags of them are present and in what order.
 
 If the language is not configured (e.g. not available in earlier platform versions) the tag folds without the language as
-** at [category] / [family name or class name] ...**
+**at [category] / [family name or class name] ...**
 
 **Class names:**
 

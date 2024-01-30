@@ -7,9 +7,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.picimako.justkitting.JustKittingTestBase;
 
 /**
- * Integration test for {@link MakeClassPersistentStateComponentIntention}.
+ * Integration test for {@link MakeJavaClassPersistentStateComponentIntention}.
  */
-public class MakeClassPersistentStateComponentIntentionJavaTest extends JustKittingTestBase {
+public class MakeJavaClassPersistentStateComponentIntentionTest extends JustKittingTestBase {
 
     //Not available
 
@@ -27,7 +27,7 @@ public class MakeClassPersistentStateComponentIntentionJavaTest extends JustKitt
                     }
                 }""");
 
-        assertThat(new MakeClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
+        assertThat(new MakeJavaClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
     }
 
     public void testIntentionIsNotAvailableForInterface() {
@@ -35,7 +35,7 @@ public class MakeClassPersistentStateComponentIntentionJavaTest extends JustKitt
             "public interface SomeCo<caret>mponent {\n" +
                 "}");
 
-        assertThat(new MakeClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
+        assertThat(new MakeJavaClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
     }
 
     public void testIntentionIsNotAvailableForEnum() {
@@ -43,7 +43,7 @@ public class MakeClassPersistentStateComponentIntentionJavaTest extends JustKitt
             "public enum SomeCo<caret>mponent {\n" +
                 "}");
 
-        assertThat(new MakeClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
+        assertThat(new MakeJavaClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
     }
 
     public void testIntentionIsNotAvailableForAbstractClass() {
@@ -51,7 +51,7 @@ public class MakeClassPersistentStateComponentIntentionJavaTest extends JustKitt
             "public abstract class SomeCo<caret>mponent {\n" +
                 "}");
 
-        assertThat(new MakeClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
+        assertThat(new MakeJavaClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
     }
 
     public void testIntentionIsNotAvailableWhenInvokedOnANonPsiClassElement() {
@@ -61,7 +61,7 @@ public class MakeClassPersistentStateComponentIntentionJavaTest extends JustKitt
                     public String fie<caret>ld;
                 }""");
 
-        assertThat(new MakeClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
+        assertThat(new MakeJavaClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
     }
 
     //Available
@@ -73,6 +73,6 @@ public class MakeClassPersistentStateComponentIntentionJavaTest extends JustKitt
                     public String field;
                 }""");
 
-        assertThat(new MakeClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isTrue();
+        assertThat(new MakeJavaClassPersistentStateComponentIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isTrue();
     }
 }

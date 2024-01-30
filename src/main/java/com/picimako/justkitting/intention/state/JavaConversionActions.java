@@ -13,7 +13,7 @@ import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Provides intention actions for the {@link MakeClassPersistentStateComponentIntention} what users can choose from.
+ * Provides intention actions for the {@link MakeJavaClassPersistentStateComponentIntention} what users can choose from.
  * <p>
  * Code generation is based on the <a href="https://plugins.jetbrains.com/docs/intellij/persisting-state-of-components.html#implementing-the-persistentstatecomponent-interface">
  * Plugin SDK > Persisting State of Components > Implementing the PersistentStateComponent Interface</a> document.

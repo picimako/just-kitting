@@ -10,7 +10,6 @@ import com.intellij.codeInsight.CodeInsightUtil;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.codeInspection.util.IntentionName;
-import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.ide.util.PsiClassListCellRenderer;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
@@ -87,7 +86,7 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-        if (!file.getFileType().equals(JavaFileType.INSTANCE) || !editor.getSelectionModel().hasSelection()) {
+        if (!editor.getSelectionModel().hasSelection()) {
             return false;
         }
         var expressionInRange = getExpressionInRange(editor, file);
@@ -145,8 +144,8 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
         if (element == null) element = expression.getParent();
         var parent = element;
         while (parent != null) {
-            if (parent instanceof PsiClass && LocalToFieldHandler.mayContainConstants((PsiClass) parent)) {
-                parentClasses.add((PsiClass) parent);
+            if (parent instanceof PsiClass parentCls && LocalToFieldHandler.mayContainConstants(parentCls)) {
+                parentClasses.add(parentCls);
             }
             parent = PsiTreeUtil.getParentOfType(parent, PsiClass.class);
         }

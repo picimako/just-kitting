@@ -89,7 +89,9 @@ public class IntentionActionFolder extends PluginDescriptorTagFolder {
         //Takes either the value of the 'category' subtag, if it is present,
         // or tries to resolve the resource bundle key specified in the 'categoryKey' subtag
         String category = findFirstSubTagWithName(tag, "category").orElseGet(() -> resolveCategoryKey(tag));
-        path.add(category.trim());
+        for (String part : category.split("/")) {
+            path.add(part.trim());
+        }
 
         //Resolves the family name of the intention specified in the 'className' subtag,
         // or returns the simple name of that class
@@ -99,6 +101,7 @@ public class IntentionActionFolder extends PluginDescriptorTagFolder {
         // for JAVA at Group / 'Intention for something'
         // for JAVA at SomethingIntentionAction
         // at Group / 'Intention for something'
+        // at Group / Subgroup / 'Intention for something'
         // at SomethingIntentionAction
         // ...
         return language + " at " + String.join(" / ", path) + " ";

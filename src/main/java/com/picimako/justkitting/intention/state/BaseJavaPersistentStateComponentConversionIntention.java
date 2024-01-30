@@ -18,10 +18,10 @@ import static com.picimako.justkitting.PlatformNames.STATE_ANNOTATION;
 /**
  * Base class for the child intention actions for converting Java classes to {@code PersistentStateComponent}s.
  * <p>
- * These intentions are available whenever {@link MakeClassPersistentStateComponentIntention} is available,
+ * These intentions are available whenever {@link MakeJavaClassPersistentStateComponentIntention} is available,
  * and not context-dependent individually.
  *
- * @see MakeClassPersistentStateComponentIntention
+ * @see MakeJavaClassPersistentStateComponentIntention
  * @see JavaConversionActions
  */
 abstract class BaseJavaPersistentStateComponentConversionIntention extends BaseCodeInsightAction {

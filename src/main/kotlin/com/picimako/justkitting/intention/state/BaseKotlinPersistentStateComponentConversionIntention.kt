@@ -13,10 +13,10 @@ import org.jetbrains.kotlin.psi.KtPsiFactory
 /**
  * Base class for the child intention actions for converting Kotlin classes to `PersistentStateComponent`s.
  *
- * These intentions are available whenever [MakeClassPersistentStateComponentIntention] is available,
+ * These intentions are available whenever [MakeJavaClassPersistentStateComponentIntention] is available,
  * and not context-dependent individually.
  *
- * @see MakeClassPersistentStateComponentIntention
+ * @see MakeJavaClassPersistentStateComponentIntention
  * @see KotlinConversionActions
  */
 abstract class BaseKotlinPersistentStateComponentConversionIntention : BaseCodeInsightAction() {
