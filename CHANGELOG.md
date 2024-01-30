@@ -6,6 +6,7 @@
 
 ## [0.8.0]
 ### Changed
+- Supported IDE version range: 2023.1.5-2024.1-EAP.
 - Intention action sub-category names are now displayed in `<intentionAction>` tag code folding placeholder texts.
 - Plugin configuration updates.
 

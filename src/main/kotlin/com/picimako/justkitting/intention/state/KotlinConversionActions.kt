@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.psi.psiUtil.endOffset
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
 
 /**
- * Provides intention actions for the [MakeClassPersistentStateComponentIntention] what users can choose from.
+ * Provides intention actions for the [MakeJavaClassPersistentStateComponentIntention] what users can choose from.
  *
  * Code generation is based on the [
  * Plugin SDK > Persisting State of Components > Implementing the PersistentStateComponent Interface](https://plugins.jetbrains.com/docs/intellij/persisting-state-of-components.html#implementing-the-persistentstatecomponent-interface) document.

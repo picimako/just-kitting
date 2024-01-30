@@ -102,9 +102,9 @@ tasks {
         include("**/*Test.class")
     }
 
-    runPluginVerifier {
-        ideVersions.set(listOf("IC-232.7754.73"))
-    }
+//    runPluginVerifier {
+//        ideVersions.set(listOf("IC-232.7754.73"))
+//    }
 
     signPlugin {
         certificateChain = environment("CERTIFICATE_CHAIN")

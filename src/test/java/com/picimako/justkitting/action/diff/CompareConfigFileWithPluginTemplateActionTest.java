@@ -3,6 +3,7 @@ package com.picimako.justkitting.action.diff;
 
 import com.intellij.diff.requests.DiffRequest;
 import com.intellij.diff.requests.SimpleDiffRequest;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -60,7 +61,7 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
 
     public void testNoDiffViewForNonExistentVirtualFile() {
         var diffRequest = new Ref<DiffRequest>();
-        var e = new TestActionEvent(dataId -> CommonDataKeys.PROJECT.is(dataId)
+        var e = TestActionEvent.createTestEvent(dataId -> CommonDataKeys.PROJECT.is(dataId)
                 ? getProject()
                 : DiffDataKeys.DIFF_REQUEST.is(dataId) ? diffRequest : null);
 
@@ -84,7 +85,7 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
         assertThat(simpleDiffRequest.getContentTitles())
                 .containsExactly("Platform Plugin Template", "Local");
         assertThat(simpleDiffRequest.toString())
-                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[(null|LightVirtualFile: diff\\.properties)], \\{}:DocumentImpl\\[temp:///src/gradle\\.properties]]");
+                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[DiffContentFactory LightVirtualFile: diff\\.properties], \\{}:DocumentImpl\\[temp:\\/\\/\\/src\\/gradle\\.properties]]");
     }
 
     public void testDiffViewForFileInFolder() {
@@ -110,16 +111,16 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
 
     //Helpers
 
-    private TestActionEvent wrapInTestActionEvent(VirtualFile file) {
-        return new TestActionEvent(dataId -> {
+    private AnActionEvent wrapInTestActionEvent(VirtualFile file) {
+        return TestActionEvent.createTestEvent(dataId -> {
             if (CommonDataKeys.VIRTUAL_FILE.is(dataId)) return file;
             if (CommonDataKeys.PROJECT.is(dataId)) return getProject();
             return null;
         });
     }
 
-    private TestActionEvent wrapInTestActionEvent(VirtualFile file, Ref<DiffRequest> diffRequest) {
-        return new TestActionEvent(dataId -> {
+    private AnActionEvent wrapInTestActionEvent(VirtualFile file, Ref<DiffRequest> diffRequest) {
+        return TestActionEvent.createTestEvent(dataId -> {
             if (CommonDataKeys.VIRTUAL_FILE.is(dataId)) return file;
             if (CommonDataKeys.PROJECT.is(dataId)) return getProject();
             if (DiffDataKeys.DIFF_REQUEST.is(dataId)) return diffRequest;

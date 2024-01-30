@@ -3,11 +3,8 @@
     <id>picimako.justkitting</id>
     <name>Just Kitting</name>
     <vendor url="https://github.com/picimako/just-kitting">Tamás Balog</vendor>
-    <version>0.6.0</version>
+    <version>0.8.0</version>
     <resource-bundle>messages.JustKittingBundle</resource-bundle>
-
-    <!-- https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="222"/>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
@@ -28,15 +25,23 @@
                          language="JAVA" displayName="Code optimization checks" groupName="Just Kitting" enabledByDefault="true" level="WARNING"/>
 
         <intentionAction>
+            <language>JAVA</language>
             <categoryKey>intention.category</categoryKey>
-            <className>com.picimako.justkitting.intention.state.MakeClassPersistentStateComponentIntention</className>
+            <className>com.picimako.justkitting.intention.state.MakeJavaClassPersistentStateComponentIntention</className>
+        </intentionAction>
+        <intentionAction>
+            <language>kotlin</language>
+            <categoryKey>intention.category</categoryKey>
+            <className>com.picimako.justkitting.intention.state.MakeKotlinClassPersistentStateComponentIntention</className>
         </intentionAction>
 
         <intentionAction>
+            <language>JAVA</language>
             <categoryKey>intention.category</categoryKey>
             <className>com.picimako.justkitting.intention.callmatcher.CallMatchersConversionToAnyOfIntention</className>
         </intentionAction>
         <intentionAction>
+            <language>JAVA</language>
             <categoryKey>intention.category</categoryKey>
             <className>com.picimako.justkitting.intention.callmatcher.GenerateCallMatcherFromSignatureIntention
             </className>
