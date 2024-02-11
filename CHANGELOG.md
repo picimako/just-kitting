@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.8.1]
+### Fixed
+- Added a missing `getActionUpdateThread()` method override to avoid throwing exception. 
+
 ## [0.8.0]
 ### Changed
 - Supported IDE version range: 2023.1.5-2024.1-EAP.

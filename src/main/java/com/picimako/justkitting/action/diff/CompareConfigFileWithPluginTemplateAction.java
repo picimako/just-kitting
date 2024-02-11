@@ -6,6 +6,7 @@ import com.intellij.diff.DiffManager;
 import com.intellij.diff.contents.DiffContent;
 import com.intellij.diff.contents.DocumentContent;
 import com.intellij.diff.requests.SimpleDiffRequest;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -51,6 +52,11 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
             ".github/workflows/release.yml",
             ".github/workflows/run-ui-tests.yml",
             "gradle/libs.versions.toml");
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
