@@ -28,11 +28,11 @@ kotlin {
 
 dependencies {
     //https://kotlinlang.org/docs/reflection.html#jvm-dependency
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.21")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.23")
 
     //Testing
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.21")
-    testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.23")
+    testImplementation("org.assertj:assertj-core:3.26.0")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html

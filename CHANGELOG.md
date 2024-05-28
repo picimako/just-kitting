@@ -4,9 +4,14 @@
 
 ## [Unreleased]
 
+### [0.9.0]
+### Changed
+- Supported IDE version range: 2023.2-2024.2-EAP.
+- Plugin configuration updates.
+
 ## [0.8.1]
 ### Fixed
-- Added a missing `getActionUpdateThread()` method override to avoid throwing exception. 
+- Added a missing `getActionUpdateThread()` method override to avoid throwing exception.
 
 ## [0.8.0]
 ### Changed

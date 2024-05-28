@@ -62,6 +62,12 @@ AProjectService
 AnApplicationService
 -- Project and application light services --
 AProjectAndApplicationService #>
+/*<# block -- Project light services --
+AProjectService
+-- Application light services --
+AnApplicationService
+-- Project and application light services --
+AProjectAndApplicationService #>*/
     <extensions defaultExtensionNs="com.intellij">
     </extensions>
 </idea-plugin>
@@ -80,6 +86,9 @@ AProjectAndApplicationService #>
 <# block -- Project light services --
 AProjectService
 View all light services... #>
+/*<# block -- Project light services --
+AProjectService
+View all light services... #>*/
     <extensions defaultExtensionNs="com.intellij">
     </extensions>
 </idea-plugin>
@@ -96,6 +105,7 @@ View all light services... #>
             """
 <idea-plugin>
 <# block View all light services... #>
+/*<# block View all light services... #>*/
     <extensions defaultExtensionNs="com.intellij">
     </extensions>
 </idea-plugin>
