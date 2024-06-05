@@ -6,8 +6,10 @@
 
 ### [0.9.0]
 ### Changed
-- Supported IDE version range: 2023.2-2024.2-EAP.
-- Plugin configuration updates.
+- Supported IDE version range: 2023.3-2024.2-EAP.
+- Plugin configuration and dependency updates.
+- Deleted the inspection options panel generation action because there is a newer API for that that provides
+an easier way to create the panel.
 
 ## [0.8.1]
 ### Fixed

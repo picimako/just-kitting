@@ -21,14 +21,18 @@ public class PluginDescriptorTagsFoldingBuilderResourceBundleTest extends Conten
 
     public void testPlugin() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
+
         myFixture.copyFileToProject("src/main/resources/messages/LowerLevelBundle.properties");
+
         doXmlTestFolding("src/main/resources/META-INF/plugin.xml");
     }
 
     public void testPluginWithTopLevelResourceBundle() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
+
         myFixture.copyFileToProject("src/main/resources/messages/LowerLevelBundle.properties");
         myFixture.copyFileToProject("src/main/resources/messages/TopLevelBundle.properties");
+
         doXmlTestFolding("src/main/resources/META-INF/topLevelResourceBundlePlugin.xml");
     }
 }

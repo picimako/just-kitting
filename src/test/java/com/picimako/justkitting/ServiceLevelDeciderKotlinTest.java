@@ -86,29 +86,13 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT_AND_APP);
     }
 
-    //By class name
-
-    public void testProjectServiceForClassName() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("AProjectService.kt",
+    public void testApplicationServiceForDefaultLevel() {
+        KtFile psiFile = (KtFile) myFixture.configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
 
                 @Service
-                class AProjectService {
-                }
-                """);
-
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
-        assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
-    }
-
-    public void testApplicationServiceForClassName() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("AnApplicationService.kt",
-            """
-                import com.intellij.openapi.components.Service
-
-                @Service
-                class AnApplicationService {
+                class SomeService {
                 }
                 """);
 
@@ -170,21 +154,5 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
 
         var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
-    }
-
-    //Not sure
-
-    public void testNotSureWhatServiceLevel() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("SomeService.kt",
-            """
-                import com.intellij.openapi.components.Service
-
-                @Service
-                class SomeService {
-                }
-                """);
-
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
-        assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.NOT_SURE);
     }
 }

@@ -14,7 +14,7 @@ public class ServiceUtilTest extends JustKittingTestBase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ThirdPartyLibraryLoader.loadUtil(myFixture);
+        ThirdPartyLibraryLoader.loadUtil8(myFixture);
     }
 
     public void testIsLightService() {

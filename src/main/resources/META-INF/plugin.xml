@@ -65,11 +65,6 @@
                 text="Service getInstance()" description="${project.description}">
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
         </action>
-        <action id="JustKitting.generate.inspection.options.panel"
-                class="com.picimako.justkitting.action.inspectionpanel.CreateInspectionOptionsPanelAction"
-                text="Inspection Options Panel..." description="${project.description}">
-            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
-        </action>
 
         <action id="com.picimako.justkitting.action.diff.CompareConfigFileWithPluginTemplateAction"
                 class="com.picimako.justkitting.action.diff.CompareConfigFileWithPluginTemplateAction"

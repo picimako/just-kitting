@@ -16,7 +16,7 @@ public abstract class JustKittingTestBase extends LightJavaCodeInsightFixtureTes
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ThirdPartyLibraryLoader.loadPlatformApi(myFixture);
+        ThirdPartyLibraryLoader.loadUtil8(myFixture);
     }
 
     @Override
@@ -28,7 +28,7 @@ public abstract class JustKittingTestBase extends LightJavaCodeInsightFixtureTes
      * Returns a descriptor with a real JDK defined by the JAVA_HOME environment variable.
      */
     public static LightProjectDescriptor getJdkHome() {
-        return new ProjectDescriptor(LanguageLevel.JDK_11) {
+        return new ProjectDescriptor(LanguageLevel.JDK_17) {
             @Override
             public Sdk getSdk() {
                 return JavaSdk.getInstance().createJdk("Real JDK", System.getenv("JAVA_HOME"), false);

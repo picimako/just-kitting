@@ -14,7 +14,7 @@ class LightServicesInlayHintsProviderTest : InlayHintsProviderTestCase() {
 
     override fun setUp() {
         super.setUp()
-        ThirdPartyLibraryLoader.loadPlatformApi(myFixture)
+        ThirdPartyLibraryLoader.loadUtil8(myFixture)
     }
 
     override fun getTestDataPath(): String {

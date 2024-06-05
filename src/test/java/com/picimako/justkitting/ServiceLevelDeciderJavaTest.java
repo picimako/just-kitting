@@ -11,8 +11,6 @@ import com.intellij.psi.PsiJavaFile;
  */
 public class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
 
-    //By annotation
-
     public void testProjectServiceForAnnotation() {
         PsiJavaFile psiFile = (PsiJavaFile) myFixture.configureByText("SomeService.java",
             """
@@ -56,39 +54,7 @@ public class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT_AND_APP);
     }
 
-    //By class name
-
-    public void testProjectServiceForClassName() {
-        PsiJavaFile psiFile = (PsiJavaFile) myFixture.configureByText("AProjectService.java",
-            """
-                import com.intellij.openapi.components.Service;
-
-                @Service
-                public final class AProjectService {
-                }
-                """);
-
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
-        assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
-    }
-
-    public void testApplicationServiceForClassName() {
-        PsiJavaFile psiFile = (PsiJavaFile) myFixture.configureByText("AnApplicationService.java",
-            """
-                import com.intellij.openapi.components.Service;
-
-                @Service
-                public final class AnApplicationService {
-                }
-                """);
-
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
-        assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.APP);
-    }
-
-    //Not sure
-
-    public void testNotSureWhatServiceLevel() {
+    public void testApplicationServiceForDefaultLevel() {
         PsiJavaFile psiFile = (PsiJavaFile) myFixture.configureByText("SomeService.java",
             """
                 import com.intellij.openapi.components.Service;
@@ -99,6 +65,6 @@ public class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
                 """);
 
         var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
-        assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.NOT_SURE);
+        assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.APP);
     }
 }

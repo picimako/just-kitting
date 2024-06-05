@@ -41,7 +41,7 @@ public class PluginDescriptorTagsFoldingBuilder extends CustomFoldingBuilder {
             && JustKittingCodeFoldingSettings.getInstance().isCollapsePluginDescriptorTags()) {
             root.accept(new XmlRecursiveElementVisitor() {
                 @Override
-                public void visitXmlTag(XmlTag tag) {
+                public void visitXmlTag(@NotNull XmlTag tag) {
                     if ("extensions".equals(tag.getName()) && "com.intellij".equals(tag.getAttributeValue("defaultExtensionNs"))) {
                         TAG_FOLDERS.forEach(folder -> folder.createFolding(tag, descriptors));
                     } else {

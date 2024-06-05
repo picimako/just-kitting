@@ -5,11 +5,18 @@ package com.picimako.justkitting.intention.state;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.picimako.justkitting.JustKittingTestBase;
+import com.picimako.justkitting.ThirdPartyLibraryLoader;
 
 /**
  * Integration test for {@link MakeJavaClassPersistentStateComponentIntention}.
  */
 public class MakeJavaClassPersistentStateComponentIntentionTest extends JustKittingTestBase {
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        ThirdPartyLibraryLoader.loadAppClient(myFixture);
+    }
 
     //Not available
 

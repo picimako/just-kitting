@@ -151,13 +151,13 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
 
     //Light service without level
 
-    fun testShouldGenerateProjectLevelGetterForEmptyServiceLevelWithProperClassName() {
-        myFixture.configureByText("SomeProjectService.java",
+    fun testShouldGenerateApplicationLevelGetterForDefaultServiceLevelWithProperClassName() {
+        myFixture.configureByText("SomeApplicationService.java",
             """
                 import com.intellij.openapi.components.Service;
 
                 @Service
-                public final class SomeProjectService {
+                public final class SomeApplicationService {
                     public boolean someField;
                 <caret>
                     public void someMethod() {
@@ -169,17 +169,17 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
 
         myFixture.checkResult(
             """
+                import com.intellij.openapi.application.ApplicationManager;
                 import com.intellij.openapi.components.Service;
-                import com.intellij.openapi.project.Project;
-
+                
                 @Service
-                public final class SomeProjectService {
+                public final class SomeApplicationService {
                     public boolean someField;
-
-                    public static SomeProjectService getInstance(Project project) {
-                        return project.getService(SomeProjectService.class);
+                
+                    public static SomeApplicationService getInstance() {
+                        return ApplicationManager.getApplication().getService(SomeApplicationService.class);
                     }
-
+                
                     public void someMethod() {
                     }
                 }
