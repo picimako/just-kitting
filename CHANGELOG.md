@@ -4,9 +4,16 @@
 
 ## [Unreleased]
 
+### [0.9.0]
+### Changed
+- Supported IDE version range: 2023.3-2024.2-EAP.
+- Plugin configuration and dependency updates.
+- Deleted the inspection options panel generation action because there is a newer API for that that provides
+an easier way to create the panel.
+
 ## [0.8.1]
 ### Fixed
-- Added a missing `getActionUpdateThread()` method override to avoid throwing exception. 
+- Added a missing `getActionUpdateThread()` method override to avoid throwing exception.
 
 ## [0.8.0]
 ### Changed

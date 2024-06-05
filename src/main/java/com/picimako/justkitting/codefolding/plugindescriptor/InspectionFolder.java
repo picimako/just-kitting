@@ -8,7 +8,6 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.SmartList;

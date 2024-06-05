@@ -17,22 +17,27 @@ public final class ThirdPartyLibraryLoader {
 
     private static final String THIRD_PARTY_LIB_DIRECTORY = "lib";
 
-    //Libraries are from IC-2021.3
+    //Libraries are from IC-2023.3
 
-    public static void loadPlatformApi(@NotNull CodeInsightTestFixture fixture) {
-        loadLibrary(fixture, "platform-api", "platform-api.jar");
+    /**
+     * For classes like {@link com.intellij.openapi.components.PersistentStateComponent}.
+     */
+    public static void loadAppClient(@NotNull CodeInsightTestFixture fixture) {
+        loadLibrary(fixture, "app-client", "app-client.jar");
     }
 
-    public static void loadUtil(@NotNull CodeInsightTestFixture fixture) {
-        loadLibrary(fixture, "util", "util.jar");
-    }
-
+    /**
+     * For classes like {@link com.siyeh.ig.callMatcher.CallMatcher}.
+     */
     public static void loadJavaImpl(@NotNull CodeInsightTestFixture fixture) {
         loadLibrary(fixture, "java-impl", "java-impl.jar");
     }
 
-    public static void loadJavaApi(@NotNull CodeInsightTestFixture fixture) {
-        loadLibrary(fixture, "java-api", "java-api.jar");
+    /**
+     * For Java PSI element types, like {@link com.intellij.psi.PsiElement} and {@link com.intellij.openapi.components.Service}.
+     */
+    public static void loadUtil8(@NotNull CodeInsightTestFixture fixture) {
+        loadLibrary(fixture, "util-8", "util-8.jar");
     }
 
     /**

@@ -28,11 +28,10 @@ kotlin {
 
 dependencies {
     //https://kotlinlang.org/docs/reflection.html#jvm-dependency
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.21")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.23")
 
     //Testing
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.21")
-    testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("org.assertj:assertj-core:3.26.0")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
@@ -94,17 +93,20 @@ tasks {
 
     //Uncomment and configure this for functional testing
     test {
-//        systemProperty("idea.home.path", "ABSOLUTE PATH TO LOCAL intellij-community")
-
         //Required for running tests in 2021.3 due to it not finding test classes properly.
         //See https://app.slack.com/client/T5P9YATH9/C5U8BM1MK/thread/C5U8BM1MK-1639934273.054400
         isScanForTestClasses = false
         include("**/*Test.class")
-    }
+        exclude(
+            //Disabled due to haven't been able to make the tests resolve the bundle properties files. The functionality works in production environment.
+            "**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class",
 
-//    runPluginVerifier {
-//        ideVersions.set(listOf("IC-232.7754.73"))
-//    }
+            //Disabled due to requiring app-client.jar that can't be uploaded to GitHub due to size constraints
+            "**/JavaConversionActionsTest.class",
+            "**/ConversionActionsKotlinTest.class",
+            "**/MakeJavaClassPersistentStateComponentIntentionTest.class"
+        )
+    }
 
     signPlugin {
         certificateChain = environment("CERTIFICATE_CHAIN")
@@ -118,6 +120,6 @@ tasks {
         // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-        channels = properties("pluginVersion").map { listOf(it.split('-').getOrElse(1) { "default" }.split('.').first()) }
+        channels = properties("pluginVersion").map { listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" }) }
     }
 }

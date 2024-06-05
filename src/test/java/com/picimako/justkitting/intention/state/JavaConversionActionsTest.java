@@ -13,7 +13,7 @@ public class JavaConversionActionsTest extends JustKittingActionTestBase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ThirdPartyLibraryLoader.loadUtil(myFixture);
+        ThirdPartyLibraryLoader.loadAppClient(myFixture);
     }
 
     public void testConvertsClassWithStandaloneStateObject() {

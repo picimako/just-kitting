@@ -12,7 +12,7 @@ class ConversionActionsKotlinTest : JustKittingActionTestBase() {
     @Throws(Exception::class)
     override fun setUp() {
         super.setUp()
-        ThirdPartyLibraryLoader.loadUtil(myFixture)
+        ThirdPartyLibraryLoader.loadAppClient(myFixture)
     }
 
     fun testConvertsClassWithStandaloneStateObject() {

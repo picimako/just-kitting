@@ -18,7 +18,8 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ThirdPartyLibraryLoader.loadJavaApi(myFixture);
+        ThirdPartyLibraryLoader.loadUtil8(myFixture);
+        ThirdPartyLibraryLoader.loadJavaImpl(myFixture);
     }
 
     @Override

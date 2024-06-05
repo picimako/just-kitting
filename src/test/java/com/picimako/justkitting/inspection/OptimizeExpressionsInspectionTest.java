@@ -18,7 +18,7 @@ public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTest
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        ThirdPartyLibraryLoader.loadJavaApi(myFixture);
+        ThirdPartyLibraryLoader.loadJavaImpl(myFixture);
     }
 
     //Empty array creation

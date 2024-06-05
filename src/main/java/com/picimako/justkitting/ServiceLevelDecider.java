@@ -147,6 +147,7 @@ public final class ServiceLevelDecider {
 
         private final String displayName;
 
+        //Not using the @Getter annotation because otherwise the field is not available in LightServicesModeBasedHintAdder
         public String getDisplayName() {
             return displayName;
         }
