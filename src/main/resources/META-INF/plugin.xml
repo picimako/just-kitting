@@ -3,7 +3,7 @@
     <id>picimako.justkitting</id>
     <name>Just Kitting</name>
     <vendor url="https://github.com/picimako/just-kitting">Tamás Balog</vendor>
-    <version>0.9.0</version>
+    <version>1.0.0</version>
     <resource-bundle>messages.JustKittingBundle</resource-bundle>
 
     <depends>com.intellij.modules.platform</depends>
