@@ -100,11 +100,6 @@ tasks {
         exclude(
             //Disabled due to haven't been able to make the tests resolve the bundle properties files. The functionality works in production environment.
             "**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class",
-
-            //Disabled due to requiring app-client.jar that can't be uploaded to GitHub due to size constraints
-            "**/JavaConversionActionsTest.class",
-            "**/ConversionActionsKotlinTest.class",
-            "**/MakeJavaClassPersistentStateComponentIntentionTest.class"
         )
     }
 

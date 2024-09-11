@@ -20,13 +20,6 @@ public final class ThirdPartyLibraryLoader {
     //Libraries are from IC-2023.3
 
     /**
-     * For classes like {@link com.intellij.openapi.components.PersistentStateComponent}.
-     */
-    public static void loadAppClient(@NotNull CodeInsightTestFixture fixture) {
-        loadLibrary(fixture, "app-client", "app-client.jar");
-    }
-
-    /**
      * For classes like {@link com.siyeh.ig.callMatcher.CallMatcher}.
      */
     public static void loadJavaImpl(@NotNull CodeInsightTestFixture fixture) {

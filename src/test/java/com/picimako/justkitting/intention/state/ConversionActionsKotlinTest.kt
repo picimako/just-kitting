@@ -1,7 +1,6 @@
 //Copyright 2023 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.picimako.justkitting.intention.state
 
-import com.picimako.justkitting.ThirdPartyLibraryLoader
 import com.picimako.justkitting.action.JustKittingActionTestBase
 
 /**
@@ -9,19 +8,13 @@ import com.picimako.justkitting.action.JustKittingActionTestBase
  */
 class ConversionActionsKotlinTest : JustKittingActionTestBase() {
 
-    @Throws(Exception::class)
-    override fun setUp() {
-        super.setUp()
-        ThirdPartyLibraryLoader.loadAppClient(myFixture)
-    }
-
     fun testConvertsClassWithStandaloneStateObject() {
         checkAction("SomeComponent.kt", { KotlinConversionActions.WithStandaloneStateObject() },
-                """
+            """
                     class SomeCom<caret>ponent {
                     }
                     """.trimIndent(),
-                """
+            """
                 import com.intellij.openapi.components.State
                 import com.intellij.openapi.components.Storage
                 import com.intellij.openapi.components.PersistentStateComponent
@@ -45,11 +38,11 @@ class ConversionActionsKotlinTest : JustKittingActionTestBase() {
 
     fun testConvertsClassWithSelfAsState() {
         checkAction("SomeComponent.kt", { KotlinConversionActions.WithSelfAsState() },
-                """
+            """
                     class SomeC<caret>omponent {
                     }
                     """.trimIndent(),
-                """
+            """
                 import com.intellij.openapi.components.State
                 import com.intellij.openapi.components.Storage
                 import com.intellij.openapi.components.PersistentStateComponent
