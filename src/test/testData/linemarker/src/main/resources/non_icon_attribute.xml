@@ -1,0 +1,5 @@
+<idea-plugin require-restart="true">
+    <actions>
+        <action id="actio<caret>n.id" class="" icon="AllIcons.Modules.Split" />
+    </actions>
+</idea-plugin>

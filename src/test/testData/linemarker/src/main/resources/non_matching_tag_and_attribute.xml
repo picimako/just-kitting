@@ -1,0 +1,5 @@
+<idea-plugin require-restart="tr<caret>ue">
+    <actions>
+        <action id="action.id" class="" icon="AllIcons.Modules.Split" />
+    </actions>
+</idea-plugin>
