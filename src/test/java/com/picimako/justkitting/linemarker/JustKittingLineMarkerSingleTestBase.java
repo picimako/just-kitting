@@ -7,10 +7,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor;
 import com.intellij.psi.PsiElement;
-import com.picimako.justkitting.ContentRootsBasedJustKittingTestBase;
+import com.picimako.justkitting.JustKittingTestBase;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class JustKittingLineMarkerSingleTestBase extends ContentRootsBasedJustKittingTestBase {
+public abstract class JustKittingLineMarkerSingleTestBase extends JustKittingTestBase {
 
     public JustKittingLineMarkerSingleTestBase() {
         super();
