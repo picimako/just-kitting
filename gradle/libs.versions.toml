@@ -1,15 +1,9 @@
 [versions]
-# libraries
-annotations = "24.1.0"
-
 # plugins
-kotlin = "1.9.23"
-changelog = "2.2.0"
+kotlin = "1.9.25"
+changelog = "2.2.1"
 gradleIntelliJPlugin = "1.17.3"
-lombok = "8.6"
-
-[libraries]
-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
+lombok = "8.10"
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }

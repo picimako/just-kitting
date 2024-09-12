@@ -1,0 +1,5 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <codeInsight.lineMarkerProvider language="Properties" implementationClass="com.picimako.justkitting.linemarker.UpdateGradleVersionLineMarkerProvider"/>
+    </extensions>
+</idea-plugin>

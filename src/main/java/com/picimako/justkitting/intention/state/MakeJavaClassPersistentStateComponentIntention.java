@@ -1,4 +1,4 @@
-//Copyright 2023 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.intention.state;
 
@@ -8,6 +8,7 @@ import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.codeInspection.util.IntentionFamilyName;
 import com.intellij.codeInspection.util.IntentionName;
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -19,7 +20,9 @@ import com.intellij.util.IncorrectOperationException;
 import com.picimako.justkitting.ListPopupHelper;
 import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -61,10 +64,20 @@ public class MakeJavaClassPersistentStateComponentIntention extends BaseIntentio
             return !parentClass.isInterface()
                    && !parentClass.hasModifierProperty(PsiModifier.ABSTRACT)
                    && !parentClass.isEnum()
-                   && !InheritanceUtil.isInheritor(parentClass, true, PERSISTENT_STATE_COMPONENT);
+                   && !isInheritorOfPersistentStateComponent(parentClass);
         }
 
         return false;
+    }
+
+    /**
+     * Based on {@link InheritanceUtil#isInheritor(PsiClass, boolean, String)}.
+     */
+    private static boolean isInheritorOfPersistentStateComponent(@Nullable PsiClass psiClass) {
+        return !ApplicationManager.getApplication().isUnitTestMode()
+               ? InheritanceUtil.isInheritor(psiClass, true, PERSISTENT_STATE_COMPONENT)
+               //This part is for tests only. Due to not having access to app-client.jar, PersistentStateComponent must be emulated "manually".
+               : psiClass != null && Arrays.stream(psiClass.getImplementsList().getReferencedTypes()).anyMatch(type -> "PersistentStateComponent".equals(type.getClassName()));
     }
 
     @Override

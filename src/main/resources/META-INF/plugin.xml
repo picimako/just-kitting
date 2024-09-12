@@ -3,13 +3,14 @@
     <id>picimako.justkitting</id>
     <name>Just Kitting</name>
     <vendor url="https://github.com/picimako/just-kitting">Tamás Balog</vendor>
-    <version>0.9.0</version>
+    <version>1.0.0</version>
     <resource-bundle>messages.JustKittingBundle</resource-bundle>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
     <depends>org.jetbrains.kotlin</depends>
     <depends>DevKit</depends>
+    <depends optional="true" config-file="properties-features.xml">com.intellij.properties</depends>
     
     <extensions defaultExtensionNs="com.intellij">
         <!-- CallMatcher -->
@@ -57,16 +58,18 @@
         <codeFoldingOptionsProvider instance="com.picimako.justkitting.codefolding.JustKittingCodeFoldingOptionsProvider"/>
         <applicationService serviceInterface="com.picimako.justkitting.codefolding.JustKittingCodeFoldingSettings"
                             serviceImplementation="com.picimako.justkitting.codefolding.JustKittingCodeFoldingSettingsImpl"/>
+
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.picimako.justkitting.linemarker.AnActionIconLineMarkerProvider"/>
     </extensions>
 
     <actions>
-        <action id="JustKitting.generate.service.static.getter"
+        <action id="just.kitting.generate.service.static.getter"
                 class="com.picimako.justkitting.action.getinstance.GenerateStaticGetInstanceAction"
                 text="Service getInstance()" description="${project.description}">
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
         </action>
 
-        <action id="com.picimako.justkitting.action.diff.CompareConfigFileWithPluginTemplateAction"
+        <action id="just.kitting.compare.config.file.with.plugin.template"
                 class="com.picimako.justkitting.action.diff.CompareConfigFileWithPluginTemplateAction"
                 text="Compare with Platform Plugin Template Version">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CompareFileWithEditor"/>

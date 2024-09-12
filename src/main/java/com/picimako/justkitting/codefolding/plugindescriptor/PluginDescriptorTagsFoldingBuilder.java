@@ -1,4 +1,4 @@
-//Copyright 2023 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.codefolding.plugindescriptor;
 
@@ -59,8 +59,8 @@ public class PluginDescriptorTagsFoldingBuilder extends CustomFoldingBuilder {
      */
     private static boolean isPluginDescriptor(XmlFile xmlFile) {
         return ApplicationManager.getApplication().isUnitTestMode()
-            ? xmlFile.getName().toLowerCase().endsWith("plugin.xml")
-            : DescriptorUtil.isPluginXml(xmlFile);
+               ? xmlFile.getName().toLowerCase().endsWith("plugin.xml")
+               : DescriptorUtil.isPluginXml(xmlFile);
     }
 
     //Placeholder text
@@ -68,12 +68,12 @@ public class PluginDescriptorTagsFoldingBuilder extends CustomFoldingBuilder {
     @Override
     protected String getLanguagePlaceholderText(@NotNull ASTNode node, @NotNull TextRange range) {
         return node.getPsi() instanceof XmlTag tag
-            ? TAG_FOLDERS.stream()
-            .filter(folder -> folder.isTagFolderFor(tag))
-            .map(folder -> folder.getPlaceholderText(tag))
-            .findFirst()
-            .orElse("...")
-            : "...";
+               ? TAG_FOLDERS.stream()
+                   .filter(folder -> folder.isTagFolderFor(tag))
+                   .map(folder -> folder.getPlaceholderText(tag))
+                   .findFirst()
+                   .orElse("...")
+               : "...";
     }
 
     @Override

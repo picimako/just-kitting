@@ -4,7 +4,14 @@
 
 ## [Unreleased]
 
-### [0.9.0]
+## [1.0.0]
+### Added
+- [30](https://github.com/picimako/just-kitting/issues/30): Added a line marker that displays the referenced icons in the `actions.action@icon` and `actions.group.action@icon`
+XML attributes in plugin descriptor files.
+- [28](https://github.com/picimako/just-kitting/issues/28): Added a line marker that can signal mismatching gradle version in `gradle.properties` and `gradle-wrapper.properties`
+and can update the wrapper based on the new version in `gradle.properties`.
+
+## [0.9.0]
 ### Changed
 - Supported IDE version range: 2023.3-2024.2-EAP.
 - Plugin configuration and dependency updates.
