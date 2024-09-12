@@ -14,13 +14,13 @@ import java.util.function.BiConsumer;
 /**
  * Integration test for {@link AnActionIconLineMarkerProvider}.
  */
-public final class AnActionIconLineMarkerProviderTest extends JustKittingLineMarkerTestBase {
+public final class AnActionIconLineMarkerProviderTest extends JustKittingLineMarkerCollectionTestBase {
 
     private final AnActionIconLineMarkerProvider provider = new AnActionIconLineMarkerProvider();
 
     @Override
     protected String getTestDataPath() {
-        return "src/test/testData/linemarker";
+        return "src/test/testData/linemarker/anaction";
     }
 
     @Override

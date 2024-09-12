@@ -10,6 +10,7 @@
     <depends>com.intellij.modules.java</depends>
     <depends>org.jetbrains.kotlin</depends>
     <depends>DevKit</depends>
+    <depends optional="true" config-file="properties-features.xml">com.intellij.properties</depends>
     
     <extensions defaultExtensionNs="com.intellij">
         <!-- CallMatcher -->

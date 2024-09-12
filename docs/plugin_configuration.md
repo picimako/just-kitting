@@ -7,6 +7,7 @@
     * [extensions.localInspection / extensions.globalInspection](#extensionslocalinspection--extensionsglobalinspection)
     * [extensions.intentionAction](#extensionsintentionaction)
 * [AnAction icon line marker icons](#anaction-icon-line-marker-icons)
+* [Line marker for updating the Gradle Wrapper version](#line-marker-for-updating-the-gradle-wrapper-version)
 <!-- TOC -->
 
 ## Configuration file diffs with the IntelliJ Platform Plugin Template
@@ -120,3 +121,21 @@ The line marker is enabled by default and can be disabled under `Settings > Edit
 Action icon in IDE plugin descriptor file`.
 
 ![plugin descriptor action icon](assets/plugin_descriptor_action_icon.PNG)
+
+## Line marker for updating the Gradle Wrapper version
+
+![](https://img.shields.io/badge/linemarker-orange) ![](https://img.shields.io/badge/since-1.0.0-blue) [![](https://img.shields.io/badge/implementation-UpdateGradleVersionLineMarkerProvider-blue)](../src/main/java/com/picimako/justkitting/linemarker/UpdateGradleVersionLineMarkerProvider.java)
+
+For plugin projects built on the [intellij-platform-plugin-template](https://github.com/JetBrains/intellij-platform-plugin-template)
+this line marker can be useful to easily update the Gradle wrapper.
+
+It is displayed on the `gradleVersion` property in `gradle.properties` when the version specified there differs from the one
+in the `distributionUrl` property of `/gradle/wrapper/gradle-wrapper.properties`.
+
+![update_gradle_wrapper_line_marker](assets/update_gradle_wrapper_line_marker.PNG)
+
+Upon clicking the line marker, it creates a new Gradle run configuration (or reuses the existing one) with the following command, and executes it:
+
+```
+wrapper --gradle-version=<value of gradleVersion> --distribution-type=<type, i.e. bin or all, from distributionUrl>
+```

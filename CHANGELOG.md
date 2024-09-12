@@ -8,6 +8,8 @@
 ### Added
 - [30](https://github.com/picimako/just-kitting/issues/30): Added a line marker that displays the referenced icons in the `actions.action@icon` and `actions.group.action@icon`
 XML attributes in plugin descriptor files.
+- [28](https://github.com/picimako/just-kitting/issues/28): Added a line marker that can signal mismatching gradle version in `gradle.properties` and `gradle-wrapper.properties`
+and can update the wrapper based on the new version in `gradle.properties`.
 
 ## [0.9.0]
 ### Changed

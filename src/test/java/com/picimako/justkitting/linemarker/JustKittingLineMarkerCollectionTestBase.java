@@ -13,9 +13,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public abstract class JustKittingLineMarkerTestBase extends ContentRootsBasedJustKittingTestBase {
+public abstract class JustKittingLineMarkerCollectionTestBase extends ContentRootsBasedJustKittingTestBase {
 
-    public JustKittingLineMarkerTestBase() {
+    public JustKittingLineMarkerCollectionTestBase() {
         super();
     }
 
