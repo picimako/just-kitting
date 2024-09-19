@@ -41,10 +41,10 @@ import java.util.function.Supplier;
  * <p>
  * The following empty collection factory methods are considered during validation:
  * <ul>
- *     <li>List.of()</li>
- *     <li>Set.of()</li>
- *     <li>Collections.emptyList()</li>
- *     <li>Collections.emptySet()</li>
+ *     <li>{@code List.of()}</li>
+ *     <li>{@code Set.of()}</li>
+ *     <li>{@code Collections.emptyList()}</li>
+ *     <li>{@code Collections.emptySet()}</li>
  * </ul>
  *
  * @see com.intellij.psi.util.CachedValueProvider.Result

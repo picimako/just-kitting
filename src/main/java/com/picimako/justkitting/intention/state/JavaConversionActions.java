@@ -28,27 +28,27 @@ final class JavaConversionActions {
      * All existing fields, methods, etc. within the class remain untouched.
      * <p>
      * <h3>From:</h3>
-     * <pre>
+     * <pre>{@code
      * public class SomeComponent {
      * }
-     * </pre>
+     * }</pre>
      * <h3>To:</h3>
-     * <pre>
+     * <pre>{@code
      * import com.intellij.openapi.components.State;
      * import com.intellij.openapi.components.Storage;
      * import com.intellij.openapi.components.PersistentStateComponent;
      *
-     * &#064;State(name = "SomeComponent", storages = @Storage("&lt;storage name>"))
-     * public class SomeComponent implements PersistentStateComponent&lt;SomeComponent.State> {
+     * @State(name = "SomeComponent", storages = @Storage("<storage name>"))
+     * public class SomeComponent implements PersistentStateComponent<SomeComponent.State> {
      *
      *   private State myState = new State();
      *
-     *   &#064;Override
+     *   @Override
      *   public State getState() {
      *     return myState;
      *   }
      *
-     *   &#064;Override
+     *   @Override
      *   public void loadState(State state) {
      *     myState = state;
      *   }
@@ -56,7 +56,7 @@ final class JavaConversionActions {
      *   static final class State {
      *   }
      * }
-     * </pre>
+     * }</pre>
      *
      * @since 0.1.0
      */
@@ -91,31 +91,31 @@ final class JavaConversionActions {
      * All existing fields, methods, etc. within the class remain untouched.
      * <p>
      * <h3>From:</h3>
-     * <pre>
+     * <pre>{@code
      * public class SomeComponent {
      * }
-     * </pre>
+     * }</pre>
      * <h3>To:</h3>
-     * <pre>
+     * <pre>{@code
      * import com.intellij.openapi.components.State;
      * import com.intellij.openapi.components.Storage;
      * import com.intellij.openapi.components.PersistentStateComponent;
      * import com.intellij.util.xmlb.XmlSerializerUtil;
      *
-     * &#064;State(name = "SomeComponent", storages = @Storage("&lt;storage name>"))
-     * public class SomeComponent implements PersistentStateComponent&lt;SomeComponent> {
+     * @State(name = "SomeComponent", storages = @Storage("<storage name>"))
+     * public class SomeComponent implements PersistentStateComponent<SomeComponent> {
      *
-     *   &#064;Override
+     *   @Override
      *   public SomeComponent getState() {
      *     return this;
      *   }
      *
-     *   &#064;Override
+     *   @Override
      *   public void loadState(SomeComponent state) {
      *     XmlSerializerUtil.copyBean(state, this);
      *   }
      * }
-     * </pre>
+     * }</pre>
      *
      * @since 0.1.0
      */

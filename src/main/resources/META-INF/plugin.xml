@@ -3,7 +3,7 @@
     <id>picimako.justkitting</id>
     <name>Just Kitting</name>
     <vendor url="https://github.com/picimako/just-kitting">Tamás Balog</vendor>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <resource-bundle>messages.JustKittingBundle</resource-bundle>
 
     <depends>com.intellij.modules.platform</depends>
@@ -11,7 +11,12 @@
     <depends>org.jetbrains.kotlin</depends>
     <depends>DevKit</depends>
     <depends optional="true" config-file="properties-features.xml">com.intellij.properties</depends>
-    
+
+    <!-- See https://kotlin.github.io/analysis-api/declaring-k2-compatibility.html -->
+    <extensions defaultExtensionNs="org.jetbrains.kotlin">
+        <org.jetbrains.kotlin.supportsKotlinPluginMode supportsK2="true" />
+    </extensions>
+
     <extensions defaultExtensionNs="com.intellij">
         <!-- CallMatcher -->
         <localInspection implementationClass="com.picimako.justkitting.inspection.CallMatcherInspection" id="just.kitting.call.matcher"

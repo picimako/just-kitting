@@ -52,20 +52,20 @@ public final class LightServiceLookup {
 
     /**
      * Takes into account only those references of the @Service annotation class that are used as part of an annotation. E.g.:
-     * <pre>
-     * &#064;Service
+     * <pre>{@code
+     * @Service
      * class SomeService { }
-     * </pre>
+     * }</pre>
      * or
-     * <pre>
-     * &#064;Service(Service.Level.APP)
+     * <pre>{@code
+     * @Service(Service.Level.APP)
      * class SomeService { }
-     * </pre>
+     * }</pre>
      * <p>
      * This will filter out reference like the one below:
-     * <pre>
+     * <pre>{@code
      * class SomeClass(serviceLevel: Service.Level)
-     * </pre>
+     * }</pre>
      */
     @NotNull
     private static Query<? extends PsiNameIdentifierOwner> getServiceAnnotationQuery(Project project) {
