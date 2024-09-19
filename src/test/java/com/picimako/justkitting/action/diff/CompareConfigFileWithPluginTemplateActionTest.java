@@ -85,7 +85,7 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
         assertThat(simpleDiffRequest.getContentTitles())
                 .containsExactly("Platform Plugin Template", "Local");
         assertThat(simpleDiffRequest.toString())
-                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[DiffContentFactory LightVirtualFile: diff\\.properties], \\{}:DocumentImpl\\[temp:\\/\\/\\/src\\/gradle\\.properties]]");
+                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[diff\\.properties], \\{}:DocumentImpl\\[gradle\\.properties]]");
     }
 
     public void testDiffViewForFileInFolder() {
@@ -103,7 +103,7 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
         assertThat(simpleDiffRequest.getContentTitles())
                 .containsExactly("Platform Plugin Template", "Local");
         assertThat(simpleDiffRequest.toString())
-                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[null], \\{}:DocumentImpl\\[temp:///src/\\.github/dependabot\\.yml]]");
+                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[null], \\{}:DocumentImpl\\[dependabot\\.yml]]");
     }
 
 //    public void testNoDiffViewWhenCouldNotFetchContentFromGitHub() {

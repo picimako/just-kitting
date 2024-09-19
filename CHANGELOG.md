@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [1.1.0]
+### Changed
+- New supported IDE version range: 2024.2 - 2024.3.*.
+- Updated the project to use the IntelliJ Platform Gradle Plugin 2.0.
+- Updated the project to use JDK 21.
+- Updated project configuration to make sure the plugin works when the K2 Kotlin compiler is enabled.
+
 ## [1.0.0]
 ### Added
 - [30](https://github.com/picimako/just-kitting/issues/30): Added a line marker that displays the referenced icons in the `actions.action@icon` and `actions.group.action@icon`
