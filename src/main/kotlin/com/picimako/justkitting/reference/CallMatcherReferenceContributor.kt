@@ -1,9 +1,9 @@
 //Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.picimako.justkitting.reference
 
-import com.intellij.json.psi.JsonPsiUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.*
 import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.util.PsiLiteralUtil.isUnsafeLiteral
@@ -99,7 +99,7 @@ class CallMatcherReferenceContributor : PsiReferenceContributor() {
 
         private fun getMethodsByName(element: PsiElement, referencedClass: PsiClass, parentCall: PsiMethodCallExpression?): Array<PsiMethod> {
             val methodsInClass = referencedClass.findMethodsByName(
-                JsonPsiUtil.stripQuotes(element.text),
+                StringUtil.unquoteString(element.text),
                 !CallMatcherUtil.CALL_MATCHER_EXACT_INSTANCE_MATCHER.matches(parentCall))
 
             return if (CallMatcherUtil.CALL_MATCHER_STATIC_MATCHER.matches(parentCall))

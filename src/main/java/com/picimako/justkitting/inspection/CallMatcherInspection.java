@@ -2,7 +2,6 @@
 
 package com.picimako.justkitting.inspection;
 
-import static com.intellij.json.psi.JsonPsiUtil.stripQuotes;
 import static com.intellij.psi.util.PsiLiteralUtil.isUnsafeLiteral;
 import static com.picimako.justkitting.CallMatcherUtil.ARGUMENT_OF_CALL_MATCHER_PATTERN;
 import static com.picimako.justkitting.CallMatcherUtil.CALL_MATCHER_EXACT_INSTANCE_MATCHER;
@@ -16,6 +15,7 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.JavaElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
@@ -79,7 +79,7 @@ public class CallMatcherInspection extends LocalInspectionTool {
             @NotNull
             private Pair<Integer, String> getMethodCountAndMessage(PsiElement methodNameArg, @NotNull PsiClass referencedClass, PsiMethodCallExpression parentCall) {
                 boolean isExactInstance = CALL_MATCHER_EXACT_INSTANCE_MATCHER.matches(parentCall);
-                PsiMethod[] methodsInClass = referencedClass.findMethodsByName(stripQuotes(methodNameArg.getText()), !isExactInstance);
+                PsiMethod[] methodsInClass = referencedClass.findMethodsByName(StringUtil.unquoteString(methodNameArg.getText()), !isExactInstance);
                 if (isExactInstance) {
                     return Pair.create(filterByNonStatic(methodsInClass).length, "inspection.call.matcher.no.exact.instance.method.with.name");
                 } else if (CALL_MATCHER_STATIC_MATCHER.matches(parentCall)) {
