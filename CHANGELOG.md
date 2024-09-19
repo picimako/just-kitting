@@ -6,13 +6,17 @@
 
 ## [1.1.0]
 ### Added
-- Added `.gitignore` to the list of files that can be compared with their intellij-platform-plugin-template versions. 
+- Added `.gitignore` to the list of files that can be compared with their intellij-platform-plugin-template versions.
 
 ### Changed
 - New supported IDE version range: 2024.2.1 - 2024.3.*.
 - Updated the project to use the IntelliJ Platform Gradle Plugin 2.0.
 - Updated the project to use JDK 21.
 - Updated project configuration to make sure the plugin works when the K2 Kotlin compiler is enabled.
+
+### Fixed
+- Fixed the **Compare with Platform Plugin Template Version** action to work properly when the opened project
+is actually a workspace by the Multi-Project Workspace plugin.
 
 ## [1.0.0]
 ### Added

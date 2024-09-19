@@ -15,7 +15,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.picimako.justkitting.resources.JustKittingBundle;
@@ -43,16 +42,20 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
     private static final Logger LOG = Logger.getInstance(CompareConfigFileWithPluginTemplateAction.class);
     private static final String RAW_GH_USER_CONTENT_BASE_URL = "https://raw.githubusercontent.com/JetBrains/intellij-platform-plugin-template/main/";
 
-    private static final Set<String> DIFFABLE_FILE_PATHS = Set.of(
-            "build.gradle.kts",
-            "gradle.properties",
-            "qodana.yml",
-            ".gitignore",
-            ".github/dependabot.yml",
-            ".github/workflows/build.yml",
-            ".github/workflows/release.yml",
-            ".github/workflows/run-ui-tests.yml",
-            "gradle/libs.versions.toml");
+    private static final Set<Path> DIFFABLE_FILE_PATHS = Set.of(
+        new Path("build.gradle.kts", 1),
+        new Path("gradle.properties", 1),
+        new Path("qodana.yml", 1),
+        new Path(".gitignore", 1),
+        new Path(".github/dependabot.yml", 2),
+        new Path(".github/workflows/build.yml", 3),
+        new Path(".github/workflows/release.yml", 3),
+        new Path(".github/workflows/run-ui-tests.yml", 3),
+        new Path("gradle/libs.versions.toml", 2)
+    );
+
+    private record Path(String path, int levelOfNesting) {
+    }
 
     @Override
     public @NotNull ActionUpdateThread getActionUpdateThread() {
@@ -69,22 +72,24 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
         if (file == null) return;
 
         //Finds the project root directory
-        var projectRoot = ProjectUtil.guessProjectDir(project);
+        var projectRoot = getProjectRootDir(e, file);
         if (projectRoot == null) return;
 
         //Gets the target file's path relative to the current project root directory: e.g. ".github/workflows/build.yml"
         String relativeFilePath = getRelativeFilePath(file, projectRoot);
         //If the relative path was not found, or it is not a file supported for diffing, then do nothing.
-        if (relativeFilePath == null || !DIFFABLE_FILE_PATHS.contains(relativeFilePath)) return;
+        if (relativeFilePath == null
+            || DIFFABLE_FILE_PATHS.stream().noneMatch(path -> relativeFilePath.replaceAll("\\|/", "/").endsWith(path.path)))
+            return;
 
         var localContent = createLocalDiffContent(project, projectRoot, relativeFilePath);
         if (localContent != null) {
             var targetFileType = FileTypeRegistry.getInstance().getFileTypeByFileName(file.getName());
             var simpleDiffRequest = new SimpleDiffRequest(JustKittingBundle.message("diff.editor.title"),
-                    createRemoteDiffContent(project, relativeFilePath, targetFileType, e),
-                    localContent,
-                    JustKittingBundle.message("diff.version.remote"),
-                    JustKittingBundle.message("diff.version.local"));
+                createRemoteDiffContent(project, relativeFilePath, targetFileType, e),
+                localContent,
+                JustKittingBundle.message("diff.version.remote"),
+                JustKittingBundle.message("diff.version.local"));
 
             /*
              * During testing, showDiff() doesn't work properly.
@@ -107,16 +112,42 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
         }
 
         //Finds the project root directory
-        var projectRoot = ProjectUtil.guessProjectDir(e.getProject());
-        if (projectRoot == null) {
+        VirtualFile projectRootDir = getProjectRootDir(e, file);
+        if (projectRootDir == null) return;
+
+        e.getPresentation().setVisible(true);
+    }
+
+    /**
+     * Determines the project root directory based on the current files relative path.
+     * <p>
+     * This is a replacement for {@link com.intellij.openapi.project.ProjectUtil#guessProjectDir(Project)}
+     * to support workspaces in which case the guessing may not be accurate, and may find a different a project's root.
+     */
+    @Nullable("When the project root dir was not found.")
+    private static VirtualFile getProjectRootDir(@NotNull AnActionEvent e, VirtualFile file) {
+        String filePath = file.getPath();
+        var matchingPath = DIFFABLE_FILE_PATHS.stream()
+            //Replacing back- and forward slashes to forward slashes because that's what we need in the GitHub URL
+            .filter(path -> filePath.replaceAll("\\|/", "/").endsWith(path.path))
+            .findFirst();
+        //If the current file is not among the diffable ones, the action becomes hidden
+        if (matchingPath.isEmpty()) {
             e.getPresentation().setVisible(false);
-            return;
+            return null;
         }
 
-        //Gets the target file's path relative to the current project root directory: e.g. ".github/workflows/build.yml"
-        String relativeFilePath = getRelativeFilePath(file, projectRoot);
+        VirtualFile projectRoot = file;
+        for (int i = 1; i <= matchingPath.get().levelOfNesting; i++) {
+            projectRoot = projectRoot.getParent();
+            //If any parent of the current file is not found, the action becomes hidden
+            if (projectRoot == null) {
+                e.getPresentation().setVisible(false);
+                return null;
+            }
+        }
 
-        e.getPresentation().setVisible(relativeFilePath != null && DIFFABLE_FILE_PATHS.contains(relativeFilePath));
+        return projectRoot;
     }
 
     @Nullable
