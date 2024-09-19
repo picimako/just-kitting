@@ -42,19 +42,25 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
     private static final Logger LOG = Logger.getInstance(CompareConfigFileWithPluginTemplateAction.class);
     private static final String RAW_GH_USER_CONTENT_BASE_URL = "https://raw.githubusercontent.com/JetBrains/intellij-platform-plugin-template/main/";
 
-    private static final Set<Path> DIFFABLE_FILE_PATHS = Set.of(
-        new Path("build.gradle.kts", 1),
-        new Path("gradle.properties", 1),
-        new Path("qodana.yml", 1),
-        new Path(".gitignore", 1),
-        new Path(".github/dependabot.yml", 2),
-        new Path(".github/workflows/build.yml", 3),
-        new Path(".github/workflows/release.yml", 3),
-        new Path(".github/workflows/run-ui-tests.yml", 3),
-        new Path("gradle/libs.versions.toml", 2)
+    private static final Set<File> DIFFABLE_FILE_PATHS = Set.of(
+        new File("build.gradle.kts", 1),
+        new File("gradle.properties", 1),
+        new File("qodana.yml", 1),
+        new File(".gitignore", 1),
+        new File(".github/dependabot.yml", 2),
+        new File(".github/workflows/build.yml", 3),
+        new File(".github/workflows/release.yml", 3),
+        new File(".github/workflows/run-ui-tests.yml", 3),
+        new File("gradle/libs.versions.toml", 2)
     );
 
-    private record Path(String path, int levelOfNesting) {
+    /**
+     * A diffable file.
+     *
+     * @param path           the path of the file relative to the project root directory
+     * @param levelOfNesting the level of nesting of the file. 1 means the file is in the root directory.
+     */
+    private record File(String path, int levelOfNesting) {
     }
 
     @Override
@@ -68,23 +74,23 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
         if (project == null) return;
 
         //Finds the file that the action was invoked on. If there is no file, no diffing happens.
-        var file = e.getData(CommonDataKeys.VIRTUAL_FILE);
-        if (file == null) return;
+        var currentFile = e.getData(CommonDataKeys.VIRTUAL_FILE);
+        if (currentFile == null) return;
 
         //Finds the project root directory
-        var projectRoot = getProjectRootDir(e, file);
+        var projectRoot = getProjectRootDir(e, currentFile);
         if (projectRoot == null) return;
 
         //Gets the target file's path relative to the current project root directory: e.g. ".github/workflows/build.yml"
-        String relativeFilePath = getRelativeFilePath(file, projectRoot);
+        String relativeFilePath = getRelativeFilePath(currentFile, projectRoot);
         //If the relative path was not found, or it is not a file supported for diffing, then do nothing.
         if (relativeFilePath == null
-            || DIFFABLE_FILE_PATHS.stream().noneMatch(path -> relativeFilePath.replaceAll("\\|/", "/").endsWith(path.path)))
+            || DIFFABLE_FILE_PATHS.stream().noneMatch(file -> relativeFilePath.replaceAll("\\|/", "/").endsWith(file.path)))
             return;
 
         var localContent = createLocalDiffContent(project, projectRoot, relativeFilePath);
         if (localContent != null) {
-            var targetFileType = FileTypeRegistry.getInstance().getFileTypeByFileName(file.getName());
+            var targetFileType = FileTypeRegistry.getInstance().getFileTypeByFileName(currentFile.getName());
             var simpleDiffRequest = new SimpleDiffRequest(JustKittingBundle.message("diff.editor.title"),
                 createRemoteDiffContent(project, relativeFilePath, targetFileType, e),
                 localContent,
@@ -125,11 +131,11 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
      * to support workspaces in which case the guessing may not be accurate, and may find a different a project's root.
      */
     @Nullable("When the project root dir was not found.")
-    private static VirtualFile getProjectRootDir(@NotNull AnActionEvent e, VirtualFile file) {
-        String filePath = file.getPath();
+    private static VirtualFile getProjectRootDir(@NotNull AnActionEvent e, VirtualFile currentFile) {
+        String filePath = currentFile.getPath();
         var matchingPath = DIFFABLE_FILE_PATHS.stream()
             //Replacing back- and forward slashes to forward slashes because that's what we need in the GitHub URL
-            .filter(path -> filePath.replaceAll("\\|/", "/").endsWith(path.path))
+            .filter(file -> filePath.replaceAll("\\|/", "/").endsWith(file.path))
             .findFirst();
         //If the current file is not among the diffable ones, the action becomes hidden
         if (matchingPath.isEmpty()) {
@@ -137,7 +143,7 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
             return null;
         }
 
-        VirtualFile projectRoot = file;
+        VirtualFile projectRoot = currentFile;
         for (int i = 1; i <= matchingPath.get().levelOfNesting; i++) {
             projectRoot = projectRoot.getParent();
             //If any parent of the current file is not found, the action becomes hidden
