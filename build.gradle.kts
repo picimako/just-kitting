@@ -105,7 +105,7 @@ intellijPlatform {
 intellijPlatformTesting {
     val runTestsInIJCommunity by intellijPlatformTesting.testIde.registering {
         type = IntelliJPlatformType.IntellijIdeaCommunity
-        version = "2024.2"
+        version = "2024.2.1"
         task {
             useJUnit {
                 isScanForTestClasses = false
@@ -115,7 +115,31 @@ intellijPlatformTesting {
             }
         }
     }
+
+    val runTestsWithK2InIJCommunity by intellijPlatformTesting.testIde.registering {
+        type = IntelliJPlatformType.IntellijIdeaCommunity
+        version = "2024.2.1"
+        task {
+            //See https://kotlin.github.io/analysis-api/testing-in-k2-locally.html
+            jvmArgumentProviders += CommandLineArgumentProvider {
+                listOf("-Didea.kotlin.plugin.use.k2=true")
+            }
+            useJUnit {
+                isScanForTestClasses = false
+                include("**/*Test.class")
+                //Disabled due to haven't been able to make the tests resolve the bundle properties files. The functionality works in production environment.
+                exclude("**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class")
+            }
+        }
+    }
 }
+
+//Uncomment this to start the IDE with the K2 Kotlin compiler enabled
+//tasks.named<RunIdeTask>("runIde") {
+//    jvmArgumentProviders += CommandLineArgumentProvider {
+//        listOf("-Didea.kotlin.plugin.use.k2=true")
+//    }
+//}
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
