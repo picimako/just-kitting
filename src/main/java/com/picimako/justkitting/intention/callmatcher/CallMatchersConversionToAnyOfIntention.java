@@ -48,9 +48,9 @@ import java.util.List;
  * This intention combines multiple CallMatcher.&lt;matches> calls to a single CallMatcher.anyOf() constant.
  * <p>
  * It is available only when a boolean expression with 2 or more operands is selected and they are all separated by OR operations.
- * <pre>
+ * <pre>{@code
  * if (LIST_OF.matches(expression) || MAP_OF.matches(expression) || SET_OF.matches(expression)) { }
- * </pre>
+ * }</pre>
  * All matcher methods of {@link CallMatcher} are recognized (matches, test, methodMatches, methodReferenceMatches, uCallMatches).
  * <p>
  * If the boolean expression is inside parenthesis, it is still recognized and available for conversion.

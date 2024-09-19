@@ -33,19 +33,19 @@ abstract class BaseJavaPersistentStateComponentConversionIntention extends BaseC
      * {@link com.intellij.openapi.components.Storage} annotation with a dummy text.
      * <p>
      * <h3>From:</h3>
-     * <pre>
+     * <pre>{@code
      * public class SomeComponent {
      * }
-     * </pre>
+     * }</pre>
      * <h3>To:</h3>
-     * <pre>
+     * <pre>{@code
      * import com.intellij.openapi.components.State;
      * import com.intellij.openapi.components.Storage;
      *
-     * &#064;State(name = "SomeComponent", storages = @Storage("&lt;storage name>"))
+     * @State(name = "SomeComponent", storages = @Storage("<storage name>"))
      * public class SomeComponent {
      * }
-     * </pre>
+     * }</pre>
      */
     protected static void addStateAnnotation(ConversionContext context) {
         // add @State annotation to class
@@ -61,17 +61,17 @@ abstract class BaseJavaPersistentStateComponentConversionIntention extends BaseC
      * state class name provided in the {@code stateClassName} argument.
      * <p>
      * <h3>From:</h3>
-     * <pre>
+     * <pre>{@code
      * public class SomeComponent {
      * }
-     * </pre>
-     * <h3>To (given stateClassName is 'SomeComponent.State'):</h3>
-     * <pre>
+     * }</pre>
+     * <h3>To (given that stateClassName is 'SomeComponent.State'):</h3>
+     * <pre>{@code
      * import com.intellij.openapi.components.PersistentStateComponent;
      *
-     * public class SomeComponent implements PersistentStateComponent&lt;SomeComponent.State> {
+     * public class SomeComponent implements PersistentStateComponent<SomeComponent.State> {
      * }
-     * </pre>
+     * }</pre>
      *
      * @param stateClassName the name of the class that holds the state of this component
      */
@@ -84,17 +84,17 @@ abstract class BaseJavaPersistentStateComponentConversionIntention extends BaseC
      * Adds an inner class named {@code State} within the target component class.
      *
      * <h3>From:</h3>
-     * <pre>
+     * <pre>{@code
      * public class SomeComponent {
      * }
-     * </pre>
+     * }</pre>
      * <h3>To:</h3>
-     * <pre>
+     * <pre>{@code
      * public class SomeComponent {
      *   static final class State {
      *   }
      * }
-     * </pre>
+     * }</pre>
      */
     protected static void addStandaloneStateClass(ConversionContext context) {
         var stateClass = context.factory.createClassFromText("", context.targetClass);

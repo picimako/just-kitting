@@ -220,27 +220,27 @@ public final class InspectionFolder extends PluginDescriptorTagFolder {
     @RequiredArgsConstructor
     private enum Bundle {
         /**
-         * Used when none of the EP XML tag attribute, nor the {@code <resource-bundle>} tag is specified.
+         * Used when none of the EP XML tag attributes, nor the {@code <resource-bundle>} tag is specified.
          */
         NONE("", null),
         /**
-         * <pre>
-         * &lt;idea-plugin>
-         *   &lt;resource-bundle>...&lt;/resource-bundle>
-         * &lt;/idea-plugin>
-         * </pre>
+         * <pre>{@code
+         * <idea-plugin>
+         *   <resource-bundle>...</resource-bundle>
+         * </idea-plugin>
+         * }</pre>
          */
         PLUGIN_DESCRIPTOR("", NONE),
         /**
-         * <pre>
-         * &lt;localInspection bundle="message.JustKittingBundle" />
-         * </pre>
+         * <pre>{@code
+         * <localInspection bundle="message.JustKittingBundle" />
+         * }</pre>
          */
         BUNDLE("bundle", PLUGIN_DESCRIPTOR),
         /**
-         * <pre>
-         * &lt;localInspection groupBundle="message.JustKittingBundle" />
-         * </pre>
+         * <pre>{@code
+         * <localInspection groupBundle="message.JustKittingBundle" />
+         * }</pre>
          */
         GROUP_BUNDLE("groupBundle", BUNDLE);
 
