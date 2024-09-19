@@ -47,6 +47,7 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
             "build.gradle.kts",
             "gradle.properties",
             "qodana.yml",
+            ".gitignore",
             ".github/dependabot.yml",
             ".github/workflows/build.yml",
             ".github/workflows/release.yml",

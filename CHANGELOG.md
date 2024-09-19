@@ -5,6 +5,9 @@
 ## [Unreleased]
 
 ## [1.1.0]
+### Added
+- Added `.gitignore` to the list of files that can be compared with their intellij-platform-plugin-template versions. 
+
 ### Changed
 - New supported IDE version range: 2024.2.1 - 2024.3.*.
 - Updated the project to use the IntelliJ Platform Gradle Plugin 2.0.
