@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [1.1.1]
+### Fixed
+- Fixed the K2 compiler compatibility configuration.
+
 ## [1.1.0]
 ### Added
 - Added `.gitignore` to the list of files that can be compared with their intellij-platform-plugin-template versions.
@@ -17,6 +21,7 @@
 ### Fixed
 - Fixed the **Compare with Platform Plugin Template Version** action to work properly when the opened project
 is actually a workspace by the Multi-Project Workspace plugin.
+- Fixed the **Update Gradle Version** line marker to work with workspaces.
 
 ## [1.0.0]
 ### Added
