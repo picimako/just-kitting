@@ -1,6 +1,8 @@
 //Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.picimako.justkitting.action.diff;
 
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
+
 import com.intellij.diff.DiffContentFactory;
 import com.intellij.diff.DiffManager;
 import com.intellij.diff.contents.DiffContent;
@@ -15,9 +17,9 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.picimako.justkitting.resources.JustKittingBundle;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
@@ -32,7 +34,7 @@ import java.util.Set;
  * Opens a two-sided diff view with a plugin configuration file and its version on GitHub
  * in the IntelliJ Platform Plugin Template.
  * <p>
- * The set of supported configuration files are listed in {@link #DIFFABLE_FILE_PATHS}. For any other path,
+ * The set of supported configuration files are listed in {@link #DIFFABLE_FILES}. For any other path,
  * this action is not displayed.
  *
  * @see <a href="https://github.com/JetBrains/intellij-platform-plugin-template">IntelliJ Platform Plugin Template</a>
@@ -40,28 +42,20 @@ import java.util.Set;
  */
 public class CompareConfigFileWithPluginTemplateAction extends AnAction {
     private static final Logger LOG = Logger.getInstance(CompareConfigFileWithPluginTemplateAction.class);
-    private static final String RAW_GH_USER_CONTENT_BASE_URL = "https://raw.githubusercontent.com/JetBrains/intellij-platform-plugin-template/main/";
+    private static final String CHECK_LICENSE_RAW_URL = "https://raw.githubusercontent.com/JetBrains/marketplace-makemecoffee-plugin/refs/heads/master/src/main/java/com/company/license/CheckLicense.java";
 
-    private static final Set<File> DIFFABLE_FILE_PATHS = Set.of(
-        new File("build.gradle.kts", 1),
-        new File("gradle.properties", 1),
-        new File("qodana.yml", 1),
-        new File(".gitignore", 1),
-        new File(".github/dependabot.yml", 2),
-        new File(".github/workflows/build.yml", 3),
-        new File(".github/workflows/release.yml", 3),
-        new File(".github/workflows/run-ui-tests.yml", 3),
-        new File("gradle/libs.versions.toml", 2)
+    private static final Set<File> DIFFABLE_FILES = Set.of(
+        new FileWithPath("build.gradle.kts", 1),
+        new FileWithPath("gradle.properties", 1),
+        new FileWithPath("qodana.yml", 1),
+        new FileWithPath(".gitignore", 1),
+        new FileWithPath(".github/dependabot.yml", 2),
+        new FileWithPath(".github/workflows/build.yml", 3),
+        new FileWithPath(".github/workflows/release.yml", 3),
+        new FileWithPath(".github/workflows/run-ui-tests.yml", 3),
+        new FileWithPath("gradle/libs.versions.toml", 2),
+        new FileWithName("CheckLicense.java", CHECK_LICENSE_RAW_URL)
     );
-
-    /**
-     * A diffable file.
-     *
-     * @param path           the path of the file relative to the project root directory
-     * @param levelOfNesting the level of nesting of the file. 1 means the file is in the root directory.
-     */
-    private record File(String path, int levelOfNesting) {
-    }
 
     @Override
     public @NotNull ActionUpdateThread getActionUpdateThread() {
@@ -84,18 +78,19 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
         //Gets the target file's path relative to the current project root directory: e.g. ".github/workflows/build.yml"
         String relativeFilePath = getRelativeFilePath(currentFile, projectRoot);
         //If the relative path was not found, or it is not a file supported for diffing, then do nothing.
-        if (relativeFilePath == null
-            || DIFFABLE_FILE_PATHS.stream().noneMatch(file -> relativeFilePath.replaceAll("\\|/", "/").endsWith(file.path)))
-            return;
+        if (relativeFilePath == null) return;
+
+        var matchingFile = DIFFABLE_FILES.stream().filter(file -> file.isEligibleToDiff(relativeFilePath)).findFirst();
+        if (matchingFile.isEmpty()) return;
 
         var localContent = createLocalDiffContent(project, projectRoot, relativeFilePath);
         if (localContent != null) {
             var targetFileType = FileTypeRegistry.getInstance().getFileTypeByFileName(currentFile.getName());
-            var simpleDiffRequest = new SimpleDiffRequest(JustKittingBundle.message("diff.editor.title"),
-                createRemoteDiffContent(project, relativeFilePath, targetFileType, e),
+            var simpleDiffRequest = new SimpleDiffRequest(message("diff.editor.title"),
+                createRemoteDiffContent(project, matchingFile.get(), targetFileType, e),
                 localContent,
-                JustKittingBundle.message("diff.version.remote"),
-                JustKittingBundle.message("diff.version.local"));
+                message("diff.version.remote"),
+                message("diff.version.local"));
 
             /*
              * During testing, showDiff() doesn't work properly.
@@ -133,27 +128,37 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
     @Nullable("When the project root dir was not found.")
     private static VirtualFile getProjectRootDir(@NotNull AnActionEvent e, VirtualFile currentFile) {
         String filePath = currentFile.getPath();
-        var matchingPath = DIFFABLE_FILE_PATHS.stream()
+        var matchingFile = DIFFABLE_FILES.stream()
             //Replacing back- and forward slashes to forward slashes because that's what we need in the GitHub URL
-            .filter(file -> filePath.replaceAll("\\|/", "/").endsWith(file.path))
+            .filter(file -> file.isEligibleToDiff(filePath))
             .findFirst();
         //If the current file is not among the diffable ones, the action becomes hidden
-        if (matchingPath.isEmpty()) {
+        if (matchingFile.isEmpty()) {
             e.getPresentation().setVisible(false);
             return null;
         }
 
-        VirtualFile projectRoot = currentFile;
-        for (int i = 1; i <= matchingPath.get().levelOfNesting; i++) {
-            projectRoot = projectRoot.getParent();
-            //If any parent of the current file is not found, the action becomes hidden
-            if (projectRoot == null) {
-                e.getPresentation().setVisible(false);
-                return null;
+        File file = matchingFile.get();
+        int possibleMaxParentCount = 0;
+        if (file instanceof FileWithPath fileWithPath)
+            possibleMaxParentCount = fileWithPath.levelOfNesting;
+        else if (file instanceof FileWithName)
+            possibleMaxParentCount = StringUtil.countChars(normalizeSlashes(currentFile.getPath()), '/');
+
+        if (possibleMaxParentCount != 0) {
+            VirtualFile projectRoot = currentFile;
+            for (int i = 1; i <= possibleMaxParentCount; i++) {
+                projectRoot = projectRoot.getParent();
+                //If any parent of the current file is not found, the action becomes hidden
+                if (projectRoot == null) {
+                    e.getPresentation().setVisible(false);
+                    return null;
+                }
             }
+            return projectRoot;
         }
 
-        return projectRoot;
+        return null;
     }
 
     @Nullable
@@ -162,7 +167,11 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
         if (relativePath == null) return null;
 
         //Replacing back- and forward slashes to forward slashes because that's what we need in the GitHub URL
-        return relativePath.replaceAll("\\|/", "/");
+        return normalizeSlashes(relativePath);
+    }
+
+    private static String normalizeSlashes(String path) {
+        return path.replaceAll("\\|/", "/");
     }
 
     /**
@@ -182,19 +191,19 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
      * project's repository root.
      */
     @NotNull
-    private DocumentContent createRemoteDiffContent(Project project, String filePath, FileType fileType, AnActionEvent event) {
+    private DocumentContent createRemoteDiffContent(Project project, File file, FileType fileType, AnActionEvent event) {
         //Get file content from the intellij-platform-plugin-template GitHub repository, and create diff content
-        String contentFromRemote = getContentFromPlatformPluginTemplateOnGitHub(filePath, event);
+        String contentFromRemote = getContentFromPlatformPluginTemplateOnGitHub(file, event);
         return DiffContentFactory.getInstance().create(project, contentFromRemote, fileType, true);
     }
 
     /**
      * Sends a GET request to GitHub to fetch the text content of the file at {@code filePath}
      *
-     * @param filePath the relative path of the file to {@link #RAW_GH_USER_CONTENT_BASE_URL} to fetch
+     * @param file the abstract file representing the diffable resource
      * @return the String text content of the file
      */
-    private String getContentFromPlatformPluginTemplateOnGitHub(String filePath, AnActionEvent event) {
+    private String getContentFromPlatformPluginTemplateOnGitHub(File file, AnActionEvent event) {
         //Using try-with-resources, the entity content conversion (or maybe this whole method) is executed twice,
         // and second time the content is an empty string, which is displayed in the diff view, instead of the actual
         // content received from the first invocation.
@@ -203,15 +212,65 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
 
         var client = HttpClients.createDefault();
         try {
-            var response = client.execute(new HttpGet(RAW_GH_USER_CONTENT_BASE_URL + filePath));
+            var response = client.execute(new HttpGet(file.rawUrl()));
             if (response.getEntity() != null) {
                 return IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
             }
             client.close();
         } catch (IOException e) {
-            LOG.warn(JustKittingBundle.message("diff.version.remote.could.not.get.content"), e);
+            LOG.warn(message("diff.version.remote.could.not.get.content"), e);
         }
         BalloonHelper.showBalloonForAction(event, "diff.version.remote.could.not.get.content");
         return null;
+    }
+
+    /**
+     * A diffable file.
+     */
+    private interface File {
+        /**
+         * If this file is eligible to provide diffing information for the given relative file path.
+         *
+         * @param relativeFilePath relative file path of the file chosen by the user for diffing
+         */
+        boolean isEligibleToDiff(String relativeFilePath);
+
+        /**
+         * The raw GitHub URL of this file.
+         */
+        String rawUrl();
+    }
+
+    /**
+     * A diffable file with a relative path and the known level of nesting.
+     *
+     * @param path           the path of the file relative to the project root directory
+     * @param levelOfNesting the level of nesting of the file. 1 means the file is in the root directory.
+     */
+    private record FileWithPath(String path, int levelOfNesting) implements File {
+        private static final String RAW_GH_USER_CONTENT_BASE_URL = "https://raw.githubusercontent.com/JetBrains/intellij-platform-plugin-template/main/";
+
+        @Override
+        public boolean isEligibleToDiff(String relativeFilePath) {
+            return normalizeSlashes(relativeFilePath).endsWith(path);
+        }
+
+        @Override
+        public String rawUrl() {
+            return RAW_GH_USER_CONTENT_BASE_URL + path;
+        }
+    }
+
+    /**
+     * A diffable file with a name and its raw GitHub URL.
+     *
+     * @param name   the name of the file, including its extension
+     * @param rawUrl the complete raw GitHub URL of the file in case it is not part of the IntelliJ Platform Plugin Template.
+     */
+    private record FileWithName(String name, String rawUrl) implements File {
+        @Override
+        public boolean isEligibleToDiff(String relativeFilePath) {
+            return relativeFilePath.endsWith(name);
+        }
     }
 }

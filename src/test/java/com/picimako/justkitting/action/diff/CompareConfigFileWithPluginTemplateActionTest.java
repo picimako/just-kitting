@@ -57,6 +57,14 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
         assertThat(e.getPresentation().isVisible()).isTrue();
     }
 
+    public void testDiffViewAvailableForSupportedFileWithName() {
+        var e = wrapInTestActionEvent(myFixture.copyFileToProject("src/main/java/com/plugin/license/CheckLicense.java"));
+
+        new CompareConfigFileWithPluginTemplateAction().update(e);
+
+        assertThat(e.getPresentation().isVisible()).isTrue();
+    }
+
     //Perform action
 
     public void testNoDiffViewForNonExistentVirtualFile() {
@@ -83,7 +91,7 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
 
         var simpleDiffRequest = (SimpleDiffRequest) diffRequest.get();
         assertThat(simpleDiffRequest.getContentTitles())
-                .containsExactly("Platform Plugin Template", "Local");
+                .containsExactly("Platform Plugin Template / Remote Version", "Local");
         assertThat(simpleDiffRequest.toString())
                 .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[diff\\.properties], \\{}:DocumentImpl\\[gradle\\.properties]]");
     }
@@ -101,9 +109,27 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
 
         var simpleDiffRequest = (SimpleDiffRequest) diffRequest.get();
         assertThat(simpleDiffRequest.getContentTitles())
-                .containsExactly("Platform Plugin Template", "Local");
+                .containsExactly("Platform Plugin Template / Remote Version", "Local");
         assertThat(simpleDiffRequest.toString())
                 .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[null], \\{}:DocumentImpl\\[dependabot\\.yml]]");
+    }
+
+    public void testDiffViewForFileInFolderWithName() {
+        var dependabot = myFixture.copyFileToProject("src/main/java/com/plugin/license/CheckLicense.java");
+        var diffRequest = new Ref<DiffRequest>();
+        var e = wrapInTestActionEvent(dependabot, diffRequest);
+
+        //Perform action
+        new CompareConfigFileWithPluginTemplateAction().actionPerformed(e);
+
+        //Validate results
+        assertThat(diffRequest.get()).isInstanceOf(SimpleDiffRequest.class);
+
+        var simpleDiffRequest = (SimpleDiffRequest) diffRequest.get();
+        assertThat(simpleDiffRequest.getContentTitles())
+            .containsExactly("Platform Plugin Template / Remote Version", "Local");
+        assertThat(simpleDiffRequest.toString())
+            .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[diff\\.java], \\{}:DocumentImpl\\[CheckLicense\\.java]]");
     }
 
 //    public void testNoDiffViewWhenCouldNotFetchContentFromGitHub() {

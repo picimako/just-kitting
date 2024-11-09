@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [1.2.0]
+### Added
+- [55](https://github.com/picimako/just-kitting/issues/55): Added `CheckLicense.java` to the list of diffable resources.
+
 ## [1.1.1]
 ### Fixed
 - Fixed the K2 compiler compatibility configuration.
