@@ -12,15 +12,15 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
- * Integration test for {@link AnActionIconLineMarkerProvider}.
+ * Integration test for {@link PluginDescriptorIconLineMarkerProvider}.
  */
-public final class AnActionIconLineMarkerProviderTest extends JustKittingLineMarkerCollectionTestBase {
+public final class PluginDescriptorIconLineMarkerProviderTest extends JustKittingLineMarkerCollectionTestBase {
 
-    private final AnActionIconLineMarkerProvider provider = new AnActionIconLineMarkerProvider();
+    private final PluginDescriptorIconLineMarkerProvider provider = new PluginDescriptorIconLineMarkerProvider();
 
     @Override
     protected String getTestDataPath() {
-        return "src/test/testData/linemarker/anaction";
+        return "src/test/testData/linemarker/plugindescriptoricon";
     }
 
     @Override
@@ -50,10 +50,18 @@ public final class AnActionIconLineMarkerProviderTest extends JustKittingLineMar
     }
 
     public void testGutterIconForAllIconsIcon() {
-        checkGutterIcon("main/resources/allicons_icon.xml", "Action icon");
+        checkGutterIcon("main/resources/allicons_action_icon.xml", "Extension / action icon");
     }
 
     public void testGutterIconForAllIconsIconInGroup() {
-        checkGutterIcon("main/resources/allicons_icon_in_group.xml", "Action icon");
+        checkGutterIcon("main/resources/allicons_action_icon_in_group.xml", "Extension / action icon");
+    }
+
+    public void testGutterIconForIconsIcon() {
+        checkGutterIcon("main/resources/icons_icon.xml", "Extension / action icon");
+    }
+
+    public void testGutterIconForToolWindowIcon() {
+        checkGutterIcon("main/resources/tool_window_icon.xml", "Extension / action icon");
     }
 }

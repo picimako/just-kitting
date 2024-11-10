@@ -1,0 +1,5 @@
+<idea-plugin require-restart="true">
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Dummy" anchor="bottom" icon="AllIcons.<caret>Modules.Split" factoryClass=""/>
+    </extensions>
+</idea-plugin>

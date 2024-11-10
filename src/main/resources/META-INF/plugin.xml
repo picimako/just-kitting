@@ -63,7 +63,7 @@
         <applicationService serviceInterface="com.picimako.justkitting.codefolding.JustKittingCodeFoldingSettings"
                             serviceImplementation="com.picimako.justkitting.codefolding.JustKittingCodeFoldingSettingsImpl"/>
 
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.picimako.justkitting.linemarker.AnActionIconLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.picimako.justkitting.linemarker.PluginDescriptorIconLineMarkerProvider"/>
     </extensions>
 
     <actions>

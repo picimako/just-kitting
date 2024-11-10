@@ -7,6 +7,8 @@
 ## [1.2.0]
 ### Added
 - [55](https://github.com/picimako/just-kitting/issues/55): Added `CheckLicense.java` to the list of diffable resources.
+- [56](https://github.com/picimako/just-kitting/issues/56): Added a 'reference icon' line marker for the `extensions.toolWindow@icon` XML attribute.
+- Added resolution of icons in the `icons` package for action and tool window extension `icon` attributes. 
 
 ### Fixed
 - Now the value of the `gradleVersion` property is queried right when clicking the Update Gradle version line marker,
