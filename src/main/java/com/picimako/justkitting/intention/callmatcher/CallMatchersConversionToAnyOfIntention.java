@@ -144,7 +144,7 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
         if (element == null) element = expression.getParent();
         var parent = element;
         while (parent != null) {
-            if (parent instanceof PsiClass parentCls && LocalToFieldHandler.mayContainConstants(parentCls)) {
+            if (parent instanceof PsiClass parentCls && LocalToFieldHandler.isStaticFieldAllowed(parentCls)) {
                 parentClasses.add(parentCls);
             }
             parent = PsiTreeUtil.getParentOfType(parent, PsiClass.class);
