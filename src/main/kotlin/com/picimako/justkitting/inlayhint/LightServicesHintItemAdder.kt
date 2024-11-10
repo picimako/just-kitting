@@ -59,7 +59,7 @@ abstract class LightServicesHintItemAdder(open var settings: Settings,
      * Adds non-clickable hints for all provided `labels`.
      */
     fun addLabelHints(extensionsTagToken: XmlToken, vararg labels: String) {
-        labels.forEach { addHintFor(extensionsTagToken, factory.inset(basePresentation(it), down = 3, top = 3)) }
+        labels.forEach { addHintFor(extensionsTagToken, presentationFactory.inset(basePresentation(it), down = 3, top = 3)) }
     }
 
     /**
@@ -77,18 +77,18 @@ abstract class LightServicesHintItemAdder(open var settings: Settings,
         val classesSupplier =
             if (classes.isNotEmpty()) Supplier { classes.flatMap { (_, values) -> values } }
             else Supplier { lookupLightServiceClasses(extensionsTag.project).toList() }
-        addHintFor(extensionsTag, factory.inset(viewAllServicesPresentation(classesSupplier, extensionsTag.textRange.startOffset), down = 1))
+        addHintFor(extensionsTag, presentationFactory.inset(viewAllServicesPresentation(classesSupplier, extensionsTag.textRange.startOffset), down = 1))
     }
 
     /**
      * Adds a formatted PsiClass reference hint to the given `element`.
      */
     private fun <T: PsiNameIdentifierOwner> addClassReferenceHint(element: XmlToken, psiClass: T) {
-        addHintFor(element, factory.inset(classReferencePresentation(psiClass), down = 1))
+        addHintFor(element, presentationFactory.inset(classReferencePresentation(psiClass), down = 1))
     }
 
     private fun addHintFor(element: PsiElement, insetPres: InsetPresentation) {
         sink.addBlockElement(element.parent.textRange.startOffset, relatesToPrecedingText = true, showAbove = true, priority = 0,
-                presentation = factory.inset(insetPres, left = calculateBlockInlayStartOffset(element as XmlToken)))
+                presentation = presentationFactory.inset(insetPres, left = calculateBlockInlayStartOffset(element as XmlToken)))
     }
 }
