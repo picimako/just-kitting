@@ -131,7 +131,7 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
         if (parentClasses.size() > 1) {
             introduceCombinedCallMatcherInSelectedClass(parentClasses, selectedParentClass -> introduceCombinedCallMatcher(expressionInRange, selectedParentClass, file, editor), editor, project);
         } else if (parentClasses.size() == 1) {
-            introduceCombinedCallMatcher(expressionInRange, parentClasses.get(0), file, editor);
+            introduceCombinedCallMatcher(expressionInRange, parentClasses.getFirst(), file, editor);
         }
     }
 

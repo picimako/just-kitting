@@ -34,10 +34,9 @@ import java.util.function.Supplier;
  */
 @SuppressWarnings("UnstableApiUsage")
 public abstract class LightServicesHintPresentationAware {
-
-    public PresentationFactory presentationFactory;
-    public Editor editor;
-    public PsiFile file;
+    public final PresentationFactory presentationFactory;
+    private final Editor editor;
+    private final PsiFile file;
 
     LightServicesHintPresentationAware(PresentationFactory presentationFactory, Editor editor, PsiFile file) {
         this.presentationFactory = presentationFactory;

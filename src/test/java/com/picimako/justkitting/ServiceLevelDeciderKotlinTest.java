@@ -106,7 +106,7 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
         KtFile psiFile = (KtFile) myFixture.configureByText("AnApplicationServiceInNestedKotlinClass.kt",
             """
                 import com.intellij.openapi.components.Service
-                                
+                
                 @Service
                 class AnApplicationServiceInNestedKotlinClass {
                     @com.intellij.openapi.components.Service(Service.Level.PROJECT)
@@ -123,7 +123,7 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
         KtFile psiFile = (KtFile) myFixture.configureByText("AnApplicationServiceInNestedKotlinClassInCompanionObject.kt",
             """
                 import com.intellij.openapi.components.Service
-                     
+                
                 @Service
                 class AnApplicationServiceInNestedKotlinClassInCompanionObject {
                     companion object {

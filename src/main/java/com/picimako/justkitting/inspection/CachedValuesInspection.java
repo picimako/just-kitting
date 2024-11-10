@@ -62,7 +62,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly) {
         return new JavaElementVisitor() {
             @Override
-            public void visitMethodCallExpression(PsiMethodCallExpression expression) {
+            public void visitMethodCallExpression(@NotNull PsiMethodCallExpression expression) {
                 //If it is a static call to 'CachedValueProvider.Result.create()'
                 if (expression.getMethodExpression().getReferenceNameElement() != null && RESULT_CREATE_MATCHER.matches(expression)) {
                     checkForMissingOrEmptyDependencies(expression.getArgumentList(), () -> expression.getMethodExpression().getReferenceNameElement(), PsiMethodCallExpression.class);
@@ -70,7 +70,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
             }
 
             @Override
-            public void visitNewExpression(PsiNewExpression expression) {
+            public void visitNewExpression(@NotNull PsiNewExpression expression) {
                 //If it is a constructor call to 'new CachedValueProvider.Result()'
                 if (Optional.ofNullable(expression.getClassOrAnonymousClassReference())
                     .filter(cls -> CACHED_VALUE_PROVIDER_RESULT.equals(cls.getQualifiedName()))
@@ -80,7 +80,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
             }
 
             @Override
-            public void visitCallExpression(PsiCallExpression callExpression) {
+            public void visitCallExpression(@NotNull PsiCallExpression callExpression) {
                 //Other types of calls are out of scope
             }
 
@@ -120,7 +120,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
         }
 
         @Override
-        protected void doFix(Project project, ProblemDescriptor descriptor) {
+        protected void doFix(@NotNull Project project, ProblemDescriptor descriptor) {
             modificationTracker.addDependency(descriptor.getPsiElement(), expressionType, project);
         }
     }
@@ -134,7 +134,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
         }
 
         @Override
-        protected void doFix(Project project, ProblemDescriptor descriptor) {
+        protected void doFix(@NotNull Project project, ProblemDescriptor descriptor) {
             modificationTracker.replaceEmptyDependency(descriptor.getPsiElement(), expressionType, project);
         }
     }

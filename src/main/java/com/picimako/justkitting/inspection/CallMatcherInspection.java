@@ -50,7 +50,7 @@ public class CallMatcherInspection extends LocalInspectionTool {
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly) {
         return new JavaElementVisitor() {
             @Override
-            public void visitLiteralExpression(PsiLiteralExpression literalExpr) {
+            public void visitLiteralExpression(@NotNull PsiLiteralExpression literalExpr) {
                 if (!ARGUMENT_OF_CALL_MATCHER_PATTERN.accepts(literalExpr)) return;
 
                 var parentCall = PsiTreeUtil.getParentOfType(literalExpr, PsiMethodCallExpression.class);
