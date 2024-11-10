@@ -131,7 +131,7 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
         if (parentClasses.size() > 1) {
             introduceCombinedCallMatcherInSelectedClass(parentClasses, selectedParentClass -> introduceCombinedCallMatcher(expressionInRange, selectedParentClass, file, editor), editor, project);
         } else if (parentClasses.size() == 1) {
-            introduceCombinedCallMatcher(expressionInRange, parentClasses.get(0), file, editor);
+            introduceCombinedCallMatcher(expressionInRange, parentClasses.getFirst(), file, editor);
         }
     }
 
@@ -144,7 +144,7 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
         if (element == null) element = expression.getParent();
         var parent = element;
         while (parent != null) {
-            if (parent instanceof PsiClass parentCls && LocalToFieldHandler.mayContainConstants(parentCls)) {
+            if (parent instanceof PsiClass parentCls && LocalToFieldHandler.isStaticFieldAllowed(parentCls)) {
                 parentClasses.add(parentCls);
             }
             parent = PsiTreeUtil.getParentOfType(parent, PsiClass.class);

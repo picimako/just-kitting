@@ -21,19 +21,22 @@ import javax.swing.*;
 import java.util.Collection;
 
 /**
- * This provider displays the actual referenced icons of {@code AnAction}s in plugin descriptor files in the following
- * XML attributes:
+ * This provider displays the actual referenced icons of {@code AnAction}s and eligible extensions in
+ * plugin descriptor files in the following XML attributes:
  * <ul>
  *     <li>{@code idea-plugin.actions.action@icon}</li>
  *     <li>{@code idea-plugin.actions.group.action@icon}</li>
+ *     <li>{@code idea-plugin.extensions.toolWindow@icon}</li>
  * </ul>
  * <p>
  * This line marker doesn't support resolving icons when the icon path is an actual fully qualified
- * name, and not an {@code AllIcons} reference.
+ * name or a relative path within the project.
  *
  * @since 1.0.0
  */
-final class AnActionIconLineMarkerProvider extends RelatedItemLineMarkerProvider {
+final class PluginDescriptorIconLineMarkerProvider extends RelatedItemLineMarkerProvider {
+
+    //Actions
 
     private static final XmlAttributePattern ACTIONS_ACTION_ICON_ATTRIBUTE_PATTERN =
         xmlAttribute().withLocalName("icon")
@@ -47,9 +50,19 @@ final class AnActionIconLineMarkerProvider extends RelatedItemLineMarkerProvider
                     .withParent(xmlTag().withLocalName("actions")
                         .withParent(xmlTag().withLocalName("idea-plugin")))));
 
+    //Tool Window
+
+    private static final XmlAttributePattern TOOL_WINDOW_ICON_ATTRIBUTE_PATTERN =
+        xmlAttribute().withLocalName("icon")
+            .withParent(xmlTag().withLocalName("toolWindow")
+                .withParent(xmlTag().withLocalName("extensions")
+                    .withParent(xmlTag().withLocalName("idea-plugin"))));
+
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
-        if (ACTIONS_ACTION_ICON_ATTRIBUTE_PATTERN.accepts(element) || GROUP_ACTION_ICON_ATTRIBUTE_PATTERN.accepts(element)) {
+        if (ACTIONS_ACTION_ICON_ATTRIBUTE_PATTERN.accepts(element)
+            || GROUP_ACTION_ICON_ATTRIBUTE_PATTERN.accepts(element)
+            || TOOL_WINDOW_ICON_ATTRIBUTE_PATTERN.accepts(element)) {
             var icon = determineIcon(element);
             if (icon != null)
                 result.add(NavigationGutterIconBuilder.create(icon)
@@ -67,12 +80,14 @@ final class AnActionIconLineMarkerProvider extends RelatedItemLineMarkerProvider
         if (lastIndexOfDot == -1) return null;
 
         try {
-            if (iconRef.startsWith("AllIcons")) {
-                //E.g.: com.intellij.icons.AllIcons$Actions
-                var iconsClass = Class.forName("com.intellij.icons." + iconRef.substring(0, lastIndexOfDot).replace('.', '$'));
-                //Gets the Icon value of the specified field name
-                return getStaticFieldValue(iconsClass, Icon.class, iconRef.substring(lastIndexOfDot + 1));
-            }
+            var iconsClass = iconRef.startsWith("AllIcons")
+                             //E.g.: com.intellij.icons.AllIcons$Actions
+                             ? Class.forName("com.intellij.icons." + iconRef.substring(0, lastIndexOfDot).replace('.', '$'))
+                             //E.g.: icons.GradleIcons$ToolWindowGradle
+                             : Class.forName("icons." + iconRef.substring(0, lastIndexOfDot).replace('.', '$'));
+
+            //Gets the Icon value of the specified field name
+            return getStaticFieldValue(iconsClass, Icon.class, iconRef.substring(lastIndexOfDot + 1));
         } catch (ClassNotFoundException e) {
             //Fall through to return null
         }

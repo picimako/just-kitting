@@ -34,13 +34,12 @@ import java.util.function.Supplier;
  */
 @SuppressWarnings("UnstableApiUsage")
 public abstract class LightServicesHintPresentationAware {
+    public final PresentationFactory presentationFactory;
+    private final Editor editor;
+    private final PsiFile file;
 
-    public PresentationFactory factory;
-    public Editor editor;
-    public PsiFile file;
-
-    LightServicesHintPresentationAware(PresentationFactory factory, Editor editor, PsiFile file) {
-        this.factory = factory;
+    LightServicesHintPresentationAware(PresentationFactory presentationFactory, Editor editor, PsiFile file) {
+        this.presentationFactory = presentationFactory;
         this.editor = editor;
         this.file = file;
     }
@@ -49,7 +48,7 @@ public abstract class LightServicesHintPresentationAware {
      * A simple presentation with a label.
      */
     public InlayPresentation basePresentation(String label, int padding) {
-        return factory.container(factory.smallText(label), new InlayPresentationFactory.Padding(padding, padding, padding, padding), null, null, 0);
+        return presentationFactory.container(presentationFactory.smallText(label), new InlayPresentationFactory.Padding(padding, padding, padding, padding), null, null, 0);
     }
 
     public InlayPresentation basePresentation(String label) {
@@ -60,8 +59,8 @@ public abstract class LightServicesHintPresentationAware {
      * Clickable hint showing the referenced class name. It navigates to the PsiClass when clicked.
      */
     public <T extends PsiNameIdentifierOwner> InlayPresentation classReferencePresentation(T psiClass) {
-        return factory.referenceOnHover(
-            factory.smallText(psiClass.getName() != null ? psiClass.getName() : ""),
+        return presentationFactory.referenceOnHover(
+            presentationFactory.smallText(psiClass.getName() != null ? psiClass.getName() : ""),
             (mouseEvent, point) -> ((Navigatable) psiClass).navigate(true));
     }
 
@@ -73,7 +72,7 @@ public abstract class LightServicesHintPresentationAware {
      * @param startOffset the start offset of the `<extensions>` xml tag
      */
     public <T extends PsiNameIdentifierOwner> InlayPresentation viewAllServicesPresentation(Supplier<List<T>> classes, int startOffset) {
-        return factory.referenceOnHover(factory.smallText(JustKittingBundle.message("inlay.hints.light.services.view.all.light.services")), (mouseEvent, point) -> {
+        return presentationFactory.referenceOnHover(presentationFactory.smallText(JustKittingBundle.message("inlay.hints.light.services.view.all.light.services")), (mouseEvent, point) -> {
             var step = new BaseListPopupStep<>(
                 JustKittingBundle.message("inlay.hints.light.services.view.all.popup.title"),
                 //Sorts the list items alphabetically by class names

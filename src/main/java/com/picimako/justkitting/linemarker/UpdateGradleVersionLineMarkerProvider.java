@@ -23,6 +23,8 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -66,20 +68,24 @@ final class UpdateGradleVersionLineMarkerProvider extends LineMarkerProviderDesc
         var containingFile = isGradleVersionInGradleProperties(property);
         if (containingFile != null) {
             var projectDir = containingFile.getParent();
-            if (projectDir != null && findGradleWrapperProperties(projectDir.getVirtualFile(), element.getProject()) instanceof PropertiesFile propertiesFile) {
-                var distributionUrl = propertiesFile.findPropertyByKey("distributionUrl");
-                if (distributionUrl == null) return null;
+            if (projectDir != null) {
+                var project = element.getProject();
+                if (findGradleWrapperProperties(projectDir.getVirtualFile(), project) instanceof PropertiesFile propertiesFile) {
+                    var distributionUrl = propertiesFile.findPropertyByKey("distributionUrl");
+                    if (distributionUrl == null) return null;
 
-                String url = distributionUrl.getValue();
-                if (url == null) return null;
+                    String url = distributionUrl.getValue();
+                    if (url == null) return null;
 
-                var matcher = WRAPPER_DISTRIBUTION_URL_PATTERN.matcher(url);
-                if (matcher.matches()) {
-                    //If the current version in gradle-wrapper.properties doesn't match with the new version in gradle.properties,
-                    // meaning the wrapper should be updated
-                    if (!matcher.group("version").equals(property.getValue())) {
-                        String currentType = matcher.group("type");
-                        return new UpdateGradleVersionLineMarkerInfo(property, property.getValue(), currentType, projectDir);
+                    var matcher = WRAPPER_DISTRIBUTION_URL_PATTERN.matcher(url);
+                    if (matcher.matches()) {
+                        //If the current version in gradle-wrapper.properties doesn't match with the new version in gradle.properties,
+                        // meaning the wrapper should be updated
+                        if (!matcher.group("version").equals(property.getValue())) {
+                            String currentType = matcher.group("type");
+                            var pointerToProperty = SmartPointerManager.getInstance(project).createSmartPsiElementPointer(property, property.getContainingFile());
+                            return new UpdateGradleVersionLineMarkerInfo(pointerToProperty, currentType, projectDir);
+                        }
                     }
                 }
             }
@@ -114,19 +120,20 @@ final class UpdateGradleVersionLineMarkerProvider extends LineMarkerProviderDesc
     }
 
     private static final class UpdateGradleVersionLineMarkerInfo extends MergeableLineMarkerInfo<PsiElement> {
-        private final String newGradleVersion;
+        @NotNull
+        private final SmartPsiElementPointer<Property> property;
         private final String wrapperType;
         private final PsiDirectory projectDir;
 
-        public UpdateGradleVersionLineMarkerInfo(Property property, String newGradleVersion, String wrapperType, PsiDirectory projectDir) {
-            super(property.getFirstChild(),
-                property.getFirstChild().getTextRange(),
+        public UpdateGradleVersionLineMarkerInfo(SmartPsiElementPointer<Property> property, String wrapperType, PsiDirectory projectDir) {
+            super(property.getElement().getFirstChild(),
+                property.getElement().getFirstChild().getTextRange(),
                 AllIcons.Javaee.UpdateRunningApplication,
                 __ -> message("line.marker.update.gradle.wrapper.version"),
                 null,
                 GutterIconRenderer.Alignment.LEFT,
                 () -> message("line.marker.update.gradle.wrapper.version"));
-            this.newGradleVersion = newGradleVersion;
+            this.property = property;
             this.wrapperType = wrapperType;
             this.projectDir = projectDir;
         }
@@ -154,7 +161,7 @@ final class UpdateGradleVersionLineMarkerProvider extends LineMarkerProviderDesc
                             //Create a Gradle run configuration, and set its command with the wrapper update one
                             var runConfig = runManager.createConfiguration(message("line.marker.update.gradle.wrapper.version"), new GradleExternalTaskConfigurationType().getFactory());
                             var gradleRunConfiguration = (GradleRunConfiguration) runConfig.getConfiguration();
-                            gradleRunConfiguration.setRawCommandLine(WRAPPER_UPDATE_COMMAND.formatted(newGradleVersion, wrapperType));
+                            gradleRunConfiguration.setRawCommandLine(WRAPPER_UPDATE_COMMAND.formatted(property.getElement().getValue(), wrapperType));
                             gradleRunConfiguration.getSettings().setExternalProjectPath(FileUtil.toSystemDependentName(projectDir.getVirtualFile().getPath()));
 
                             //Add the run configuration to the list of configurations, and make it the selected one

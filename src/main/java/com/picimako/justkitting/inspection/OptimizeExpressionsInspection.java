@@ -57,7 +57,7 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
     public @NotNull PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly, @NotNull LocalInspectionToolSession session) {
         return new JavaElementVisitor() {
             @Override
-            public void visitNewExpression(PsiNewExpression expression) {
+            public void visitNewExpression(@NotNull PsiNewExpression expression) {
                 //If it's a new Type[0] array creation and Type has an empty array constant called EMPTY_ARRAY
                 if (expression.isArrayCreation() && expression.getArrayDimensions().length == 1 && isZero(expression.getArrayDimensions()[0]) && hasEmptyArrayConstantField(expression.getClassReference())) {
                     holder.registerProblem(expression,
@@ -68,7 +68,7 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
             }
 
             @Override
-            public void visitBinaryExpression(PsiBinaryExpression expr) {
+            public void visitBinaryExpression(@NotNull PsiBinaryExpression expr) {
                 boolean isLeftBound;
                 //If any of the expression operands is a reference to 'PsiArgumentList.getExpressions().length'
                 if ((isLeftBound = isGetExpressionsLength(expr.getLOperand(), expr.getROperand())) || isGetExpressionsLength(expr.getROperand(), expr.getLOperand())) {
@@ -118,7 +118,7 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
         }
 
         @Override
-        protected void doFix(Project project, ProblemDescriptor descriptor) {
+        protected void doFix(@NotNull Project project, ProblemDescriptor descriptor) {
             var newEmptyArray = (PsiNewExpression) descriptor.getPsiElement();
             newEmptyArray.replace(getElementFactory(project)
                 .createExpressionFromText(newEmptyArray.getClassReference().getReferenceName() + ".EMPTY_ARRAY", descriptor.getPsiElement()));
@@ -182,7 +182,7 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
         }
 
         @Override
-        protected void doFix(Project project, ProblemDescriptor descriptor) {
+        protected void doFix(@NotNull Project project, ProblemDescriptor descriptor) {
             var binaryExpression = (PsiBinaryExpression) descriptor.getPsiElement();
             getGetArgumentList(isExpressionAtLeft ? binaryExpression.getLOperand() : binaryExpression.getROperand())
                 .ifPresent(getArgumentList -> {

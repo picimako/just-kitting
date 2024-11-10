@@ -35,7 +35,7 @@ public abstract class JustKittingLineMarkerCollectionTestBase extends ContentRoo
         var lineMarkers = getLineMarkers(fileUnderTest);
 
         assertThat(lineMarkers).hasSize(1);
-        assertThat(compute(() -> lineMarkers.get(0).getLineMarkerTooltip())).isEqualTo(lineMarkerToolTip);
+        assertThat(compute(() -> lineMarkers.getFirst().getLineMarkerTooltip())).isEqualTo(lineMarkerToolTip);
     }
 
     /**
