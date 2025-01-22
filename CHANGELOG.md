@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [1.3.0]
+### Changed
+- New supported IDE version range: 2024.3 - 2025.1-EAP.
+
 ## [1.2.0]
 ### Added
 - [55](https://github.com/picimako/just-kitting/issues/55): Added `CheckLicense.java` to the list of diffable resources.
