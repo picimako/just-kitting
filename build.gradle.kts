@@ -15,7 +15,7 @@ plugins {
 group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
-// Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
+// Set the JVM language level used to build the project.
 kotlin {
     jvmToolchain(21)
 }
@@ -23,6 +23,7 @@ kotlin {
 // Configure project's dependencies
 repositories {
     mavenCentral()
+
     // IntelliJ Platform Gradle Plugin Repositories Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-repositories-extension.html
     intellijPlatform {
         defaultRepositories()
@@ -34,12 +35,11 @@ dependencies {
 
     //Required for 'junit.framework.TestCase' referenced in 'com.intellij.testFramework.UsefulTestCase'
     testImplementation(libs.junit)
-    testImplementation("org.assertj:assertj-core:3.26.3")
+    testImplementation("org.assertj:assertj-core:3.27.3")
     //See https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-faq.html#missing-opentest4j-dependency-in-test-framework
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
-
     intellijPlatform {
         create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
 
@@ -105,7 +105,7 @@ intellijPlatform {
 intellijPlatformTesting {
     val runTestsInIJCommunity by intellijPlatformTesting.testIde.registering {
         type = IntelliJPlatformType.IntellijIdeaCommunity
-        version = "2024.2.1"
+        version = "2024.3.2"
         task {
             useJUnit {
                 isScanForTestClasses = false
@@ -118,7 +118,7 @@ intellijPlatformTesting {
 
     val runTestsWithK2InIJCommunity by intellijPlatformTesting.testIde.registering {
         type = IntelliJPlatformType.IntellijIdeaCommunity
-        version = "2024.2.1"
+        version = "2024.3.2"
         task {
             //See https://kotlin.github.io/analysis-api/testing-in-k2-locally.html
             jvmArgumentProviders += CommandLineArgumentProvider {
