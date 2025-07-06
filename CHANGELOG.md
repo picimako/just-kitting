@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [1.4.0]
+### Changed
+- New supported IDE version range: 2025.1+.
+
 ## [1.3.0]
 ### Changed
 - New supported IDE version range: 2024.3 - 2025.1-EAP.

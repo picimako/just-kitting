@@ -30,14 +30,15 @@ repositories {
     }
 }
 
+// Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
     //Testing
 
     //Required for 'junit.framework.TestCase' referenced in 'com.intellij.testFramework.UsefulTestCase'
     testImplementation(libs.junit)
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.11.3")
     testImplementation("org.assertj:assertj-core:3.27.3")
-    //See https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-faq.html#missing-opentest4j-dependency-in-test-framework
-    testImplementation("org.opentest4j:opentest4j:1.3.0")
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
@@ -49,18 +50,19 @@ dependencies {
         // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file for plugin from JetBrains Marketplace.
         plugins(providers.gradleProperty("platformPlugins").map { it.split(',') })
 
-        instrumentationTools()
         pluginVerifier()
         zipSigner()
         testFramework(TestFrameworkType.Platform)
         //Required for 'LightJavaCodeInsightFixtureTestCase'
         testFramework(TestFrameworkType.Plugin.Java)
+        testFramework(TestFrameworkType.JUnit5)
     }
 }
 
 // Configure IntelliJ Platform Gradle Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-extension.html
 intellijPlatform {
     pluginConfiguration {
+        name = providers.gradleProperty("pluginName")
         version = providers.gradleProperty("pluginVersion")
 
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
@@ -91,7 +93,7 @@ intellijPlatform {
 
         ideaVersion {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
-            untilBuild = providers.gradleProperty("pluginUntilBuild")
+//            untilBuild = providers.gradleProperty("pluginUntilBuild")
         }
     }
 
@@ -105,30 +107,36 @@ intellijPlatform {
 intellijPlatformTesting {
     val runTestsInIJCommunity by intellijPlatformTesting.testIde.registering {
         type = IntelliJPlatformType.IntellijIdeaCommunity
-        version = "2024.3.2"
+        version = "2025.1"
         task {
-            useJUnit {
+            useJUnitPlatform {
                 isScanForTestClasses = false
                 include("**/*Test.class")
-                //Disabled due to haven't been able to make the tests resolve the bundle properties files. The functionality works in production environment.
-                exclude("**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class")
+                exclude(
+                    //Disabled due to haven't been able to make the tests resolve the bundle properties files. The functionality works in production environment.
+                    "**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class",
+                    //This is a JUnit3 test
+                    "**/LightServicesInlayHintsProviderTest.class")
             }
         }
     }
 
     val runTestsWithK2InIJCommunity by intellijPlatformTesting.testIde.registering {
         type = IntelliJPlatformType.IntellijIdeaCommunity
-        version = "2024.3.2"
+        version = "2025.1"
         task {
             //See https://kotlin.github.io/analysis-api/testing-in-k2-locally.html
             jvmArgumentProviders += CommandLineArgumentProvider {
                 listOf("-Didea.kotlin.plugin.use.k2=true")
             }
-            useJUnit {
+            useJUnitPlatform {
                 isScanForTestClasses = false
                 include("**/*Test.class")
-                //Disabled due to haven't been able to make the tests resolve the bundle properties files. The functionality works in production environment.
-                exclude("**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class")
+                exclude(
+                    //Disabled due to haven't been able to make the tests resolve the bundle properties files. The functionality works in production environment.
+                    "**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class",
+                    //This is a JUnit3 test
+                    "**/LightServicesInlayHintsProviderTest.class")
             }
         }
     }
