@@ -7,6 +7,7 @@ import static com.picimako.justkitting.PlatformNames.PSI_CALL;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalInspectionToolSession;
+import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -113,15 +114,10 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
     /**
      * Replaces {@code new <TYPE>[0]} expressions with {@code <TYPE>.EMPTY_ARRAY}.</li>
      */
-    private static final class ReplaceWithEmptyArrayConstantQuickFix extends InspectionGadgetsFix {
-        private final String arrayType;
-
-        public ReplaceWithEmptyArrayConstantQuickFix(String arrayType) {
-            this.arrayType = arrayType;
-        }
+    private record ReplaceWithEmptyArrayConstantQuickFix(String arrayType) implements LocalQuickFix {
 
         @Override
-        protected void doFix(@NotNull Project project, ProblemDescriptor descriptor) {
+        public void applyFix(@NotNull Project project, ProblemDescriptor descriptor) {
             var newEmptyArray = (PsiNewExpression) descriptor.getPsiElement();
             newEmptyArray.replace(getElementFactory(project)
                 .createExpressionFromText(newEmptyArray.getClassReference().getReferenceName() + ".EMPTY_ARRAY", descriptor.getPsiElement()));
