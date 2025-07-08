@@ -31,7 +31,6 @@ import com.intellij.psi.util.ConstantEvaluationOverflowException;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.picimako.justkitting.PlatformNames;
 import com.picimako.justkitting.resources.JustKittingBundle;
-import com.siyeh.ig.InspectionGadgetsFix;
 import com.siyeh.ig.callMatcher.CallMatcher;
 import com.siyeh.ig.psiutils.TypeUtils;
 import org.jetbrains.annotations.NotNull;
@@ -171,7 +170,7 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
      * Replaces {@code PsiCall.getArgumentList().getExpressions().length} empty/non-empty comparisons
      * with {@code isEmpty()} or {@code !isEmpty()} depending on the expression.
      */
-    private static final class ReplaceWithIsEmptyQuickFix extends InspectionGadgetsFix {
+    private static final class ReplaceWithIsEmptyQuickFix implements LocalQuickFix {
         private final String negate;
         private final boolean isExpressionAtLeft;
 
@@ -181,7 +180,7 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
         }
 
         @Override
-        protected void doFix(@NotNull Project project, ProblemDescriptor descriptor) {
+        public void applyFix(@NotNull Project project, ProblemDescriptor descriptor) {
             var binaryExpression = (PsiBinaryExpression) descriptor.getPsiElement();
             getGetArgumentList(isExpressionAtLeft ? binaryExpression.getLOperand() : binaryExpression.getROperand())
                 .ifPresent(getArgumentList -> {
