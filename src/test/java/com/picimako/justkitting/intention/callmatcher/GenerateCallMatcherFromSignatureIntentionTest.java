@@ -9,16 +9,18 @@ import com.intellij.openapi.application.ex.ClipboardUtil;
 import com.intellij.psi.PsiFile;
 import com.picimako.justkitting.ThirdPartyLibraryLoader;
 import com.picimako.justkitting.intention.JustKittingIntentionTestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration test for {@link GenerateCallMatcherFromSignatureIntention}.
  */
-public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIntentionTestBase {
+public final class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIntentionTestBase {
 
-    @Override
+    @BeforeEach
     protected void setUp() throws Exception {
         super.setUp();
-        ThirdPartyLibraryLoader.loadJavaImpl(myFixture);
+        ThirdPartyLibraryLoader.loadJavaImpl(getFixture());
     }
 
     @Override
@@ -28,22 +30,25 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     //Availability
 
+    @Test
     public void testNotAvailableInNonJavaFile() {
-        PsiFile psiFile = myFixture.configureByText("NotAvailable.kt", "<caret>");
+        PsiFile psiFile = getFixture().configureByText("NotAvailable.kt", "<caret>");
 
         checkIfNotAvailableIn(psiFile);
     }
 
+    @Test
     public void testNotAvailableOnNonMethodIdentifier() {
-        PsiFile psiFile = myFixture.configureByText("NotAvailable.java",
+        PsiFile psiFile = getFixture().configureByText("NotAvailable.java",
             "public class NotAva<caret>ilable {\n" +
                 "}");
 
         checkIfNotAvailableIn(psiFile);
     }
 
+    @Test
     public void testAvailableOnMethodIdentifier() {
-        PsiFile psiFile = myFixture.configureByText("Available.java",
+        PsiFile psiFile = getFixture().configureByText("Available.java",
             """
                 public class Available {
                     public void met<caret>hod() {
@@ -53,8 +58,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
         checkIfAvailableIn(psiFile);
     }
 
+    @Test
     public void testAvailableOnMethodCallIdentifier() {
-        PsiFile psiFile = myFixture.configureByText("Available.java",
+        PsiFile psiFile = getFixture().configureByText("Available.java",
             """
                 public class Available {
                     public void met<caret>hod() {
@@ -69,8 +75,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     //Generation from method signature
 
+    @Test
     public void testGeneratesMatcherFromNoParameterMethod() {
-        PsiFile psiFile = myFixture.configureByText("NoParameter.java",
+        PsiFile psiFile = getFixture().configureByText("NoParameter.java",
             """
                 public class NoParameter {
                     public void noParam<caret>eterMethod() {
@@ -82,8 +89,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"NoParameter\", \"noParameterMethod\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromOneParameterMethod() {
-        PsiFile psiFile = myFixture.configureByText("OneParameter.java",
+        PsiFile psiFile = getFixture().configureByText("OneParameter.java",
             """
                 package generate.call.matcher;
                 public class OneParameter {
@@ -96,8 +104,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.OneParameter\", \"oneParameterMethod\").parameterTypes(\"java.lang.String\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromMultipleParameterMethod() {
-        PsiFile psiFile = myFixture.configureByText("MultipleParameters.java",
+        PsiFile psiFile = getFixture().configureByText("MultipleParameters.java",
             """
                 package generate.call.matcher;
                 import java.util.List;
@@ -112,8 +121,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.MultipleParameters\", \"multipleParameterMethod\").parameterTypes(\"java.lang.String\", \"int\", \"java.util.List\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromVarargParameterMethod() {
-        PsiFile psiFile = myFixture.configureByText("VarargParameter.java",
+        PsiFile psiFile = getFixture().configureByText("VarargParameter.java",
             """
                 package generate.call.matcher;
                 public class VarargParameter {
@@ -126,8 +136,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.VarargParameter\", \"varargParameterMethod\").parameterTypes(\"int\", \"java.lang.String...\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromGenericParameterMethod() {
-        PsiFile psiFile = myFixture.configureByText("GenericParameter.java",
+        PsiFile psiFile = getFixture().configureByText("GenericParameter.java",
             """
                 package generate.call.matcher;
                 public class GenericParameter<T> {
@@ -140,8 +151,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.GenericParameter\", \"genericParameterMethod\").parameterTypes(\"T\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromParameterWithGenericTypeMethod() {
-        PsiFile psiFile = myFixture.configureByText("ParameterWithGenericType.java",
+        PsiFile psiFile = getFixture().configureByText("ParameterWithGenericType.java",
             """
                 package generate.call.matcher;
                 import java.util.List;
@@ -156,8 +168,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.ParameterWithGenericType\", \"parameterWithGenericTypeMethod\").parameterTypes(\"java.util.List<T>\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromParameterWithExactGenericTypeMethod() {
-        PsiFile psiFile = myFixture.configureByText("ParameterWithExactGenericType.java",
+        PsiFile psiFile = getFixture().configureByText("ParameterWithExactGenericType.java",
             """
                 package generate.call.matcher;
                 import java.util.List;
@@ -172,8 +185,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.ParameterWithExactGenericType\", \"parameterWithExactGenericTypeMethod\").parameterTypes(\"java.util.List<java.lang.Integer>\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromParameterWithBoundGenericTypeMethod() {
-        PsiFile psiFile = myFixture.configureByText("ParameterWithBoundGenericType.java",
+        PsiFile psiFile = getFixture().configureByText("ParameterWithBoundGenericType.java",
             """
                 package generate.call.matcher;
 
@@ -187,8 +201,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.ParameterWithBoundGenericType\", \"parameterWithBoundGenericTypeMethod\").parameterTypes(\"java.lang.Class<? extends java.lang.Throwable>\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromParameterWithWildcardGenericTypeMethod() {
-        PsiFile psiFile = myFixture.configureByText("ParameterWithWildcardGenericType.java",
+        PsiFile psiFile = getFixture().configureByText("ParameterWithWildcardGenericType.java",
             """
                 package generate.call.matcher;
                 import java.util.List;
@@ -203,8 +218,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.ParameterWithWildcardGenericType\", \"parameterWithWildcardTypeMethod\").parameterTypes(\"java.util.List<?>\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromArrayParameterMethod() {
-        PsiFile psiFile = myFixture.configureByText("ArrayParameter.java",
+        PsiFile psiFile = getFixture().configureByText("ArrayParameter.java",
             """
                 package generate.call.matcher;
                 public class ArrayParameter {
@@ -217,8 +233,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.ArrayParameter\", \"arrayParameterMethod\").parameterTypes(\"java.lang.String[]\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromNestedClassMethod() {
-        PsiFile psiFile = myFixture.configureByText("NestedClass.java",
+        PsiFile psiFile = getFixture().configureByText("NestedClass.java",
             """
                 package generate.call.matcher;
                 public class NestedClassMethod {
@@ -233,8 +250,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.NestedClassMethod.NestedClass\", \"nestedClassMethod\").parameterTypes(\"java.lang.String\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromStaticMethod() {
-        PsiFile psiFile = myFixture.configureByText("StaticMethod.java",
+        PsiFile psiFile = getFixture().configureByText("StaticMethod.java",
             """
                 package generate.call.matcher;
                 public class StaticMethod {
@@ -247,8 +265,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.staticCall(\"generate.call.matcher.StaticMethod\", \"aStaticMethod\").parameterTypes(\"java.lang.String\");");
     }
 
-//    public void testGeneratesExactInstanceMatcherFromMethod() {
-//        PsiFile psiFile = myFixture.configureByText("ExactInstanceMethod.java",
+//    @Test
+//    void testGeneratesExactInstanceMatcherFromMethod() {
+//        PsiFile psiFile = getFixture().configureByText("ExactInstanceMethod.java",
 //            "package generate.call.matcher;\n" +
 //                "public class ExactInstanceMethod {\n" +
 //                "    public void anExactInstance<caret>Method(String singleStringParam) {\n" +
@@ -262,8 +281,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 
     //Generation from method call
 
+    @Test
     public void testGeneratesMatcherFromNoParameterMethodFromCall() {
-        PsiFile psiFile = myFixture.configureByText("NoParameter.java",
+        PsiFile psiFile = getFixture().configureByText("NoParameter.java",
             """
                 public class NoParameter {
                     public void callingNoParameterMethod() {
@@ -280,8 +300,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"NoParameter.InnerClass\", \"noParameterMethod\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromOneParameterMethodFromCall() {
-        PsiFile psiFile = myFixture.configureByText("OneParameter.java",
+        PsiFile psiFile = getFixture().configureByText("OneParameter.java",
             """
                 package generate.call.matcher;
                 public class OneParameter {
@@ -299,8 +320,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.OneParameter.InnerClass\", \"oneParameterMethod\").parameterTypes(\"java.lang.String\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromMultipleParameterMethodFromCall() {
-        PsiFile psiFile = myFixture.configureByText("MultipleParameters.java",
+        PsiFile psiFile = getFixture().configureByText("MultipleParameters.java",
             """
                 package generate.call.matcher;
                 import java.util.List;
@@ -320,8 +342,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.MultipleParameters.InnerClass\", \"multipleParameterMethod\").parameterTypes(\"java.lang.String\", \"int\", \"java.util.List\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromVarargParameterMethodFromCall() {
-        PsiFile psiFile = myFixture.configureByText("VarargParameter.java",
+        PsiFile psiFile = getFixture().configureByText("VarargParameter.java",
             """
                 package generate.call.matcher;
                 public class VarargParameter {
@@ -339,8 +362,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.VarargParameter.InnerClass\", \"varargParameterMethod\").parameterTypes(\"int\", \"java.lang.String...\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromGenericParameterMethodFromCall() {
-        PsiFile psiFile = myFixture.configureByText("GenericParameter.java",
+        PsiFile psiFile = getFixture().configureByText("GenericParameter.java",
             """
                 package generate.call.matcher;
                 public class GenericParameter<T> {
@@ -358,8 +382,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.GenericParameter.InnerClass\", \"genericParameterMethod\").parameterTypes(\"T\");");
     }
 
-//    public void testGeneratesMatcherFromParameterWithGenericTypeMethodFromCall() {
-//        PsiFile psiFile = myFixture.configureByText("ParameterWithGenericType.java",
+//    @Test
+//    void testGeneratesMatcherFromParameterWithGenericTypeMethodFromCall() {
+//        PsiFile psiFile = getFixture().configureByText("ParameterWithGenericType.java",
 //            "package generate.call.matcher;\n" +
 //                "import java.util.List;\n" +
 //                "\n" +
@@ -378,8 +403,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
 //            "CallMatcher.instanceCall(\"generate.call.matcher.ParameterWithGenericType.InnerClass\", \"parameterWithGenericTypeMethod\").parameterTypes(\"java.util.List<T>\");");
 //    }
 
+    @Test
     public void testGeneratesMatcherFromParameterWithGenericClassTypeMethodFromCall() {
-        PsiFile psiFile = myFixture.configureByText("ParameterWithGenericType.java",
+        PsiFile psiFile = getFixture().configureByText("ParameterWithGenericType.java",
             """
                 package generate.call.matcher;
                 import java.util.List;
@@ -399,8 +425,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.ParameterWithGenericType.InnerClass\", \"parameterWithGenericTypeMethod\").parameterTypes(\"java.util.List<T>\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromParameterWithExactGenericTypeMethodFromCall() {
-        PsiFile psiFile = myFixture.configureByText("ParameterWithExactGenericType.java",
+        PsiFile psiFile = getFixture().configureByText("ParameterWithExactGenericType.java",
             """
                 package generate.call.matcher;
                 import java.util.List;
@@ -420,8 +447,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.ParameterWithExactGenericType.InnerClass\", \"parameterWithExactGenericTypeMethod\").parameterTypes(\"java.util.List<java.lang.Integer>\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromParameterWithBoundGenericTypeMethodFromCall() {
-        PsiFile psiFile = myFixture.configureByText("ParameterWithBoundGenericType.java",
+        PsiFile psiFile = getFixture().configureByText("ParameterWithBoundGenericType.java",
             """
                 package generate.call.matcher;
 
@@ -440,8 +468,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.ParameterWithBoundGenericType.InnerClass\", \"parameterWithBoundGenericTypeMethod\").parameterTypes(\"java.lang.Class<? extends java.lang.Throwable>\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromParameterWithWildcardGenericTypeMethodFromCall() {
-        PsiFile psiFile = myFixture.configureByText("ParameterWithWildcardGenericType.java",
+        PsiFile psiFile = getFixture().configureByText("ParameterWithWildcardGenericType.java",
             """
                 package generate.call.matcher;
                 import java.util.List;
@@ -461,8 +490,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.ParameterWithWildcardGenericType.InnerClass\", \"parameterWithWildcardTypeMethod\").parameterTypes(\"java.util.List<?>\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromArrayParameterMethodFromCall() {
-        PsiFile psiFile = myFixture.configureByText("ArrayParameter.java",
+        PsiFile psiFile = getFixture().configureByText("ArrayParameter.java",
             """
                 package generate.call.matcher;
                 public class ArrayParameter {
@@ -480,8 +510,9 @@ public class GenerateCallMatcherFromSignatureIntentionTest extends JustKittingIn
             "CallMatcher.instanceCall(\"generate.call.matcher.ArrayParameter.InnerClass\", \"arrayParameterMethod\").parameterTypes(\"java.lang.String[]\");");
     }
 
+    @Test
     public void testGeneratesMatcherFromStaticMethodFromCall() {
-        PsiFile psiFile = myFixture.configureByText("StaticMethod.java",
+        PsiFile psiFile = getFixture().configureByText("StaticMethod.java",
             """
                 package generate.call.matcher;
                 public class StaticMethod {

@@ -7,11 +7,12 @@ import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor;
 import com.intellij.lang.properties.psi.Property;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration test for {@link UpdateGradleVersionLineMarkerProvider}.
  */
-public class UpdateGradleVersionLineMarkerProviderNonGradleVersionTest extends JustKittingLineMarkerSingleTestBase {
+public final class UpdateGradleVersionLineMarkerProviderNonGradleVersionTest extends JustKittingLineMarkerSingleTestBase {
 
     @Override
     protected String getTestDataPath() {
@@ -20,15 +21,16 @@ public class UpdateGradleVersionLineMarkerProviderNonGradleVersionTest extends J
 
     @Override
     protected PsiElement getElementAtCaret() {
-        return compute(() -> PsiTreeUtil.getParentOfType(getFile().findElementAt(myFixture.getCaretOffset()), Property.class));
+        return compute(() -> PsiTreeUtil.getParentOfType(getFixture().getFile().findElementAt(getFixture().getCaretOffset()), Property.class));
     }
     @Override
     protected LineMarkerProviderDescriptor getLineMarkerProvider() {
         return new UpdateGradleVersionLineMarkerProvider();
     }
 
+    @Test
     public void testNoGutterForNonGradleVersionProperty() {
-        myFixture.copyFileToProject("gradle/wrapper/gradle-wrapper.properties");
+        getFixture().copyFileToProject("gradle/wrapper/gradle-wrapper.properties");
         checkNoGutterIcon("gradle.properties");
     }
 }

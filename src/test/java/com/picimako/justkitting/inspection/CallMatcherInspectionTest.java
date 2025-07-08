@@ -4,23 +4,25 @@ package com.picimako.justkitting.inspection;
 
 import com.intellij.codeInspection.InspectionProfileEntry;
 import com.picimako.justkitting.ThirdPartyLibraryLoader;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Functional test for {@link CallMatcherInspection}.
  */
-public class CallMatcherInspectionTest extends JustKittingInspectionTestBase {
+public final class CallMatcherInspectionTest extends JustKittingInspectionTestBase {
 
     @Override
     protected InspectionProfileEntry getInspection() {
         return new CallMatcherInspection();
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        ThirdPartyLibraryLoader.loadJavaImpl(myFixture);
+    @BeforeEach
+    protected void setUp() {
+        ThirdPartyLibraryLoader.loadJavaImpl(getFixture());
     }
 
+    @Test
     public void testNonExistentMethod() {
         doJavaTest("CallMatcherNonexistentMethod.java",
             """

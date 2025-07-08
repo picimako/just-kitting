@@ -2,6 +2,8 @@
 
 package com.picimako.justkitting;
 
+import static com.intellij.openapi.application.ReadAction.compute;
+
 import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +16,7 @@ public final class ServiceUtil {
      * Returns whether the argument class is annotated with {@link com.intellij.openapi.components.Service}.
      */
     public static boolean isLightService(@Nullable PsiClass psiClass) {
-        return psiClass != null && psiClass.hasAnnotation(PlatformNames.SERVICE_ANNOTATION);
+        return psiClass != null && compute(() -> psiClass.hasAnnotation(PlatformNames.SERVICE_ANNOTATION));
     }
 
     private ServiceUtil() {

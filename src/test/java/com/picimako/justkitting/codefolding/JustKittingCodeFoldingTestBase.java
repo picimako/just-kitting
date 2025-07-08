@@ -16,7 +16,7 @@ public abstract class JustKittingCodeFoldingTestBase extends JustKittingTestBase
      * within the test data path specified by {@link #getTestDataPath()}.
      */
     protected void doXmlTestFolding() {
-        myFixture.configureByFile(getTestName(true) + ".xml");
-        myFixture.testFoldingWithCollapseStatus(getTestDataPath() + "/" + getTestName(true) + ".xml");
+        getFixture().configureByFile(getTestName(true) + ".xml");
+        getFixture().testFoldingWithCollapseStatus(getTestDataPath() + "/" + getTestName(true) + ".xml");
     }
 }

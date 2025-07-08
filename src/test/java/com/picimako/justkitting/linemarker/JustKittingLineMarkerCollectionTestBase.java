@@ -46,7 +46,7 @@ public abstract class JustKittingLineMarkerCollectionTestBase extends ContentRoo
     }
 
     protected List<RelatedItemLineMarkerInfo<?>> getLineMarkers(String fileUnderTest) {
-        myFixture.configureFromTempProjectFile(fileUnderTest);
+        getFixture().configureFromTempProjectFile(fileUnderTest);
 
         var collection = new SmartList<RelatedItemLineMarkerInfo<?>>();
         collectNavigationMarkers().accept(getElementAtCaret(), collection);

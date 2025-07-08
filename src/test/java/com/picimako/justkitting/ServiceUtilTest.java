@@ -2,43 +2,42 @@
 
 package com.picimako.justkitting;
 
+import static com.intellij.openapi.application.ReadAction.compute;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.intellij.psi.PsiClass;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link ServiceUtil}.
  */
-public class ServiceUtilTest extends JustKittingTestBase {
+public final class ServiceUtilTest extends JustKittingTestBase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        ThirdPartyLibraryLoader.loadUtil8(myFixture);
-    }
-
+    @Test
     public void testIsLightService() {
-        myFixture.configureByText("LightService.java",
+        getFixture().configureByText("LightService.java",
             """
                 import com.intellij.openapi.components.Service;
 
                 @Service(Service.Level.PROJECT)
                 public final class SomeProje<caret>ctService {
                 }""");
-        PsiClass psiClass = (PsiClass) myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
+        PsiClass psiClass = (PsiClass) compute(() -> getFixture().getFile().findElementAt(getFixture().getCaretOffset()).getParent());
 
         assertThat(ServiceUtil.isLightService(psiClass)).isTrue();
     }
 
+    @Test
     public void testIsNotLightServiceDueToNullClass() {
         assertThat(ServiceUtil.isLightService(null)).isFalse();
     }
 
+    @Test
     public void testIsNotLightServiceDueToNoAnnotation() {
-        myFixture.configureByText("NotLightService.java",
+        getFixture().configureByText("NotLightService.java",
             "public final class NotLight<caret>Service {\n" +
                 "}");
-        PsiClass psiClass = (PsiClass) myFixture.getFile().findElementAt(myFixture.getCaretOffset()).getParent();
+        PsiClass psiClass = (PsiClass) compute(() -> getFixture().getFile().findElementAt(getFixture().getCaretOffset()).getParent());
 
         assertThat(ServiceUtil.isLightService(psiClass)).isFalse();
     }

@@ -3,18 +3,21 @@
 package com.picimako.justkitting;
 
 import org.jetbrains.kotlin.psi.KtFile;
+import org.junit.jupiter.api.Test;
 
+import static com.intellij.openapi.application.ReadAction.compute;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Functional test for {@link ServiceLevelDecider}.
  */
-public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
+public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
 
     //By annotation
 
+    @Test
     public void testProjectServiceForAnnotation() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("SomeService.kt",
+        KtFile psiFile = (KtFile) getFixture().configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
 
@@ -23,12 +26,13 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
+        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
     }
 
+    @Test
     public void testApplicationServiceForAnnotation() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("SomeService.kt",
+        KtFile psiFile = (KtFile) getFixture().configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
 
@@ -37,12 +41,13 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
+        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.APP);
     }
 
+    @Test
     public void testProjectAndApplicationServiceForAnnotation() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("SomeService.kt",
+        KtFile psiFile = (KtFile) getFixture().configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
 
@@ -51,12 +56,13 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
+        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT_AND_APP);
     }
 
+    @Test
     public void testProjectAndApplicationServiceForAnnotationServiceLevelImported() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("SomeService.kt",
+        KtFile psiFile = (KtFile) getFixture().configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
                 import com.intellij.openapi.components.Service.Level
@@ -66,12 +72,13 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
+        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT_AND_APP);
     }
 
+    @Test
     public void testProjectAndApplicationServiceForAnnotationServiceLevelsImported() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("SomeService.kt",
+        KtFile psiFile = (KtFile) getFixture().configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
                 import com.intellij.openapi.components.Service.Level.PROJECT
@@ -82,12 +89,13 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
+        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT_AND_APP);
     }
 
+    @Test
     public void testApplicationServiceForDefaultLevel() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("SomeService.kt",
+        KtFile psiFile = (KtFile) getFixture().configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
 
@@ -96,14 +104,15 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
+        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.APP);
     }
 
     //Nested Kotlin classes
 
+    @Test
     public void testServiceForNestedKotlinClass() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("AnApplicationServiceInNestedKotlinClass.kt",
+        KtFile psiFile = (KtFile) getFixture().configureByText("AnApplicationServiceInNestedKotlinClass.kt",
             """
                 import com.intellij.openapi.components.Service
                 
@@ -115,12 +124,13 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0].findInnerClassByName("NestedClass", false));
+        var serviceLevel = ServiceLevelDecider.getServiceLevel(compute(() -> psiFile.getClasses()[0].findInnerClassByName("NestedClass", false)));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
     }
 
+    @Test
     public void testServiceForNestedKotlinClassInCompanionObject() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("AnApplicationServiceInNestedKotlinClassInCompanionObject.kt",
+        KtFile psiFile = (KtFile) getFixture().configureByText("AnApplicationServiceInNestedKotlinClassInCompanionObject.kt",
             """
                 import com.intellij.openapi.components.Service
                 
@@ -135,14 +145,15 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 """);
 
         var serviceLevel = ServiceLevelDecider.getServiceLevel(
-            psiFile.getClasses()[0].getInnerClasses()[0].findInnerClassByName("NestedClass", false));
+            compute(() -> psiFile.getClasses()[0].getInnerClasses()[0].findInnerClassByName("NestedClass", false)));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
     }
 
     //With multiple annotations
 
+    @Test
     public void testServiceForClassWithOtherAnnotationsOnIt() {
-        KtFile psiFile = (KtFile) myFixture.configureByText("AnApplicationServiceInNestedKotlinClass.kt",
+        KtFile psiFile = (KtFile) getFixture().configureByText("AnApplicationServiceInNestedKotlinClass.kt",
             """
                 import com.intellij.openapi.components.Service
                 
@@ -152,7 +163,7 @@ public class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0]);
+        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
     }
 }

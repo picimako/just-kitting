@@ -10,7 +10,7 @@ import com.picimako.justkitting.ContentRootsBasedJustKittingTestBase;
 public abstract class ContentRootsJustKittingCodeFoldingTestBase extends ContentRootsBasedJustKittingTestBase {
 
     protected void doXmlTestFolding(String filePath) {
-        myFixture.configureByFile(filePath);
-        myFixture.testFoldingWithCollapseStatus(getTestDataPath() + "/" + filePath);
+        getFixture().configureByFile(filePath);
+        getFixture().testFoldingWithCollapseStatus(getTestDataPath() + "/" + filePath);
     }
 }

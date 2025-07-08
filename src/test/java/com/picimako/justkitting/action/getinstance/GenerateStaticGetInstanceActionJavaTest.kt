@@ -1,8 +1,9 @@
 //Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.picimako.justkitting.action.getinstance
 
-import com.picimako.justkitting.JustKittingTestBase
+import com.picimako.justkitting.action.JustKittingActionTestBase
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 /**
  * Functional test for [GenerateStaticGetInstanceAction].
@@ -10,20 +11,22 @@ import org.assertj.core.api.Assertions.assertThat
  * NOTE: tests that would invoke the service level selection popup list, are disabled for now
  * due to no DataContext availability.
  */
-class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
+class GenerateStaticGetInstanceActionJavaTest : JustKittingActionTestBase() {
 
     //Availability
 
+    @Test
     fun testNotAvailableInNonJavaFile() {
-        val psiFile = myFixture.configureByText("non_java.txt", "<caret>")
+        val psiFile = fixture.configureByText("non_java.txt", "<caret>")
 
-        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, myFixture.editor, psiFile)
+        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, fixture.editor, psiFile)
 
         assertThat(isValid).isFalse()
     }
 
+    @Test
     fun testNotAvailableInEnum() {
-        val psiFile = myFixture.configureByText("Enum.java",
+        val psiFile = fixture.configureByText("Enum.java",
             """
                 import com.intellij.openapi.components.Service;
 
@@ -36,12 +39,13 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     }
                 }
                 """.trimIndent())
-        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, myFixture.editor, psiFile)
+        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, fixture.editor, psiFile)
         assertThat(isValid).isFalse()
     }
 
+    @Test
     fun testNotAvailableIfGetInstanceAlreadyExists() {
-        val psiFile = myFixture.configureByText("SomeService.java",
+        val psiFile = fixture.configureByText("SomeService.java",
             """
                 import com.intellij.openapi.components.Service;
 
@@ -53,12 +57,13 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     }
                 }
                 """.trimIndent())
-        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, myFixture.editor, psiFile)
+        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, fixture.editor, psiFile)
         assertThat(isValid).isFalse()
     }
 
+    @Test
     fun testAvailable() {
-        val psiFile = myFixture.configureByText("SomeService.java",
+        val psiFile = fixture.configureByText("SomeService.java",
             """
                 import com.intellij.openapi.components.Service;
                 import com.intellij.openapi.project.Project
@@ -71,14 +76,15 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     }
                 }
                 """.trimIndent())
-        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, myFixture.editor, psiFile)
+        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, fixture.editor, psiFile)
         assertThat(isValid).isTrue()
     }
 
     //Project-level light service
 
+    @Test
     fun testShouldGenerateProjectLevelGetterForServiceLevelProject() {
-        myFixture.configureByText("SomeService.java",
+        checkAction("SomeService.java", { GenerateStaticGetInstanceAction() },
             """
                 import com.intellij.openapi.components.Service;
 
@@ -89,11 +95,7 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     public void someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.components.Service;
                 import com.intellij.openapi.project.Project;
@@ -114,8 +116,9 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
 
     //Application-level light service
 
+    @Test
     fun testShouldGenerateAppLevelGetterForServiceLevelApp() {
-        myFixture.configureByText("SomeService.java",
+        checkAction("SomeService.java", { GenerateStaticGetInstanceAction() },
             """
                 import com.intellij.openapi.components.Service;
 
@@ -126,11 +129,7 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     public void someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.application.ApplicationManager;
                 import com.intellij.openapi.components.Service;
@@ -146,13 +145,15 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     public void someMethod() {
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+            )
     }
 
     //Light service without level
 
+    @Test
     fun testShouldGenerateApplicationLevelGetterForDefaultServiceLevelWithProperClassName() {
-        myFixture.configureByText("SomeApplicationService.java",
+        checkAction("SomeApplicationService.java", { GenerateStaticGetInstanceAction() },
             """
                 import com.intellij.openapi.components.Service;
 
@@ -163,11 +164,7 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     public void someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.application.ApplicationManager;
                 import com.intellij.openapi.components.Service;
@@ -183,11 +180,13 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     public void someMethod() {
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+        )
     }
 
+    @Test
     fun testShouldGenerateProjectLevelGetterForNoServiceWithProperClassName() {
-        myFixture.configureByText("SomeProjectService.java",
+        checkAction("SomeProjectService.java", { GenerateStaticGetInstanceAction() },
             """
                 public final class SomeProjectService {
                     public boolean someField;
@@ -195,11 +194,7 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     public void someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.project.Project;
 
@@ -213,11 +208,13 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     public void someMethod() {
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+        )
     }
 
+    @Test
     fun testShouldGenerateAppLevelGetterForEmptyServiceLevelWithProperClassName() {
-        myFixture.configureByText("SomeApplicationService.java",
+        checkAction("SomeApplicationService.java", { GenerateStaticGetInstanceAction() },
             """
                 import com.intellij.openapi.components.Service;
 
@@ -228,11 +225,7 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     public void someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.application.ApplicationManager;
                 import com.intellij.openapi.components.Service;
@@ -248,11 +241,13 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     public void someMethod() {
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+        )
     }
 
+    @Test
     fun testShouldGenerateAppLevelGetterForNoServiceWithProperClassName() {
-        myFixture.configureByText("SomeApplicationService.java",
+        checkAction("SomeApplicationService.java", { GenerateStaticGetInstanceAction() },
             """
                 public final class SomeApplicationService {
                     public boolean someField;
@@ -260,11 +255,7 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     public void someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.application.ApplicationManager;
 
@@ -278,11 +269,12 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
                     public void someMethod() {
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+        )
     }
 
     //    public void testShouldGenerateGetterForEmptyServiceLevelWithNoProperClassName() {
-    //        PsiFile psiFile = myFixture.configureByText("SomeService.java",
+    //        PsiFile psiFile = fixture.configureByText("SomeService.java",
     //            "import com.intellij.openapi.components.Service;\n" +
     //                "\n" +
     //                "@Service\n" +
@@ -293,10 +285,10 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
     //                "    }\n" +
     //                "}");
     //
-    //        myFixture.testAction(GenerateStaticGetInstanceAction())
+    //        fixture.testAction(GenerateStaticGetInstanceAction())
     //
     //        //Project-level due to the popup list not available in test mode, it and defaulting to the first item in it.
-    //        myFixture.checkResult(
+    //        fixture.checkResult(
     //            "import com.intellij.openapi.components.Service;\n" +
     //                "import com.intellij.openapi.project.Project;\n" +
     //                "\n" +
@@ -316,7 +308,7 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
     //Other cases
     //
     //    public void testShouldGenerateGetterForServiceWithBothLevelsWithNoProperClassName() {
-    //        PsiFile psiFile = myFixture.configureByText("SomeService.java",
+    //        PsiFile psiFile = fixture.configureByText("SomeService.java",
     //            "import com.intellij.openapi.components.Service;\n" +
     //                "\n" +
     //                "@Service(Service.Level.APP, Service.Level.PROJECT)\n" +
@@ -327,10 +319,10 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
     //                "    }\n" +
     //                "}");
     //
-    //        myFixture.testAction(GenerateStaticGetInstanceAction())
+    //        fixture.testAction(GenerateStaticGetInstanceAction())
     //
     //        //Project-level due to the popup list not available in test mode, it and defaulting to the first item in it.
-    //        myFixture.checkResult(
+    //        fixture.checkResult(
     //            "import com.intellij.openapi.components.Service;\n" +
     //                "import com.intellij.openapi.project.Project;\n" +
     //                "\n" +
@@ -348,7 +340,7 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
     //    }
 //
     //    public void testShouldGenerateGetterForNonServiceClass() {
-    //        PsiFile psiFile = myFixture.configureByText("NonService.java",
+    //        PsiFile psiFile = fixture.configureByText("NonService.java",
     //            "public final class NonService {\n" +
     //                "    public boolean someField;\n" +
     //                "<caret>\n" +
@@ -356,10 +348,10 @@ class GenerateStaticGetInstanceActionJavaTest : JustKittingTestBase() {
     //                "    }\n" +
     //                "}");
     //
-    //        myFixture.testAction(GenerateStaticGetInstanceAction())
+    //        fixture.testAction(GenerateStaticGetInstanceAction())
     //
     //        //Project-level due to the popup list not available in test mode, it and defaulting to the first item in it.
-    //        myFixture.checkResult(
+    //        fixture.checkResult(
     //            "import com.intellij.openapi.project.Project;\n" +
     //                "\n" +
     //                "@Service\n" +

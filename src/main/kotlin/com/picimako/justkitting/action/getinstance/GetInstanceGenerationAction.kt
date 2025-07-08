@@ -36,4 +36,8 @@ protected constructor(protected val serviceLevel: Service.Level) : BaseCodeInsig
      * are generating the method for.
      */
     private fun getText(): String = if (serviceLevel == Service.Level.PROJECT) JustKittingBundle.message("action.generate.getinstance.project.level") else JustKittingBundle.message("action.generate.getinstance.application.level")
+
+    fun invokeHandler(project: Project, editor: Editor, file: PsiFile) {
+        handler.invoke(project, editor, file)
+    }
 }

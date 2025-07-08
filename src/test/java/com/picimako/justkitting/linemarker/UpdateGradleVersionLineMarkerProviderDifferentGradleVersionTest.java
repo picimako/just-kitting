@@ -7,11 +7,12 @@ import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor;
 import com.intellij.lang.properties.psi.Property;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration test for {@link UpdateGradleVersionLineMarkerProvider}.
  */
-public class UpdateGradleVersionLineMarkerProviderDifferentGradleVersionTest extends JustKittingLineMarkerSingleTestBase {
+public final class UpdateGradleVersionLineMarkerProviderDifferentGradleVersionTest extends JustKittingLineMarkerSingleTestBase {
 
     @Override
     protected String getTestDataPath() {
@@ -20,15 +21,16 @@ public class UpdateGradleVersionLineMarkerProviderDifferentGradleVersionTest ext
 
     @Override
     protected PsiElement getElementAtCaret() {
-        return compute(() -> PsiTreeUtil.getParentOfType(getFile().findElementAt(myFixture.getCaretOffset()), Property.class));
+        return compute(() -> PsiTreeUtil.getParentOfType(getFixture().getFile().findElementAt(getFixture().getCaretOffset()), Property.class));
     }
     @Override
     protected LineMarkerProviderDescriptor getLineMarkerProvider() {
         return new UpdateGradleVersionLineMarkerProvider();
     }
 
+    @Test
     public void testGutterForDifferentGradleVersionProperty() {
-        myFixture.copyFileToProject("gradle/wrapper/gradle-wrapper.properties");
+        getFixture().copyFileToProject("gradle/wrapper/gradle-wrapper.properties");
         checkGutterIcon("gradle.properties", "Update Gradle Wrapper version");
     }
 }

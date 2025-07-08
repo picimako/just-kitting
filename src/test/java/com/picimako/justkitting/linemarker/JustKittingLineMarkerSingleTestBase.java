@@ -39,7 +39,7 @@ public abstract class JustKittingLineMarkerSingleTestBase extends JustKittingTes
 
     @Nullable
     protected LineMarkerInfo<?> getLineMarker(String fileUnderTest) {
-        myFixture.configureByFile(fileUnderTest);
+        getFixture().configureByFile(fileUnderTest);
 
         return getLineMarkerProvider().getLineMarkerInfo(getElementAtCaret());
     }

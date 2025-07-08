@@ -59,7 +59,10 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
             @Override
             public void visitNewExpression(@NotNull PsiNewExpression expression) {
                 //If it's a new Type[0] array creation and Type has an empty array constant called EMPTY_ARRAY
-                if (expression.isArrayCreation() && expression.getArrayDimensions().length == 1 && isZero(expression.getArrayDimensions()[0]) && hasEmptyArrayConstantField(expression.getClassReference())) {
+                if (expression.isArrayCreation()
+                    && expression.getArrayDimensions().length == 1
+                    && isZero(expression.getArrayDimensions()[0])
+                    && hasEmptyArrayConstantField(expression.getClassReference())) {
                     holder.registerProblem(expression,
                         JustKittingBundle.message("inspection.empty.array.creation", expression.getClassReference().getReferenceName()),
                         ProblemHighlightType.WEAK_WARNING,

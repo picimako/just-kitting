@@ -2,6 +2,7 @@
 
 package com.picimako.justkitting.intention.callmatcher;
 
+import static com.intellij.openapi.application.ReadAction.compute;
 import static com.picimako.justkitting.PlatformNames.CALL_MATCHER;
 import static com.siyeh.ig.callMatcher.CallMatcher.instanceCall;
 import static java.util.stream.Collectors.joining;
@@ -86,12 +87,12 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-        if (!editor.getSelectionModel().hasSelection()) {
+        if (compute(() -> !editor.getSelectionModel().hasSelection())) {
             return false;
         }
         var expressionInRange = getExpressionInRange(editor, file);
         if (expressionInRange instanceof PsiPolyadicExpression polyadicExpr) {
-            if (!JavaTokenType.OROR.equals(polyadicExpr.getOperationTokenType())) {
+            if (!JavaTokenType.OROR.equals(compute(polyadicExpr::getOperationTokenType))) {
                 return false;
             }
             return expressionInRange instanceof PsiBinaryExpression binaryExpr
@@ -119,7 +120,8 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
     }
 
     private PsiExpression getExpressionInRange(Editor editor, PsiFile file) {
-        return PsiUtil.skipParenthesizedExprDown(CodeInsightUtil.findExpressionInRange(file, editor.getSelectionModel().getSelectionStart(), editor.getSelectionModel().getSelectionEnd()));
+        return compute(() -> PsiUtil.skipParenthesizedExprDown(
+            CodeInsightUtil.findExpressionInRange(file, editor.getSelectionModel().getSelectionStart(), editor.getSelectionModel().getSelectionEnd())));
     }
 
     //---- Invocation ----

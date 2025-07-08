@@ -10,6 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.TestActionEvent;
 import com.intellij.testFramework.TestDataPath;
 import com.picimako.justkitting.action.JustKittingActionTestBase;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Integration test for {@link CompareConfigFileWithPluginTemplateAction}.
  */
 @TestDataPath("$CONTENT_ROOT/testData/diff")
-public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingActionTestBase {
+public final class CompareConfigFileWithPluginTemplateActionTest extends JustKittingActionTestBase {
     @Override
     protected String getTestDataPath() {
         return "src/test/testData/diff";
@@ -25,6 +26,7 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
 
     //Presentation/availability
 
+    @Test
     public void testDiffViewNotAvailableForNonExistentVirtualFile() {
         var e = wrapInTestActionEvent(null);
 
@@ -33,32 +35,36 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
         assertThat(e.getPresentation().isVisible()).isFalse();
     }
 
+    @Test
     public void testDiffViewNotAvailableForNonSupportedFile() {
-        var e = wrapInTestActionEvent(myFixture.copyFileToProject("CHANGELOG.md"));
+        var e = wrapInTestActionEvent(getFixture().copyFileToProject("CHANGELOG.md"));
 
         new CompareConfigFileWithPluginTemplateAction().update(e);
 
         assertThat(e.getPresentation().isVisible()).isFalse();
     }
 
+    @Test
     public void testDiffViewAvailableForSupportedFileInRoot() {
-        var e = wrapInTestActionEvent(myFixture.copyFileToProject("gradle.properties"));
+        var e = wrapInTestActionEvent(getFixture().copyFileToProject("gradle.properties"));
 
         new CompareConfigFileWithPluginTemplateAction().update(e);
 
         assertThat(e.getPresentation().isVisible()).isTrue();
     }
 
+    @Test
     public void testDiffViewAvailableForSupportedFileInDirectory() {
-        var e = wrapInTestActionEvent(myFixture.copyFileToProject(".github/dependabot.yml"));
+        var e = wrapInTestActionEvent(getFixture().copyFileToProject(".github/dependabot.yml"));
 
         new CompareConfigFileWithPluginTemplateAction().update(e);
 
         assertThat(e.getPresentation().isVisible()).isTrue();
     }
 
+    @Test
     public void testDiffViewAvailableForSupportedFileWithName() {
-        var e = wrapInTestActionEvent(myFixture.copyFileToProject("src/main/java/com/plugin/license/CheckLicense.java"));
+        var e = wrapInTestActionEvent(getFixture().copyFileToProject("src/main/java/com/plugin/license/CheckLicense.java"));
 
         new CompareConfigFileWithPluginTemplateAction().update(e);
 
@@ -67,6 +73,7 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
 
     //Perform action
 
+    @Test
     public void testNoDiffViewForNonExistentVirtualFile() {
         var diffRequest = new Ref<DiffRequest>();
         var e = TestActionEvent.createTestEvent(dataId -> CommonDataKeys.PROJECT.is(dataId)
@@ -78,8 +85,9 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
         assertThat(diffRequest.isNull()).isTrue();
     }
 
+    @Test
     public void testDiffViewForFileInRoot() {
-        var gradleProperties = myFixture.copyFileToProject("gradle.properties");
+        var gradleProperties = getFixture().copyFileToProject("gradle.properties");
         var diffRequest = new Ref<DiffRequest>();
         var e = wrapInTestActionEvent(gradleProperties, diffRequest);
 
@@ -96,8 +104,9 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
                 .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[diff\\.properties], \\{}:DocumentImpl\\[gradle\\.properties]]");
     }
 
+    @Test
     public void testDiffViewForFileInFolder() {
-        var dependabot = myFixture.copyFileToProject(".github/dependabot.yml");
+        var dependabot = getFixture().copyFileToProject(".github/dependabot.yml");
         var diffRequest = new Ref<DiffRequest>();
         var e = wrapInTestActionEvent(dependabot, diffRequest);
 
@@ -111,11 +120,12 @@ public class CompareConfigFileWithPluginTemplateActionTest extends JustKittingAc
         assertThat(simpleDiffRequest.getContentTitles())
                 .containsExactly("Platform Plugin Template / Remote Version", "Local");
         assertThat(simpleDiffRequest.toString())
-                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[diff.yml], \\{}:DocumentImpl\\[dependabot\\.yml]]");
+                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[null], \\{}:DocumentImpl\\[dependabot\\.yml]]");
     }
 
+    @Test
     public void testDiffViewForFileInFolderWithName() {
-        var dependabot = myFixture.copyFileToProject("src/main/java/com/plugin/license/CheckLicense.java");
+        var dependabot = getFixture().copyFileToProject("src/main/java/com/plugin/license/CheckLicense.java");
         var diffRequest = new Ref<DiffRequest>();
         var e = wrapInTestActionEvent(dependabot, diffRequest);
 

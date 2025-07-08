@@ -2,12 +2,14 @@
 package com.picimako.justkitting.intention.state
 
 import com.picimako.justkitting.action.JustKittingActionTestBase
+import org.junit.jupiter.api.Test
 
 /**
  * Integration test for [JavaConversionActions].
  */
 class ConversionActionsKotlinTest : JustKittingActionTestBase() {
 
+    @Test
     fun testConvertsClassWithStandaloneStateObject() {
         checkAction("SomeComponent.kt", { KotlinConversionActions.WithStandaloneStateObject() },
             """
@@ -36,6 +38,7 @@ class ConversionActionsKotlinTest : JustKittingActionTestBase() {
                 """.trimIndent())
     }
 
+    @Test
     fun testConvertsClassWithSelfAsState() {
         checkAction("SomeComponent.kt", { KotlinConversionActions.WithSelfAsState() },
             """

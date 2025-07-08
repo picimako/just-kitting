@@ -2,6 +2,7 @@
 
 package com.picimako.justkitting.intention.state;
 
+import static com.intellij.openapi.application.ReadAction.compute;
 import static com.picimako.justkitting.PlatformNames.PERSISTENT_STATE_COMPONENT;
 
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
@@ -59,12 +60,12 @@ public class MakeJavaClassPersistentStateComponentIntention extends BaseIntentio
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-        final var element = file.findElementAt(editor.getCaretModel().getOffset());
-        if (element instanceof PsiIdentifier && element.getParent() instanceof PsiClass parentClass) {
+        final var element = file.findElementAt(compute(() -> editor.getCaretModel().getOffset()));
+        if (element instanceof PsiIdentifier && compute(element::getParent) instanceof PsiClass parentClass) {
             return !parentClass.isInterface()
-                   && !parentClass.hasModifierProperty(PsiModifier.ABSTRACT)
-                   && !parentClass.isEnum()
-                   && !isInheritorOfPersistentStateComponent(parentClass);
+                && compute(() -> !parentClass.hasModifierProperty(PsiModifier.ABSTRACT))
+                && !parentClass.isEnum()
+                && !isInheritorOfPersistentStateComponent(parentClass);
         }
 
         return false;
@@ -75,9 +76,12 @@ public class MakeJavaClassPersistentStateComponentIntention extends BaseIntentio
      */
     private static boolean isInheritorOfPersistentStateComponent(@Nullable PsiClass psiClass) {
         return !ApplicationManager.getApplication().isUnitTestMode()
-               ? InheritanceUtil.isInheritor(psiClass, true, PERSISTENT_STATE_COMPONENT)
-               //This part is for tests only. Due to not having access to app-client.jar, PersistentStateComponent must be emulated "manually".
-               : psiClass != null && Arrays.stream(psiClass.getImplementsList().getReferencedTypes()).anyMatch(type -> "PersistentStateComponent".equals(type.getClassName()));
+            ? InheritanceUtil.isInheritor(psiClass, true, PERSISTENT_STATE_COMPONENT)
+            //This part is for tests only. Due to not having access to app-client.jar, PersistentStateComponent must be emulated "manually".
+            : psiClass != null
+            && compute(() ->
+            Arrays.stream(psiClass.getImplementsList().getReferencedTypes())
+                .anyMatch(type -> "PersistentStateComponent".equals(type.getClassName())));
     }
 
     @Override

@@ -2,6 +2,7 @@
 package com.picimako.justkitting.action;
 
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.application.ApplicationManager;
 import com.picimako.justkitting.JustKittingTestBase;
 
 import java.util.function.Supplier;
@@ -12,8 +13,8 @@ import java.util.function.Supplier;
 public abstract class JustKittingActionTestBase extends JustKittingTestBase {
 
     protected void checkAction(String filename, Supplier<AnAction> action, String beforeText, String afterText) {
-        myFixture.configureByText(filename, beforeText);
-        myFixture.testAction(action.get());
-        myFixture.checkResult(afterText);
+        getFixture().configureByText(filename, beforeText);
+        ApplicationManager.getApplication().invokeAndWait(() -> getFixture().testAction(action.get()));
+        getFixture().checkResult(afterText);
     }
 }
