@@ -2,7 +2,6 @@
 
 package com.picimako.justkitting
 
-import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.application.ReadAction.compute
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
