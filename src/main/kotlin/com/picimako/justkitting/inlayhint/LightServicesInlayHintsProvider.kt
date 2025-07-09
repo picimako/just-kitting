@@ -141,7 +141,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                                     settings.maxNumberOfServicesToDisplay = maxServices.toInt()
                                     null
                                 }
-                            } catch (nfe: NumberFormatException) {
+                            } catch (_: NumberFormatException) {
                                 ValidationInfo(
                                     JustKittingBundle.message("inlay.hints.light.services.settings.value.must.be.a.number"),
                                     maxNoOfServicesTextField
