@@ -1,90 +1,105 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+
 package com.picimako.justkitting.reference
 
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.PsiSubstitutor
+import com.intellij.openapi.application.ReadAction.compute
+import com.intellij.psi.*
+import com.intellij.psi.util.MethodSignature
 import com.picimako.justkitting.JustKittingTestBase
 import com.picimako.justkitting.ThirdPartyLibraryLoader
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 /**
  * Functional test for [CallMatcherReferenceContributor].
  */
 class CallMatcherReferenceContributorTest : JustKittingTestBase() {
 
-    @Throws(Exception::class)
+    @BeforeEach
     override fun setUp() {
-        super.setUp()
-        ThirdPartyLibraryLoader.loadJavaImpl(myFixture)
+        ThirdPartyLibraryLoader.loadJavaImpl(fixture)
     }
 
     //Class reference
 
+    @Test
     fun testClassReferenceWithNoMethodNameSpecified() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
                 public class CallMatcherChecker {
                    CallMatcher callMatcher = CallMatcher.instanceCall("java.uti<caret>l.List");
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        val resolveResults = (element.references[0] as PsiPolyVariantReference).multiResolve(false)
+                """.trimIndent()
+        )
+
+        val resolveResults = resolveElementReferences(findElementAtCaret())
         assertThat(resolveResults).hasSize(1)
         assertThat((resolveResults[0].element as PsiClass?)!!.qualifiedName).isEqualTo("java.util.List")
     }
 
+    @Test
     fun testClassReferenceWithMethodNameSpecified() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
                 public class CallMatcherChecker {
                    CallMatcher callMatcher = CallMatcher.instanceCall("java.uti<caret>l.List", "add");
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        val resolveResults = (element.references[0] as PsiPolyVariantReference).multiResolve(false)
+                """.trimIndent()
+        )
+
+        val resolveResults = resolveElementReferences(findElementAtCaret())
         assertThat(resolveResults).hasSize(1)
         assertThat((resolveResults[0].element as PsiClass?)!!.qualifiedName).isEqualTo("java.util.List")
     }
 
+    @Test
     fun testNoClassReference() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
                 public class CallMatcherChecker {
                    CallMatcher callMatcher = CallMatcher.instanceCall("<caret>List", "add");
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        assertThat(element.references).isEmpty()
+                """.trimIndent()
+        )
+        val element = findElementAtCaret()
+        assertThat(compute<Array<PsiReference>, Exception> { element?.references }).isEmpty()
     }
 
     //Method reference
 
+    @Test
     fun testSingleMethodReferenceResult() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
                 public class CallMatcherChecker {
                    CallMatcher callMatcher = CallMatcher.instanceCall("java.util.List", "cl<caret>ear");
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        val resolveResults = (element.references[0] as PsiPolyVariantReference).multiResolve(false)
+                """.trimIndent()
+        )
+
+        val resolveResults = resolveElementReferences(findElementAtCaret())
         assertThat(resolveResults).hasSize(2)
-        assertThat((resolveResults[0].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: clear([])") //from java.util.List
-        assertThat((resolveResults[1].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: clear([])") //from java.util.Collection
+        assertThat(getMethodSignatureOfResult(resolveResults[0])).hasToString("MethodSignatureBackedByPsiMethod: clear([])") //from java.util.List
+        assertThat(getMethodSignatureOfResult(resolveResults[1])).hasToString("MethodSignatureBackedByPsiMethod: clear([])") //from java.util.Collection
     }
 
+    @Test
     fun testSingleMethodReferenceResultEvaluated() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
@@ -92,46 +107,55 @@ class CallMatcherReferenceContributorTest : JustKittingTestBase() {
                    private static final String CALL_MATCHER = "com.siyeh.ig.callMatcher.CallMatcher";
                    private static final CallMatcher callMatcher = CallMatcher.instanceCall(CALL_MATCHER, "na<caret>mes");
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        val resolveResults = (element.references[0] as PsiPolyVariantReference).multiResolve(false)
+                """.trimIndent()
+        )
+
+        val resolveResults = resolveElementReferences(findElementAtCaret())
         assertThat(resolveResults).hasSize(1)
-        assertThat((resolveResults[0].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: names([])")
+        assertThat(getMethodSignatureOfResult(resolveResults[0])).hasToString("MethodSignatureBackedByPsiMethod: names([])")
     }
 
+    @Test
     fun testMultipleMethodReferenceResults() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
                 public class CallMatcherChecker {
                    CallMatcher callMatcher = CallMatcher.instanceCall("java.util.List", "a<caret>dd");
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        val resolveResults = (element.references[0] as PsiPolyVariantReference).multiResolve(false)
+                """.trimIndent()
+        )
+
+        val resolveResults = resolveElementReferences(findElementAtCaret())
         assertThat(resolveResults).hasSize(3)
-        assertThat((resolveResults[0].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: add([PsiType:E])") //from java.util.List
-        assertThat((resolveResults[1].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: add([PsiType:int, PsiType:E])") //from java.util.List
-        assertThat((resolveResults[2].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: add([PsiType:E])") //from java.util.Collection
+        assertThat(getMethodSignatureOfResult(resolveResults[0])).hasToString("MethodSignatureBackedByPsiMethod: add([PsiType:E])") //from java.util.List
+        assertThat(getMethodSignatureOfResult(resolveResults[1])).hasToString("MethodSignatureBackedByPsiMethod: add([PsiType:int, PsiType:E])") //from java.util.List
+        assertThat(getMethodSignatureOfResult(resolveResults[2])).hasToString("MethodSignatureBackedByPsiMethod: add([PsiType:E])") //from java.util.Collection
     }
 
+    @Test
     fun testNoMethodReferenceResult() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
                 public class CallMatcherChecker {
                    CallMatcher callMatcher = CallMatcher.instanceCall("java.util.List", "asda<caret>sd");
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        val resolveResults = (element.references[0] as PsiPolyVariantReference).multiResolve(false)
+                """.trimIndent()
+        )
+
+        val resolveResults = resolveElementReferences(findElementAtCaret())
         assertThat(resolveResults).isEmpty()
     }
 
+    @Test
     fun testMethodReferenceInExactClass() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
@@ -148,15 +172,18 @@ class CallMatcherReferenceContributorTest : JustKittingTestBase() {
                       }
                    }
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        val resolveResults = (element.references[0] as PsiPolyVariantReference).multiResolve(false)
+                """.trimIndent()
+        )
+
+        val resolveResults = resolveElementReferences(findElementAtCaret())
         assertThat(resolveResults).hasSize(1)
-        assertThat((resolveResults[0].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: someMethod([])")
+        assertThat(getMethodSignatureOfResult(resolveResults[0])).hasToString("MethodSignatureBackedByPsiMethod: someMethod([])")
     }
 
+    @Test
     fun testMethodReferenceInExactAndSuperClass() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
@@ -173,16 +200,19 @@ class CallMatcherReferenceContributorTest : JustKittingTestBase() {
                       }
                    }
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        val resolveResults = (element.references[0] as PsiPolyVariantReference).multiResolve(false)
+                """.trimIndent()
+        )
+
+        val resolveResults = resolveElementReferences(findElementAtCaret())
         assertThat(resolveResults).hasSize(2)
-        assertThat((resolveResults[0].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: someMethod([])")
-        assertThat((resolveResults[1].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: someMethod([PsiType:int])")
+        assertThat(getMethodSignatureOfResult(resolveResults[0])).hasToString("MethodSignatureBackedByPsiMethod: someMethod([])")
+        assertThat(getMethodSignatureOfResult(resolveResults[1] )).hasToString("MethodSignatureBackedByPsiMethod: someMethod([PsiType:int])")
     }
 
+    @Test
     fun testMethodReferenceForStaticMethod() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
@@ -196,15 +226,18 @@ class CallMatcherReferenceContributorTest : JustKittingTestBase() {
                        }
                    }
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        val resolveResults = (element.references[0] as PsiPolyVariantReference).multiResolve(false)
+                """.trimIndent()
+        )
+
+        val resolveResults = resolveElementReferences(findElementAtCaret())
         assertThat(resolveResults).hasSize(1)
-        assertThat((resolveResults[0].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: someMethod([])")
+        assertThat(getMethodSignatureOfResult(resolveResults[0])).hasToString("MethodSignatureBackedByPsiMethod: someMethod([])")
     }
 
+    @Test
     fun testMethodReferenceForStaticInterfaceMethod() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
@@ -221,26 +254,39 @@ class CallMatcherReferenceContributorTest : JustKittingTestBase() {
                        public static void someMethod();
                    }
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        val resolveResults = (element.references[0] as PsiPolyVariantReference).multiResolve(false)
+                """.trimIndent()
+        )
+
+        val resolveResults = resolveElementReferences(findElementAtCaret())
         assertThat(resolveResults).hasSize(1)
-        assertThat((resolveResults[0].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: someMethod([])")
+        assertThat(getMethodSignatureOfResult(resolveResults[0])).hasToString("MethodSignatureBackedByPsiMethod: someMethod([])")
     }
 
+    @Test
     fun testMethodReferenceFoExternalStaticMethod() {
-        myFixture.configureByText("CallMatcherChecker.java",
+        fixture.configureByText(
+            "CallMatcherChecker.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
                 public class CallMatcherChecker {
                    CallMatcher callMatcher = CallMatcher.staticCall("java.lang.Integer", "toUnsignedSt<caret>ring");
                 }
-                """.trimIndent())
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        val resolveResults = (element.references[0] as PsiPolyVariantReference).multiResolve(false)
+                """.trimIndent()
+        )
+
+        val resolveResults = resolveElementReferences(findElementAtCaret())
         assertThat(resolveResults).hasSize(2)
-        assertThat((resolveResults[0].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: toUnsignedString([PsiType:int, PsiType:int])")
-        assertThat((resolveResults[1].element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY)).hasToString("MethodSignatureBackedByPsiMethod: toUnsignedString([PsiType:int])")
+        assertThat(getMethodSignatureOfResult(resolveResults[0])).hasToString("MethodSignatureBackedByPsiMethod: toUnsignedString([PsiType:int, PsiType:int])")
+        assertThat(getMethodSignatureOfResult(resolveResults[1])).hasToString("MethodSignatureBackedByPsiMethod: toUnsignedString([PsiType:int])")
     }
+
+    private fun findElementAtCaret(): PsiElement? =
+        compute<PsiElement, Exception> { fixture.file.findElementAt(fixture.caretOffset)!!.parent }
+
+    private fun resolveElementReferences(element: PsiElement?): Array<ResolveResult> =
+        compute<Array<ResolveResult>, Exception> { (element?.references[0] as PsiPolyVariantReference).multiResolve(false) }
+
+    private fun getMethodSignatureOfResult(resolveResult: ResolveResult): MethodSignature? =
+        compute<MethodSignature, Exception> { (resolveResult.element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY) }
 }

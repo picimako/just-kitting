@@ -1,11 +1,11 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.intention;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.psi.PsiFile;
 
@@ -17,9 +17,9 @@ import com.picimako.justkitting.JustKittingTestBase;
 public abstract class JustKittingIntentionTestBase extends JustKittingTestBase {
 
     protected void doIntentionTest(String filename, String beforeText, String afterText, IntentionAction intentionAction) {
-        PsiFile psiFile = myFixture.configureByText(filename, beforeText);
+        PsiFile psiFile = getFixture().configureByText(filename, beforeText);
         runIntentionOn(psiFile, intentionAction);
-        myFixture.checkResult(afterText);
+        getFixture().checkResult(afterText);
     }
 
     protected void doIntentionTest(String filename, String beforeText, String afterText) {
@@ -27,11 +27,11 @@ public abstract class JustKittingIntentionTestBase extends JustKittingTestBase {
     }
 
     protected void checkIfAvailableIn(PsiFile psiFile) {
-        assertThat(getIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isTrue();
+        assertThat(getIntention().isAvailable(getProject(), getFixture().getEditor(), psiFile)).isTrue();
     }
 
     protected void checkIfNotAvailableIn(PsiFile psiFile) {
-        assertThat(getIntention().isAvailable(getProject(), myFixture.getEditor(), psiFile)).isFalse();
+        assertThat(getIntention().isAvailable(getProject(), getFixture().getEditor(), psiFile)).isFalse();
     }
 
     protected IntentionAction getIntention() {
@@ -39,8 +39,9 @@ public abstract class JustKittingIntentionTestBase extends JustKittingTestBase {
     }
 
     protected void runIntentionOn(PsiFile psiFile, IntentionAction intentionAction) {
-        ReadAction.run(() ->
+        ApplicationManager.getApplication().invokeAndWait(() ->
+        //        ReadAction.run(() ->
             CommandProcessor.getInstance().executeCommand(getProject(),
-                () -> intentionAction.invoke(getProject(), myFixture.getEditor(), psiFile), "Intention", ""));
+                () -> intentionAction.invoke(getProject(), getFixture().getEditor(), psiFile), "Intention", ""));
     }
 }

@@ -1,4 +1,4 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.inspection;
 
@@ -9,7 +9,7 @@ import static com.picimako.justkitting.CallMatcherUtil.CALL_MATCHER_INSTANCE_MAT
 import static com.picimako.justkitting.CallMatcherUtil.CALL_MATCHER_STATIC_MATCHER;
 import static com.picimako.justkitting.CallMatcherUtil.filterByNonStatic;
 import static com.picimako.justkitting.CallMatcherUtil.filterByStatic;
-import static com.picimako.justkitting.reference.CallMatcherReferenceContributor.findClass;
+import static com.picimako.justkitting.PsiClassFinder.findClass;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;

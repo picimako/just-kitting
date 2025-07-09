@@ -1,4 +1,4 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.inlayhint
 
@@ -141,7 +141,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                                     settings.maxNumberOfServicesToDisplay = maxServices.toInt()
                                     null
                                 }
-                            } catch (nfe: NumberFormatException) {
+                            } catch (_: NumberFormatException) {
                                 ValidationInfo(
                                     JustKittingBundle.message("inlay.hints.light.services.settings.value.must.be.a.number"),
                                     maxNoOfServicesTextField

@@ -1,4 +1,5 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+
 package com.picimako.justkitting.linemarker;
 
 import static com.intellij.openapi.application.ReadAction.compute;
@@ -39,7 +40,7 @@ public abstract class JustKittingLineMarkerSingleTestBase extends JustKittingTes
 
     @Nullable
     protected LineMarkerInfo<?> getLineMarker(String fileUnderTest) {
-        myFixture.configureByFile(fileUnderTest);
+        getFixture().configureByFile(fileUnderTest);
 
         return getLineMarkerProvider().getLineMarkerInfo(getElementAtCaret());
     }

@@ -1,7 +1,8 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting
 
+import com.intellij.openapi.application.ReadAction.compute
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -23,7 +24,8 @@ class PlatformPsiCache(val project: Project) {
     val serviceLevelApp: PsiField? by lazy { findClass(PlatformNames.SERVICE_LEVEL)!!.findFieldByName("APP", false) }
     val callMatcher: PsiClass? by lazy { findClass(PlatformNames.CALL_MATCHER) }
 
-    private fun findClass(name: String): PsiClass? = JavaPsiFacade.getInstance(project).findClass(name, ProjectScope.getLibrariesScope(project)) 
+    private fun findClass(name: String): PsiClass? =
+        compute<PsiClass?, Exception> { JavaPsiFacade.getInstance(project).findClass(name, ProjectScope.getLibrariesScope(project)) }
 
     companion object {
         @JvmStatic

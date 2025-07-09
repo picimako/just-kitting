@@ -1,4 +1,4 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.inspection;
 
@@ -7,6 +7,7 @@ import static com.picimako.justkitting.PlatformNames.PSI_CALL;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalInspectionToolSession;
+import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -30,7 +31,6 @@ import com.intellij.psi.util.ConstantEvaluationOverflowException;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.picimako.justkitting.PlatformNames;
 import com.picimako.justkitting.resources.JustKittingBundle;
-import com.siyeh.ig.InspectionGadgetsFix;
 import com.siyeh.ig.callMatcher.CallMatcher;
 import com.siyeh.ig.psiutils.TypeUtils;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +59,10 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
             @Override
             public void visitNewExpression(@NotNull PsiNewExpression expression) {
                 //If it's a new Type[0] array creation and Type has an empty array constant called EMPTY_ARRAY
-                if (expression.isArrayCreation() && expression.getArrayDimensions().length == 1 && isZero(expression.getArrayDimensions()[0]) && hasEmptyArrayConstantField(expression.getClassReference())) {
+                if (expression.isArrayCreation()
+                    && expression.getArrayDimensions().length == 1
+                    && isZero(expression.getArrayDimensions()[0])
+                    && hasEmptyArrayConstantField(expression.getClassReference())) {
                     holder.registerProblem(expression,
                         JustKittingBundle.message("inspection.empty.array.creation", expression.getClassReference().getReferenceName()),
                         ProblemHighlightType.WEAK_WARNING,
@@ -110,15 +113,10 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
     /**
      * Replaces {@code new <TYPE>[0]} expressions with {@code <TYPE>.EMPTY_ARRAY}.</li>
      */
-    private static final class ReplaceWithEmptyArrayConstantQuickFix extends InspectionGadgetsFix {
-        private final String arrayType;
-
-        public ReplaceWithEmptyArrayConstantQuickFix(String arrayType) {
-            this.arrayType = arrayType;
-        }
+    private record ReplaceWithEmptyArrayConstantQuickFix(String arrayType) implements LocalQuickFix {
 
         @Override
-        protected void doFix(@NotNull Project project, ProblemDescriptor descriptor) {
+        public void applyFix(@NotNull Project project, ProblemDescriptor descriptor) {
             var newEmptyArray = (PsiNewExpression) descriptor.getPsiElement();
             newEmptyArray.replace(getElementFactory(project)
                 .createExpressionFromText(newEmptyArray.getClassReference().getReferenceName() + ".EMPTY_ARRAY", descriptor.getPsiElement()));
@@ -172,7 +170,7 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
      * Replaces {@code PsiCall.getArgumentList().getExpressions().length} empty/non-empty comparisons
      * with {@code isEmpty()} or {@code !isEmpty()} depending on the expression.
      */
-    private static final class ReplaceWithIsEmptyQuickFix extends InspectionGadgetsFix {
+    private static final class ReplaceWithIsEmptyQuickFix implements LocalQuickFix {
         private final String negate;
         private final boolean isExpressionAtLeft;
 
@@ -182,7 +180,7 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
         }
 
         @Override
-        protected void doFix(@NotNull Project project, ProblemDescriptor descriptor) {
+        public void applyFix(@NotNull Project project, ProblemDescriptor descriptor) {
             var binaryExpression = (PsiBinaryExpression) descriptor.getPsiElement();
             getGetArgumentList(isExpressionAtLeft ? binaryExpression.getLOperand() : binaryExpression.getROperand())
                 .ifPresent(getArgumentList -> {

@@ -1,25 +1,26 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.inspection;
 
 import com.intellij.codeInspection.InspectionProfileEntry;
 import com.picimako.justkitting.ThirdPartyLibraryLoader;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Functional test for {@link CachedValuesInspection}.
  */
-public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
+public final class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
 
     @Override
     protected String getTestDataPath() {
         return super.getTestDataPath() + "inspection";
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        ThirdPartyLibraryLoader.loadUtil8(myFixture);
-        ThirdPartyLibraryLoader.loadJavaImpl(myFixture);
+    @BeforeEach
+    protected void setUp() {
+        ThirdPartyLibraryLoader.loadUtil8(getFixture());
+        ThirdPartyLibraryLoader.loadJavaImpl(getFixture());
     }
 
     @Override
@@ -29,6 +30,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
 
     //Result.create()
 
+    @Test
     public void testNeverChangedIsAddedForEmptyDependency() {
         doQuickFixTest("Add ModificationTracker.NEVER_CHANGED as dependency", "NeverChangedIsAddedForEmptyDependency.java",
             """
@@ -50,6 +52,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testModificationCountIsAddedForEmptyDependency() {
         doQuickFixTest("Add PsiModificationTracker.MODIFICATION_COUNT as dependency", "ModificationCountIsAddedForEmptyDependency.java",
             """
@@ -71,6 +74,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testNeverChangedIsAddedForEmptyCollectionDependency() {
         doQuickFixTest("Replace empty collection with ModificationTracker.NEVER_CHANGED", "NeverChangedIsAddedForEmptyCollectionDependency.java",
             """
@@ -94,6 +98,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testModificationCountIsAddedForEmptyCollectionDependency() {
         doQuickFixTest("Replace empty collection with PsiModificationTracker.MODIFICATION_COUNT", "ModificationCountIsAddedForEmptyCollectionDependency.java",
             """
@@ -118,6 +123,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testNoHighlightForNonEmptyDependencies() {
         doJavaTest("NoHighlightForNonEmptyDependencies.java",
             """
@@ -131,6 +137,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testNoHighlightForModificationTrackerNeverChangedDependency() {
         doJavaTest("NoHighlightForModificationTrackerNeverChangedDependency.java",
             """
@@ -145,6 +152,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testNoHighlightForEmptyResultCreateParameterList() {
         doJavaTest("NoHighlightForEmptyResultCreateParameterList.java",
             """
@@ -157,6 +165,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testNoHighlightForMoreThanTwoDependencies() {
         doJavaTest("NoHighlightForMoreThanTwoDependencies.java",
             """
@@ -173,6 +182,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
 
     //new Result()
 
+    @Test
     public void testNeverChangedIsAddedForEmptyDependencyNewResult() {
         doQuickFixTest("Add ModificationTracker.NEVER_CHANGED as dependency", "NeverChangedIsAddedForEmptyDependency.java",
             """
@@ -194,6 +204,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testNeverChangedIsAddedForEmptyCollectionDependencyNewResult() {
         doQuickFixTest("Replace empty collection with ModificationTracker.NEVER_CHANGED", "NeverChangedIsAddedForEmptyCollectionDependency.java",
             """
@@ -217,6 +228,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testNoHighlightForNonEmptyDependenciesNewResult() {
         doJavaTest("NoHighlightForNonEmptyDependencies.java",
             """
@@ -230,6 +242,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testNoHighlightForModificationTrackerNeverChangedDependencyNewResult() {
         doJavaTest("NoHighlightForModificationTrackerNeverChangedDependency.java",
             """
@@ -244,6 +257,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testNoHighlightForEmptyResultCreateParameterListNewResult() {
         doJavaTest("NoHighlightForEmptyResultCreateParameterList.java",
             """
@@ -256,6 +270,7 @@ public class CachedValuesInspectionTest extends JustKittingInspectionTestBase {
                 }""");
     }
 
+    @Test
     public void testNoHighlightForMoreThanTwoDependenciesNewResult() {
         doJavaTest("NoHighlightForMoreThanTwoDependencies.java",
             """

@@ -6,6 +6,7 @@ import com.intellij.codeInsight.CodeInsightActionHandler
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.ReadAction.compute
 import com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.Editor
@@ -18,32 +19,30 @@ import com.intellij.util.concurrency.AppExecutorUtil
 import com.picimako.justkitting.PlatformNames
 import com.picimako.justkitting.importIfNotAlreadyAdded
 import org.jetbrains.kotlin.idea.base.psi.getOrCreateCompanionObject
-import org.jetbrains.kotlin.psi.KtClass
-import org.jetbrains.kotlin.psi.KtFile
-import org.jetbrains.kotlin.psi.KtFunction
-import org.jetbrains.kotlin.psi.KtObjectDeclaration
-import org.jetbrains.kotlin.psi.KtPsiFactory
+import org.jetbrains.kotlin.psi.*
 import java.text.MessageFormat
 
 /**
  * Action for generating `getInstance()` functions for services, components,
  * and classes in Kotlin files, that can benefit from such method.
  */
-internal class KotlinGetInstanceGenerationAction(serviceLevel: Service.Level) : GetInstanceGenerationAction<KtFunction, KtClass>(serviceLevel) {
+internal class KotlinGetInstanceGenerationAction(serviceLevel: Service.Level) :
+    GetInstanceGenerationAction<KtFunction, KtClass>(serviceLevel) {
 
-    public override fun getHandler(): CodeInsightActionHandler {
+    override fun getHandler(): CodeInsightActionHandler {
         return CodeInsightActionHandler { project: Project?, editor, file ->
             PsiDocumentManager.getInstance(project!!).commitDocument(editor.document)
 
             file.findElementAt(editor.caretModel.offset)?.let {
                 if (ApplicationManager.getApplication().isUnitTestMode) {
-                    PsiTreeUtil.getParentOfType(it, KtClass::class.java).let { parentKtClass -> generate(parentKtClass, file, project)}
+                    PsiTreeUtil.getParentOfType(it, KtClass::class.java)
+                        ?.let { parentKtClass -> generate(parentKtClass, file, project) }
                 } else {
                     //Returns the parent Kotlin class of the element at where the caret is currently placed.
                     ReadAction.nonBlocking<PsiElement> { PsiTreeUtil.getParentOfType(it, KtClass::class.java) }
                         .withDocumentsCommitted(file.project)
                         .inSmartMode(file.project)
-                        .finishOnUiThread(ModalityState.nonModal()) { it.let { generate(it, file, project) } }
+                        .finishOnUiThread(ModalityState.nonModal()) { parent -> generate(parent, file, project) }
                         .submit(AppExecutorUtil.getAppExecutorService())
                 }
             }
@@ -106,21 +105,23 @@ internal class KotlinGetInstanceGenerationAction(serviceLevel: Service.Level) : 
     companion object {
         private const val PROJECT_GET_INSTANCE_PATTERN = "fun getInstance(project: Project): {0} = project.service()"
         private const val APP_GET_INSTANCE_PATTERN = "fun getInstance(): {0} = service()"
+    }
+}
 
-        /**
-         * Returns the parent Kotlin class of the element at where the caret is currently placed.
-         */
-        fun getParentClass(file: PsiFile, editor: Editor): KtClass? {
-            return file.findElementAt(editor.caretModel.offset)?.let {
-                PsiTreeUtil.getParentOfType(it, KtClass::class.java)
-            }
-        }
-
-        /**
-         * Returns the companion object in the provided Kotlin class, if there is any.
-         */
-        fun getCompanionObject(ktClass: KtClass): KtObjectDeclaration? {
-            return ktClass.companionObjects.firstOrNull()
+/**
+ * Returns the parent Kotlin class of the element at where the caret is currently placed.
+ */
+fun getParentClass(file: PsiFile, editor: Editor): KtClass? {
+    return compute<KtClass?, Exception> {
+        file.findElementAt(editor.caretModel.offset)?.let {
+            PsiTreeUtil.getParentOfType(it, KtClass::class.java)
         }
     }
+}
+
+/**
+ * Returns the companion object in the provided Kotlin class, if there is any.
+ */
+fun getCompanionObject(ktClass: KtClass): KtObjectDeclaration? {
+    return ktClass.companionObjects.firstOrNull()
 }

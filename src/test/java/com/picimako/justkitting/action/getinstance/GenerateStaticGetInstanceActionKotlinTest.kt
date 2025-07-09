@@ -1,26 +1,30 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+
 package com.picimako.justkitting.action.getinstance
 
-import com.picimako.justkitting.JustKittingTestBase
+import com.picimako.justkitting.action.JustKittingActionTestBase
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 /**
  * Functional test for [GenerateStaticGetInstanceAction].
  */
-class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
+class GenerateStaticGetInstanceActionKotlinTest : JustKittingActionTestBase() {
 
     //Availability
 
+    @Test
     fun testNotAvailableInNonKotlinFile() {
-        val psiFile = myFixture.configureByText("non_kotlin.txt", "<caret>")
+        val psiFile = fixture.configureByText("non_kotlin.txt", "<caret>")
 
-        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, myFixture.editor, psiFile)
+        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, fixture.editor, psiFile)
 
         assertThat(isValid).isFalse()
     }
 
+    @Test
     fun testNotAvailableInEnum() {
-        val psiFile = myFixture.configureByText("Enum.kt",
+        val psiFile = fixture.configureByText("Enum.kt",
             """
                 import com.intellij.openapi.components.Service
 
@@ -32,12 +36,13 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                     }
                 }
                 """.trimIndent())
-        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, myFixture.editor, psiFile)
+        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, fixture.editor, psiFile)
         assertThat(isValid).isFalse()
     }
 
+    @Test
     fun testNotAvailableIfGetInstanceAlreadyExistsCaretInCompanion() {
-        val psiFile = myFixture.configureByText("SomeService.kt",
+        val psiFile = fixture.configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
                 import com.intellij.openapi.components.service
@@ -51,12 +56,13 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                     }
                 }
                 """.trimIndent())
-        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, myFixture.editor, psiFile)
+        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, fixture.editor, psiFile)
         assertThat(isValid).isFalse()
     }
 
+    @Test
     fun testNotAvailableIfGetInstanceAlreadyExistsCaretInServiceClass() {
-        val psiFile = myFixture.configureByText("SomeService.kt",
+        val psiFile = fixture.configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
                 import com.intellij.openapi.components.service
@@ -70,12 +76,13 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                     }
                 }
                 """.trimIndent())
-        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, myFixture.editor, psiFile)
+        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, fixture.editor, psiFile)
         assertThat(isValid).isFalse()
     }
 
+    @Test
     fun testAvailableWithoutCompanionObject() {
-        val psiFile = myFixture.configureByText("SomeService.kt",
+        val psiFile = fixture.configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
 
@@ -84,12 +91,13 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                 <caret>
                 }
                 """.trimIndent())
-        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, myFixture.editor, psiFile)
+        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, fixture.editor, psiFile)
         assertThat(isValid).isTrue()
     }
 
+    @Test
     fun testAvailableWithEmptyCompanionObjectCaretInCompanion() {
-        val psiFile = myFixture.configureByText("SomeService.kt",
+        val psiFile = fixture.configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
 
@@ -100,12 +108,13 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                     }
                 }
                 """.trimIndent())
-        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, myFixture.editor, psiFile)
+        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, fixture.editor, psiFile)
         assertThat(isValid).isTrue()
     }
 
+    @Test
     fun testAvailableWithEmptyCompanionObjectCaretInServiceClass() {
-        val psiFile = myFixture.configureByText("SomeService.kt",
+        val psiFile = fixture.configureByText("SomeService.kt",
             """
                 import com.intellij.openapi.components.Service
 
@@ -116,14 +125,15 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                     }
                 }
                 """.trimIndent())
-        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, myFixture.editor, psiFile)
+        val isValid = GenerateStaticGetInstanceAction().isValidForFile(project, fixture.editor, psiFile)
         assertThat(isValid).isTrue()
     }
 
     //Project-level light service
 
+    @Test
     fun testShouldGenerateProjectLevelGetterForServiceLevelProjectForNonExistentCompanion() {
-        myFixture.configureByText("SomeService.kt",
+        checkAction("SomeService.kt", { GenerateStaticGetInstanceAction() },
             """
                 import com.intellij.openapi.components.Service
 
@@ -133,11 +143,7 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                     fun someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.components.Service
                 import com.intellij.openapi.components.service
@@ -153,11 +159,13 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                         fun getInstance(project: Project): SomeService = project.service()
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+            )
     }
 
+    @Test
     fun testShouldGenerateProjectLevelGetterForServiceLevelProjectForNonExistingCompanion() {
-        myFixture.configureByText("SomeService.kt",
+        checkAction("SomeService.kt", { GenerateStaticGetInstanceAction() },
             """
                 import com.intellij.openapi.components.Service
 
@@ -170,11 +178,7 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                     companion object {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.components.Service
                 import com.intellij.openapi.components.service
@@ -190,13 +194,15 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                         fun getInstance(project: Project): SomeService = project.service()
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+        )
     }
 
     //Application-level light service
 
+    @Test
     fun testShouldGenerateAppLevelGetterForServiceLevelProjectForNonExistentCompanion() {
-        myFixture.configureByText("SomeService.kt",
+        checkAction("SomeService.kt", { GenerateStaticGetInstanceAction() },
             """
                 import com.intellij.openapi.components.Service
 
@@ -206,11 +212,7 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                     fun someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.components.Service
                 import com.intellij.openapi.components.service
@@ -225,11 +227,13 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                         fun getInstance(): SomeService = service()
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+        )
     }
 
+    @Test
     fun testShouldGenerateAppLevelGetterForServiceLevelProjectForNonExistingCompanion() {
-        myFixture.configureByText("SomeService.kt",
+        checkAction("SomeService.kt", { GenerateStaticGetInstanceAction() },
             """
                 import com.intellij.openapi.components.Service
 
@@ -242,11 +246,7 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                     companion object {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.components.Service
                 import com.intellij.openapi.components.service
@@ -261,13 +261,15 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                         fun getInstance(): SomeService = service()
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+        )
     }
 
     //Light service without level
 
+    @Test
     fun testShouldGenerateProjectLevelGetterForEmptyServiceLevelWithProperClassName() {
-        myFixture.configureByText("SomeProjectService.kt",
+        checkAction("SomeService.kt", { GenerateStaticGetInstanceAction() },
             """
                 @Service
                 class SomeProjectService {
@@ -275,11 +277,7 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                     fun someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.components.service
                 import com.intellij.openapi.project.Project
@@ -294,22 +292,20 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                         fun getInstance(project: Project): SomeProjectService = project.service()
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+        )
     }
 
+    @Test
     fun testShouldGenerateProjectLevelGetterForNoServiceWithProperClassName() {
-        myFixture.configureByText("SomeProjectService.kt",
+        checkAction("SomeService.kt", { GenerateStaticGetInstanceAction() },
             """
                 class SomeProjectService {
                 <caret>
                     fun someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.components.service
                 import com.intellij.openapi.project.Project
@@ -323,11 +319,13 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                         fun getInstance(project: Project): SomeProjectService = project.service()
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+        )
     }
 
+    @Test
     fun testShouldGenerateAppLevelGetterForEmptyServiceLevelWithProperClassName() {
-        myFixture.configureByText("SomeApplicationService.kt",
+        checkAction("SomeService.kt", { GenerateStaticGetInstanceAction() },
             """
                 import com.intellij.openapi.components.Service
 
@@ -337,11 +335,7 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                     fun someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.components.Service
                 import com.intellij.openapi.components.service
@@ -356,22 +350,20 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                         fun getInstance(): SomeApplicationService = service()
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+        )
     }
 
+    @Test
     fun testShouldGenerateAppLevelGetterForNoServiceWithProperClassName() {
-        myFixture.configureByText("SomeApplicationService.kt",
+        checkAction("SomeService.kt", { GenerateStaticGetInstanceAction() },
             """
                 class SomeApplicationService {
                     <caret>
                     fun someMethod() {
                     }
                 }
-                """.trimIndent())
-
-        myFixture.testAction(GenerateStaticGetInstanceAction())
-
-        myFixture.checkResult(
+                """.trimIndent(),
             """
                 import com.intellij.openapi.components.service
 
@@ -384,6 +376,7 @@ class GenerateStaticGetInstanceActionKotlinTest : JustKittingTestBase() {
                         fun getInstance(): SomeApplicationService = service()
                     }
                 }
-                """.trimIndent())
+                """.trimIndent()
+        )
     }
 }

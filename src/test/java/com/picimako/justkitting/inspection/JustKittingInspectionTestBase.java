@@ -1,4 +1,4 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.inspection;
 
@@ -22,27 +22,13 @@ public abstract class JustKittingInspectionTestBase extends JustKittingTestBase 
     protected abstract InspectionProfileEntry getInspection();
 
     /**
-     * Tests highlighting for the pre-configured inspection against the java file matching the test method's name
-     * without the 'test' prefix.
-     */
-    protected void doJavaTest() {
-        doJavaTest(getInspection());
-    }
-
-    /**
      * Tests highlighting for the argument inspection against the java file matching the test method's name
      * without the 'test' prefix.
      */
-    protected void doJavaTest(InspectionProfileEntry inspection) {
-        myFixture.enableInspections(inspection);
-        myFixture.configureByFile(getTestName(false) + ".java");
-        myFixture.testHighlighting(true, false, true);
-    }
-
     protected void doJavaTest(String filename, String text) {
-        myFixture.configureByText(filename, text);
-        myFixture.enableInspections(getInspection());
-        myFixture.testHighlighting(true, false, true);
+        getFixture().configureByText(filename, text);
+        getFixture().enableInspections(getInspection());
+        getFixture().testHighlighting(true, false, true);
     }
 
     /**
@@ -55,10 +41,10 @@ public abstract class JustKittingInspectionTestBase extends JustKittingTestBase 
      * @param afterText    the code after applying the quick fix
      */
     protected void doQuickFixTest(String quickFixName, String filename, String beforeText, String afterText) {
-        myFixture.configureByText(filename, beforeText);
-        myFixture.enableInspections(getInspection());
-        myFixture.doHighlighting();
-        myFixture.launchAction(myFixture.findSingleIntention(quickFixName));
-        myFixture.checkResult(afterText);
+        getFixture().configureByText(filename, beforeText);
+        getFixture().enableInspections(getInspection());
+        getFixture().doHighlighting();
+        getFixture().launchAction(getFixture().findSingleIntention(quickFixName));
+        getFixture().checkResult(afterText);
     }
 }

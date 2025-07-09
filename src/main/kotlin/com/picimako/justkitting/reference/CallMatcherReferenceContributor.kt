@@ -1,16 +1,17 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+
 package com.picimako.justkitting.reference
 
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.*
-import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.util.PsiLiteralUtil.isUnsafeLiteral
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
 import com.picimako.justkitting.CallMatcherUtil
+import com.picimako.justkitting.PsiClassFinder.Companion.evaluate
+import com.picimako.justkitting.PsiClassFinder.Companion.findClass
 import java.util.function.Supplier
 
 /**
@@ -81,31 +82,15 @@ class CallMatcherReferenceContributor : PsiReferenceContributor() {
             return if (resolveResults.size == 1) resolveResults[0].element else null
         }
     }
+}
 
-    companion object {
-        @JvmStatic
-        fun findClass(expression: PsiExpression): PsiClass? {
-            val evaluated = evaluate(expression)
-            return if (evaluated != null) findClass(evaluated.toString(), expression.project) else null
-        }
+private fun getMethodsByName(element: PsiElement, referencedClass: PsiClass, parentCall: PsiMethodCallExpression?): Array<PsiMethod> {
+    val methodsInClass = referencedClass.findMethodsByName(
+        StringUtil.unquoteString(element.text),
+        !CallMatcherUtil.CALL_MATCHER_EXACT_INSTANCE_MATCHER.matches(parentCall))
 
-        private fun evaluate(expression: PsiExpression): Any? {
-            return JavaPsiFacade.getInstance(expression.project).constantEvaluationHelper.computeConstantExpression(expression, true)
-        }
-
-        private fun findClass(text: String, project: Project): PsiClass? {
-            return JavaPsiFacade.getInstance(project).findClass(text, ProjectScope.getAllScope(project))
-        }
-
-        private fun getMethodsByName(element: PsiElement, referencedClass: PsiClass, parentCall: PsiMethodCallExpression?): Array<PsiMethod> {
-            val methodsInClass = referencedClass.findMethodsByName(
-                StringUtil.unquoteString(element.text),
-                !CallMatcherUtil.CALL_MATCHER_EXACT_INSTANCE_MATCHER.matches(parentCall))
-
-            return if (CallMatcherUtil.CALL_MATCHER_STATIC_MATCHER.matches(parentCall))
-                CallMatcherUtil.filterByStatic(methodsInClass)
-            else
-                CallMatcherUtil.filterByNonStatic(methodsInClass)
-        }
-    }
+    return if (CallMatcherUtil.CALL_MATCHER_STATIC_MATCHER.matches(parentCall))
+        CallMatcherUtil.filterByStatic(methodsInClass)
+    else
+        CallMatcherUtil.filterByNonStatic(methodsInClass)
 }

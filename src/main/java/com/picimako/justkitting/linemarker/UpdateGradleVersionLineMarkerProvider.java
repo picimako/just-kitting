@@ -1,7 +1,9 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+
 package com.picimako.justkitting.linemarker;
 
 import static com.intellij.execution.ProgramRunnerUtil.executeConfiguration;
+import static com.intellij.openapi.application.ReadAction.compute;
 import static com.picimako.justkitting.resources.JustKittingBundle.message;
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -67,24 +69,24 @@ final class UpdateGradleVersionLineMarkerProvider extends LineMarkerProviderDesc
 
         var containingFile = isGradleVersionInGradleProperties(property);
         if (containingFile != null) {
-            var projectDir = containingFile.getParent();
+            var projectDir = compute(containingFile::getParent);
             if (projectDir != null) {
-                var project = element.getProject();
+                var project = compute(element::getProject);
                 if (findGradleWrapperProperties(projectDir.getVirtualFile(), project) instanceof PropertiesFile propertiesFile) {
-                    var distributionUrl = propertiesFile.findPropertyByKey("distributionUrl");
+                    var distributionUrl = compute(() -> propertiesFile.findPropertyByKey("distributionUrl"));
                     if (distributionUrl == null) return null;
 
-                    String url = distributionUrl.getValue();
+                    String url = compute(distributionUrl::getValue);
                     if (url == null) return null;
 
                     var matcher = WRAPPER_DISTRIBUTION_URL_PATTERN.matcher(url);
                     if (matcher.matches()) {
                         //If the current version in gradle-wrapper.properties doesn't match with the new version in gradle.properties,
                         // meaning the wrapper should be updated
-                        if (!matcher.group("version").equals(property.getValue())) {
+                        if (!matcher.group("version").equals(compute(property::getValue))) {
                             String currentType = matcher.group("type");
-                            var pointerToProperty = SmartPointerManager.getInstance(project).createSmartPsiElementPointer(property, property.getContainingFile());
-                            return new UpdateGradleVersionLineMarkerInfo(pointerToProperty, currentType, projectDir);
+                            var pointerToProperty = compute(() -> SmartPointerManager.getInstance(project).createSmartPsiElementPointer(property, property.getContainingFile()));
+                            return compute(() -> new UpdateGradleVersionLineMarkerInfo(pointerToProperty, currentType, projectDir));
                         }
                     }
                 }
@@ -102,9 +104,9 @@ final class UpdateGradleVersionLineMarkerProvider extends LineMarkerProviderDesc
      */
     @Nullable("When either the property name, the file name, or both don't match.")
     private static PsiFile isGradleVersionInGradleProperties(Property property) {
-        if ("gradleVersion".equals(property.getName())) {
-            var containingFile = property.getContainingFile();
-            if ("gradle.properties".equals(containingFile.getName()))
+        if ("gradleVersion".equals(compute(property::getName))) {
+            var containingFile = compute(property::getContainingFile);
+            if ("gradle.properties".equals(compute(containingFile::getName)))
                 return containingFile;
         }
         return null;
@@ -116,7 +118,7 @@ final class UpdateGradleVersionLineMarkerProvider extends LineMarkerProviderDesc
     @Nullable("When gradle-wrapper.properties cannot be found.")
     private static PsiFile findGradleWrapperProperties(VirtualFile projectDir, Project project) {
         var gradleWrapper = projectDir.findFileByRelativePath("/gradle/wrapper/gradle-wrapper.properties");
-        return gradleWrapper != null ? PsiManager.getInstance(project).findFile(gradleWrapper) : null;
+        return gradleWrapper != null ? compute(() -> PsiManager.getInstance(project).findFile(gradleWrapper)) : null;
     }
 
     private static final class UpdateGradleVersionLineMarkerInfo extends MergeableLineMarkerInfo<PsiElement> {

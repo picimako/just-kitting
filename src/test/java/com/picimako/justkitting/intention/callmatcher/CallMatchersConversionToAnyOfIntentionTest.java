@@ -1,22 +1,21 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.intention.callmatcher;
 
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.psi.PsiFile;
-
 import com.picimako.justkitting.ThirdPartyLibraryLoader;
 import com.picimako.justkitting.intention.JustKittingIntentionTestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration test for {@link CallMatchersConversionToAnyOfIntention}.
  */
-public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingIntentionTestBase {
+public final class CallMatchersConversionToAnyOfIntentionTest extends JustKittingIntentionTestBase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        ThirdPartyLibraryLoader.loadJavaImpl(myFixture);
+    @BeforeEach
+    protected void setUp() {
+        ThirdPartyLibraryLoader.loadJavaImpl(getFixture());
     }
 
     @Override
@@ -26,6 +25,7 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
 
     //Positive cases
 
+    @Test
     public void testConversionOfBinaryExpression() {
         doIntentionTest("BinaryExpression.java",
             """
@@ -55,6 +55,7 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
                 }""");
     }
 
+    @Test
     public void testConversionOfParenthesisedBinaryExpression() {
         doIntentionTest("BinaryParenthesised.java",
             """
@@ -84,6 +85,7 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
                 }""");
     }
 
+    @Test
     public void testConversionOfPolyadicExpression() {
         doIntentionTest("Polyadic.java",
             """
@@ -115,6 +117,7 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
                 }""");
     }
 
+    @Test
     public void testConversionOfParenthesisedPolyadicExpression() {
         doIntentionTest("PolyadicParenthesised.java",
             """
@@ -146,6 +149,7 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
                 }""");
     }
 
+    @Test
     public void testConversionWithTestMethod() {
         doIntentionTest("Test.java",
             """
@@ -175,6 +179,7 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
                 }""");
     }
 
+    @Test
     public void testConversionWithMethodMatchesMethod() {
         doIntentionTest("Method.java",
             """
@@ -204,6 +209,7 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
                 }""");
     }
 
+    @Test
     public void testConversionWithMethodReferenceMatchesMethod() {
         doIntentionTest("MethodReference.java",
             """
@@ -233,6 +239,7 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
                 }""");
     }
 
+    @Test
     public void testConversionWithUCallMatchesMethod() {
         doIntentionTest("UCall.java",
             """
@@ -262,6 +269,7 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
                 }""");
     }
 
+    @Test
     public void testConversionInVariableAssignment() {
         doIntentionTest("VariableAssignment.java",
             """
@@ -291,8 +299,9 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
 
     //No availability cases
 
+    @Test
     public void testNotAvailableForNonOrBinaryExpression() {
-        PsiFile psiFile = myFixture.configureByText("NotAvailable.java",
+        var psiFile = getFixture().configureByText("NotAvailable.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
@@ -308,8 +317,9 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
         checkIfNotAvailableIn(psiFile);
     }
 
+    @Test
     public void testNotAvailableForNonOrPolyadicExpression() {
-        PsiFile psiFile = myFixture.configureByText("NotAvailable.java",
+        var psiFile = getFixture().configureByText("NotAvailable.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
@@ -326,8 +336,9 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
         checkIfNotAvailableIn(psiFile);
     }
 
+    @Test
     public void testNotAvailableForPartialParenthesisedPolyadic() {
-        PsiFile psiFile = myFixture.configureByText("NotAvailable.java",
+        var psiFile = getFixture().configureByText("NotAvailable.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
@@ -344,8 +355,9 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
         checkIfNotAvailableIn(psiFile);
     }
 
+    @Test
     public void testNotAvailableForDifferentMatcherMethods() {
-        PsiFile psiFile = myFixture.configureByText("NotAvailable.java",
+        var psiFile = getFixture().configureByText("NotAvailable.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 
@@ -361,8 +373,9 @@ public class CallMatchersConversionToAnyOfIntentionTest extends JustKittingInten
         checkIfNotAvailableIn(psiFile);
     }
 
+    @Test
     public void testNotAvailableForDifferentTestedExpressions() {
-        PsiFile psiFile = myFixture.configureByText("NotAvailable.java",
+        var psiFile = getFixture().configureByText("NotAvailable.java",
             """
                 import com.siyeh.ig.callMatcher.CallMatcher;
 

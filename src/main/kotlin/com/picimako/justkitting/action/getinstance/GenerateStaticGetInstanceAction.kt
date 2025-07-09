@@ -1,10 +1,12 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+
 package com.picimako.justkitting.action.getinstance
 
 import com.intellij.codeInsight.CodeInsightActionHandler
 import com.intellij.codeInsight.actions.BaseCodeInsightAction
 import com.intellij.lang.LanguageCodeInsightActionHandler
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ReadAction.compute
 import com.intellij.openapi.components.Service.Level.APP
 import com.intellij.openapi.components.Service.Level.PROJECT
 import com.intellij.openapi.editor.Editor
@@ -15,10 +17,6 @@ import com.intellij.util.containers.ContainerUtil
 import com.picimako.justkitting.ListPopupHelper
 import com.picimako.justkitting.ServiceLevelDecider
 import com.picimako.justkitting.ServiceLevelDecider.ServiceLevel
-import com.picimako.justkitting.action.getinstance.JavaGetInstanceGenerationAction.Companion.getStaticOrTopLevelClass
-import com.picimako.justkitting.action.getinstance.JavaGetInstanceGenerationAction.Companion.isStatic
-import com.picimako.justkitting.action.getinstance.KotlinGetInstanceGenerationAction.Companion.getCompanionObject
-import com.picimako.justkitting.action.getinstance.KotlinGetInstanceGenerationAction.Companion.getParentClass
 import com.picimako.justkitting.resources.JustKittingBundle
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtObjectDeclaration
@@ -91,18 +89,19 @@ class GenerateStaticGetInstanceAction : BaseCodeInsightAction() {
 
         override fun isValidFor(editor: Editor?, file: PsiFile?): Boolean {
             return getStaticOrTopLevelClass(file!!, editor!!)?.let {
-                it.nameIdentifier != null
+                compute<Boolean, Exception> { it.nameIdentifier != null
                     && !it.isEnum
                     //There is no static 'getInstance()' method
                     && !ContainerUtil.exists(it.methods) { method -> GET_INSTANCE == method.name && isStatic(method) }
+                }
             } ?: false
         }
 
         override fun invoke(project: Project, editor: Editor, file: PsiFile) {
             //Null check for 'staticOrTopLevelClass' is not required due to it being checked in 'isValidFor()'
             when (ServiceLevelDecider.getServiceLevel(getStaticOrTopLevelClass(file, editor))) {
-                ServiceLevel.PROJECT -> JavaGetInstanceGenerationAction(PROJECT).handler.invoke(project, editor, file)
-                ServiceLevel.APP -> JavaGetInstanceGenerationAction(APP).handler.invoke(project, editor, file)
+                ServiceLevel.PROJECT -> JavaGetInstanceGenerationAction(PROJECT).invokeHandler(project, editor, file)
+                ServiceLevel.APP -> JavaGetInstanceGenerationAction(APP).invokeHandler(project, editor, file)
                 else -> chooseAppOrProjectLevelFromList(actions, editor)
             }
         }
@@ -116,15 +115,19 @@ class GenerateStaticGetInstanceAction : BaseCodeInsightAction() {
 
         override fun isValidFor(editor: Editor?, file: PsiFile?): Boolean {
             return getParentClass(file!!, editor!!)?.let {
-                it.name != null && !it.isEnum() && !hasGetInstanceFunction(getCompanionObject(it))
+                compute<Boolean, Exception> {
+                    it.name != null
+                        && !it.isEnum()
+                        && !hasGetInstanceFunction(getCompanionObject(it))
+                }
             } ?: false
         }
 
         override fun invoke(project: Project, editor: Editor, file: PsiFile) {
             //Null check for 'getParentClass' is not required due to it being checked in 'isValidFor()'
             when (ServiceLevelDecider.getServiceLevel(getParentClass(file, editor))) {
-                ServiceLevel.PROJECT -> KotlinGetInstanceGenerationAction(PROJECT).handler.invoke(project, editor, file)
-                ServiceLevel.APP -> KotlinGetInstanceGenerationAction(APP).handler.invoke(project, editor, file)
+                ServiceLevel.PROJECT -> KotlinGetInstanceGenerationAction(PROJECT).invokeHandler(project, editor, file)
+                ServiceLevel.APP -> KotlinGetInstanceGenerationAction(APP).invokeHandler(project, editor, file)
                 else -> chooseAppOrProjectLevelFromList(actions, editor)
             }
         }

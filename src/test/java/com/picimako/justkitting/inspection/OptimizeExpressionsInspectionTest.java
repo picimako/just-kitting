@@ -1,28 +1,31 @@
-// Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.inspection;
 
 import com.intellij.codeInspection.InspectionProfileEntry;
 import com.picimako.justkitting.ThirdPartyLibraryLoader;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Functional test for {@link OptimizeExpressionsInspection}.
  */
-public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTestBase {
+public final class OptimizeExpressionsInspectionTest extends JustKittingInspectionTestBase {
 
     @Override
     protected InspectionProfileEntry getInspection() {
         return new OptimizeExpressionsInspection();
     }
 
-    @Override
+    @BeforeEach
     protected void setUp() throws Exception {
         super.setUp();
-        ThirdPartyLibraryLoader.loadJavaImpl(myFixture);
+        ThirdPartyLibraryLoader.loadJavaImpl(getFixture());
     }
 
     //Empty array creation
 
+    @Test
     public void testReplaceEmptyArrayCreationWithConstant() {
         doQuickFixTest("Replace with PsiElement.EMPTY_ARRAY", "EmptyArray.java",
             """
@@ -39,6 +42,7 @@ public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTest
                 }""");
     }
 
+    @Test
     public void testNonEmptyArrayCreationIsNotReported() {
         doJavaTest("EmptyArray.java",
             """
@@ -51,6 +55,7 @@ public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTest
 
     //isEmpty with getExpressions().length comparison
 
+    @Test
     public void testReplaceExpressionsLengthEqualsZeroWithIsEmpty() {
         doQuickFixTest("Replace with isEmpty()", "IsEmpty.java",
             """
@@ -71,6 +76,7 @@ public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTest
                 }""");
     }
 
+    @Test
     public void testReplaceExpressionsLengthGreaterThanZeroWithNotIsEmpty() {
         doQuickFixTest("Replace with !isEmpty()", "IsEmpty.java",
             """
@@ -91,6 +97,7 @@ public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTest
                 }""");
     }
 
+    @Test
     public void testReplaceZeroEqualsExpressionsLengthWithIsEmpty() {
         doQuickFixTest("Replace with isEmpty()", "IsEmpty.java",
             """
@@ -111,6 +118,7 @@ public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTest
                 }""");
     }
 
+    @Test
     public void testReplaceZeroGreaterThanExpressionsLengthWithNotIsEmpty() {
         doQuickFixTest("Replace with !isEmpty()", "IsEmpty.java",
             """
@@ -131,6 +139,7 @@ public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTest
                 }""");
     }
 
+    @Test
     public void testReplaceZeroEqualsExpressionsLengthWithIsEmptyInIf() {
         doQuickFixTest("Replace with isEmpty()", "IsEmpty.java",
             """
@@ -153,6 +162,7 @@ public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTest
                 }""");
     }
 
+    @Test
     public void testReplaceZeroEqualsExpressionsLengthWithIsEmptyInExtractedArgumentListVariable() {
         doQuickFixTest("Replace with isEmpty()", "IsEmpty.java",
             """
@@ -177,6 +187,7 @@ public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTest
                 }""");
     }
 
+    @Test
     public void testZeroEqualsExpressionsLengthWithIsEmptyInExtractedVariableIsNotReported() {
         doJavaTest("IsEmpty.java",
             """
@@ -191,6 +202,7 @@ public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTest
                 }""");
     }
 
+    @Test
     public void testExpressionsLengthEqualsNonZeroIsNotReported() {
         doJavaTest("IsEmpty.java",
             """
@@ -203,6 +215,7 @@ public class OptimizeExpressionsInspectionTest extends JustKittingInspectionTest
                 }""");
     }
 
+    @Test
     public void testExpressionsLengthGreaterThanNonZeroIsNotReported() {
         doJavaTest("IsEmpty.java",
             """

@@ -1,13 +1,16 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+
 package com.picimako.justkitting.intention.state
 
 import com.picimako.justkitting.action.JustKittingActionTestBase
+import org.junit.jupiter.api.Test
 
 /**
  * Integration test for [JavaConversionActions].
  */
 class ConversionActionsKotlinTest : JustKittingActionTestBase() {
 
+    @Test
     fun testConvertsClassWithStandaloneStateObject() {
         checkAction("SomeComponent.kt", { KotlinConversionActions.WithStandaloneStateObject() },
             """
@@ -36,6 +39,7 @@ class ConversionActionsKotlinTest : JustKittingActionTestBase() {
                 """.trimIndent())
     }
 
+    @Test
     fun testConvertsClassWithSelfAsState() {
         checkAction("SomeComponent.kt", { KotlinConversionActions.WithSelfAsState() },
             """

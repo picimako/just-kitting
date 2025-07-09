@@ -1,6 +1,8 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.intention.callmatcher;
+
+import static com.intellij.openapi.application.ReadAction.compute;
 
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInspection.util.IntentionFamilyName;
@@ -31,6 +33,7 @@ import java.awt.datatransfer.DataFlavor;
  *
  * @since 0.1.0
  */
+@SuppressWarnings("IntentionDescriptionNotFoundInspection")
 public class GenerateCallMatcherFromSignatureIntention implements IntentionAction {
     @Override
     public @IntentionName @NotNull String getText() {
@@ -50,10 +53,10 @@ public class GenerateCallMatcherFromSignatureIntention implements IntentionActio
     }
 
     public static boolean isPsiMethodOrMethodCall(PsiFile file, Editor editor) {
-        var elementAtCaret = file.findElementAt(editor.getCaretModel().getOffset());
+        var elementAtCaret = file.findElementAt(compute(() -> editor.getCaretModel().getOffset()));
 
         if (elementAtCaret instanceof PsiIdentifier) {
-            var parent = elementAtCaret.getParent();
+            var parent = compute(elementAtCaret::getParent);
             return parent instanceof PsiMethod
                 || (parent instanceof PsiReferenceExpression && parent.getParent() instanceof PsiMethodCallExpression);
         }

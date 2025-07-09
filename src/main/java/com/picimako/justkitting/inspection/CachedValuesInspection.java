@@ -1,4 +1,4 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.inspection;
 
@@ -6,6 +6,7 @@ import static com.picimako.justkitting.PlatformNames.CACHED_VALUE_PROVIDER_RESUL
 import static com.siyeh.ig.callMatcher.CallMatcher.staticCall;
 
 import com.intellij.codeInspection.LocalInspectionTool;
+import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.codeInspection.util.IntentionFamilyName;
@@ -24,8 +25,9 @@ import com.intellij.psi.PsiNewExpression;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.picimako.justkitting.resources.JustKittingBundle;
-import com.siyeh.ig.InspectionGadgetsFix;
 import com.siyeh.ig.callMatcher.CallMatcher;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -120,7 +122,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
         }
 
         @Override
-        protected void doFix(@NotNull Project project, ProblemDescriptor descriptor) {
+        public void applyFix(@NotNull Project project, ProblemDescriptor descriptor) {
             modificationTracker.addDependency(descriptor.getPsiElement(), expressionType, project);
         }
     }
@@ -134,12 +136,13 @@ public class CachedValuesInspection extends LocalInspectionTool {
         }
 
         @Override
-        protected void doFix(@NotNull Project project, ProblemDescriptor descriptor) {
+        public void applyFix(@NotNull Project project, ProblemDescriptor descriptor) {
             modificationTracker.replaceEmptyDependency(descriptor.getPsiElement(), expressionType, project);
         }
     }
 
-    private abstract static class BaseCachingQuickFix extends InspectionGadgetsFix {
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    private abstract static class BaseCachingQuickFix implements LocalQuickFix {
         /**
          * PsiMethodCallExpression if it's a method call to 'CachedValueProvider.Result.create()',
          * or PsiNewExpression if it's a call to 'new CachedValueProvider.Result()'.
@@ -147,12 +150,6 @@ public class CachedValuesInspection extends LocalInspectionTool {
         protected final Class<? extends PsiCall> expressionType;
         protected final ModificationTracker modificationTracker;
         private final String quickFixKey;
-
-        protected BaseCachingQuickFix(@NotNull Class<? extends PsiCall> expressionType, ModificationTracker modificationTracker, String quickFixKey) {
-            this.expressionType = expressionType;
-            this.modificationTracker = modificationTracker;
-            this.quickFixKey = quickFixKey;
-        }
 
         @Override
         public @IntentionFamilyName @NotNull String getFamilyName() {

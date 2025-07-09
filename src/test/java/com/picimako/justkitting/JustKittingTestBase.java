@@ -1,38 +1,39 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+
 package com.picimako.justkitting;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.JavaSdk;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.pom.java.LanguageLevel;
 import com.intellij.testFramework.LightProjectDescriptor;
-import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.testFramework.fixtures.DefaultLightProjectDescriptor;
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase5;
+import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Base class for functional tests.
  */
-public abstract class JustKittingTestBase extends LightJavaCodeInsightFixtureTestCase {
+public abstract class JustKittingTestBase extends LightJavaCodeInsightFixtureTestCase5 {
+
+    protected JustKittingTestBase() {
+        super(new DefaultLightProjectDescriptor(() -> JavaSdk.getInstance().createJdk("Real JDK", System.getenv("JAVA_HOME"), false)));
+    }
+
+    protected JustKittingTestBase(LightProjectDescriptor projectDescriptor) {
+        super(projectDescriptor);
+    }
 
     @Override
+    protected @Nullable String getTestDataPath() {
+        return "src/test/testData/";
+    }
+
+    @BeforeEach
     protected void setUp() throws Exception {
-        super.setUp();
-        ThirdPartyLibraryLoader.loadUtil8(myFixture);
+        ThirdPartyLibraryLoader.loadUtil8(getFixture());
     }
 
-    @Override
-    protected @NotNull LightProjectDescriptor getProjectDescriptor() {
-        return getJdkHome();
-    }
-
-    /**
-     * Returns a descriptor with a real JDK defined by the JAVA_HOME environment variable.
-     */
-    public static LightProjectDescriptor getJdkHome() {
-        return new ProjectDescriptor(LanguageLevel.JDK_17) {
-            @Override
-            public Sdk getSdk() {
-                return JavaSdk.getInstance().createJdk("Real JDK", System.getenv("JAVA_HOME"), false);
-            }
-        };
+    protected Project getProject() {
+        return getFixture().getProject();
     }
 }

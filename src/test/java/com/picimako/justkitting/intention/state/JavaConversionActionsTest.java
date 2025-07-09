@@ -1,8 +1,9 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.intention.state;
 
 import com.picimako.justkitting.action.JustKittingActionTestBase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Functional test for {@link JavaConversionActions}.
@@ -10,8 +11,9 @@ import com.picimako.justkitting.action.JustKittingActionTestBase;
  * NOTE: {@code shortenClassReferences()} is not applied in all cases because classes requiring app-client.jar are not available.
  * But, the effect can still be seen applied on {@code XmlSerializerUtil}
  */
-public class JavaConversionActionsTest extends JustKittingActionTestBase {
+public final class JavaConversionActionsTest extends JustKittingActionTestBase {
 
+    @Test
     public void testConvertsClassWithStandaloneStateObject() {
         checkAction("SomeComponent.java", JavaConversionActions.WithStandaloneStateObject::new,
             "public final class SomeCom<caret>ponent {\n" +
@@ -37,6 +39,7 @@ public class JavaConversionActionsTest extends JustKittingActionTestBase {
                 }""");
     }
 
+    @Test
     public void testConvertsClassWithSelfAsState() {
         checkAction("SomeComponent.java", JavaConversionActions.WithSelfAsState::new,
             "public final class SomeC<caret>omponent {\n" +

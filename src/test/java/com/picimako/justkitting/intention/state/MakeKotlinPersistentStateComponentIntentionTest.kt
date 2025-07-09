@@ -1,8 +1,10 @@
-//Copyright 2024 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+
 package com.picimako.justkitting.intention.state
 
 import com.picimako.justkitting.JustKittingTestBase
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 /**
  * Integration test for [MakeKotlinClassPersistentStateComponentIntention].
@@ -10,8 +12,10 @@ import org.assertj.core.api.Assertions.assertThat
 class MakeKotlinPersistentStateComponentIntentionTest : JustKittingTestBase() {
     //Not available
 
+    
+    @Test
     fun testIntentionIsNotAvailableWhenAlreadyPersistentStateComponent() {
-        val psiFile = myFixture.configureByText("SomeComponent.kt",
+        val psiFile = fixture.configureByText("SomeComponent.kt",
                 """
                 import com.intellij.openapi.components.PersistentStateComponent
 
@@ -26,55 +30,60 @@ class MakeKotlinPersistentStateComponentIntentionTest : JustKittingTestBase() {
                 """.trimIndent())
         assertThat(
             MakeKotlinClassPersistentStateComponentIntention()
-                .isAvailable(project, myFixture.editor, psiFile)).isFalse()
+                .isAvailable(project, fixture.editor, psiFile)).isFalse()
     }
 
+    @Test
     fun testIntentionIsNotAvailableForInterface() {
-        val psiFile = myFixture.configureByText("SomeComponent.kt",
+        val psiFile = fixture.configureByText("SomeComponent.kt",
                 """
                      interface SomeCo<caret>mponent {
                      }
                      """.trimIndent())
         assertThat(
             MakeKotlinClassPersistentStateComponentIntention()
-                .isAvailable(project, myFixture.editor, psiFile)).isFalse()
+                .isAvailable(project, fixture.editor, psiFile)).isFalse()
     }
 
+    @Test
     fun testIntentionIsNotAvailableForEnum() {
-        val psiFile = myFixture.configureByText("SomeComponent.kt",
+        val psiFile = fixture.configureByText("SomeComponent.kt",
                 """
                      enum SomeCo<caret>mponent {
                      }
                      """.trimIndent())
         assertThat(
             MakeKotlinClassPersistentStateComponentIntention()
-                .isAvailable(project, myFixture.editor, psiFile)).isFalse()
+                .isAvailable(project, fixture.editor, psiFile)).isFalse()
     }
 
+    @Test
     fun testIntentionIsNotAvailableForAbstractClass() {
-        val psiFile = myFixture.configureByText("SomeComponent.kt",
+        val psiFile = fixture.configureByText("SomeComponent.kt",
                 """
                      abstract class SomeCo<caret>mponent {
                      }
                      """.trimIndent())
         assertThat(
             MakeKotlinClassPersistentStateComponentIntention()
-                .isAvailable(project, myFixture.editor, psiFile)).isFalse()
+                .isAvailable(project, fixture.editor, psiFile)).isFalse()
     }
 
+    @Test
     fun testIntentionIsNotAvailableForInlineClass() {
-        val psiFile = myFixture.configureByText("SomeComponent.kt",
+        val psiFile = fixture.configureByText("SomeComponent.kt",
                 """
                      value class SomeCo<caret>mponent(val s: String) {
                      }
                      """.trimIndent())
         assertThat(
             MakeKotlinClassPersistentStateComponentIntention()
-                .isAvailable(project, myFixture.editor, psiFile)).isFalse()
+                .isAvailable(project, fixture.editor, psiFile)).isFalse()
     }
 
+    @Test
     fun testIntentionIsNotAvailableWhenInvokedOnANonPsiClassElement() {
-        val psiFile = myFixture.configureByText("SomeComponent.kt",
+        val psiFile = fixture.configureByText("SomeComponent.kt",
                 """
                 class SomeComponent {
                     var fie<caret>ld: String
@@ -82,13 +91,14 @@ class MakeKotlinPersistentStateComponentIntentionTest : JustKittingTestBase() {
                 """.trimIndent())
         assertThat(
             MakeKotlinClassPersistentStateComponentIntention()
-                .isAvailable(project, myFixture.editor, psiFile)).isFalse()
+                .isAvailable(project, fixture.editor, psiFile)).isFalse()
     }
 
     //Available
 
+    @Test
     fun testIntentionIsAvailableForClass() {
-        val psiFile = myFixture.configureByText("SomeComponent.kt",
+        val psiFile = fixture.configureByText("SomeComponent.kt",
                 """
                 class SomeComp<caret>onent {
                     var field: String
@@ -96,6 +106,6 @@ class MakeKotlinPersistentStateComponentIntentionTest : JustKittingTestBase() {
                 """.trimIndent())
         assertThat(
             MakeKotlinClassPersistentStateComponentIntention()
-                .isAvailable(project, myFixture.editor, psiFile)).isTrue()
+                .isAvailable(project, fixture.editor, psiFile)).isTrue()
     }
 }
