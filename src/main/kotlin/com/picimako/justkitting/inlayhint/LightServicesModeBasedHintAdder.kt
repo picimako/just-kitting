@@ -89,7 +89,7 @@ data class LightServicesModeBasedHintAdder(override var settings: Settings,
             ServiceLevelDecider.ServiceLevel.values().forEach { addClassReferenceHints(services[it], element, it.displayName, classCount) }
 
             //If there are more light services classes than the user-defined max count to display, then add a 'View All' hint as well
-            if (lightServices.size > settings.maxNumberOfServicesToDisplay && classCount.value == settings.maxNumberOfServicesToDisplay) {
+            if (lightServices.size > settings.maxNumberOfServicesToDisplay && classCount.toInt() == settings.maxNumberOfServicesToDisplay) {
                 addViewAllServicesHint(element, services)
             }
         }
