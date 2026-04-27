@@ -2,7 +2,7 @@
 
 package com.picimako.justkitting.intention.callmatcher;
 
-import static com.intellij.openapi.application.ReadAction.compute;
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInspection.util.IntentionFamilyName;
@@ -53,10 +53,10 @@ public class GenerateCallMatcherFromSignatureIntention implements IntentionActio
     }
 
     public static boolean isPsiMethodOrMethodCall(PsiFile file, Editor editor) {
-        var elementAtCaret = file.findElementAt(compute(() -> editor.getCaretModel().getOffset()));
+        var elementAtCaret = file.findElementAt(computeBlocking(() -> editor.getCaretModel().getOffset()));
 
         if (elementAtCaret instanceof PsiIdentifier) {
-            var parent = compute(elementAtCaret::getParent);
+            var parent = computeBlocking(elementAtCaret::getParent);
             return parent instanceof PsiMethod
                 || (parent instanceof PsiReferenceExpression && parent.getParent() instanceof PsiMethodCallExpression);
         }

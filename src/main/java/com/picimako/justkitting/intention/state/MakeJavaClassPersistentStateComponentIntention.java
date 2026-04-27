@@ -2,7 +2,7 @@
 
 package com.picimako.justkitting.intention.state;
 
-import static com.intellij.openapi.application.ReadAction.compute;
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 import static com.picimako.justkitting.PlatformNames.PERSISTENT_STATE_COMPONENT;
 
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
@@ -60,10 +60,10 @@ public class MakeJavaClassPersistentStateComponentIntention extends BaseIntentio
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-        final var element = file.findElementAt(compute(() -> editor.getCaretModel().getOffset()));
-        if (element instanceof PsiIdentifier && compute(element::getParent) instanceof PsiClass parentClass) {
+        final var element = file.findElementAt(computeBlocking(() -> editor.getCaretModel().getOffset()));
+        if (element instanceof PsiIdentifier && computeBlocking(element::getParent) instanceof PsiClass parentClass) {
             return !parentClass.isInterface()
-                && compute(() -> !parentClass.hasModifierProperty(PsiModifier.ABSTRACT))
+                && computeBlocking(() -> !parentClass.hasModifierProperty(PsiModifier.ABSTRACT))
                 && !parentClass.isEnum()
                 && !isInheritorOfPersistentStateComponent(parentClass);
         }
@@ -79,7 +79,7 @@ public class MakeJavaClassPersistentStateComponentIntention extends BaseIntentio
             ? InheritanceUtil.isInheritor(psiClass, true, PERSISTENT_STATE_COMPONENT)
             //This part is for tests only. Due to not having access to app-client.jar, PersistentStateComponent must be emulated "manually".
             : psiClass != null
-            && compute(() ->
+            && computeBlocking(() ->
             Arrays.stream(psiClass.getImplementsList().getReferencedTypes())
                 .anyMatch(type -> "PersistentStateComponent".equals(type.getClassName())));
     }

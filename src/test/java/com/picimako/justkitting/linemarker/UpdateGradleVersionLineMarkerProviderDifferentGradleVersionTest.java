@@ -2,7 +2,7 @@
 
 package com.picimako.justkitting.linemarker;
 
-import static com.intellij.openapi.application.ReadAction.compute;
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 
 import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor;
 import com.intellij.lang.properties.psi.Property;
@@ -22,7 +22,7 @@ public final class UpdateGradleVersionLineMarkerProviderDifferentGradleVersionTe
 
     @Override
     protected PsiElement getElementAtCaret() {
-        return compute(() -> PsiTreeUtil.getParentOfType(getFixture().getFile().findElementAt(getFixture().getCaretOffset()), Property.class));
+        return computeBlocking(() -> PsiTreeUtil.getParentOfType(getFixture().getFile().findElementAt(getFixture().getCaretOffset()), Property.class));
     }
     @Override
     protected LineMarkerProviderDescriptor getLineMarkerProvider() {

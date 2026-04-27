@@ -5,7 +5,7 @@ package com.picimako.justkitting;
 import org.jetbrains.kotlin.psi.KtFile;
 import org.junit.jupiter.api.Test;
 
-import static com.intellij.openapi.application.ReadAction.compute;
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -124,7 +124,7 @@ public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(compute(() -> psiFile.getClasses()[0].findInnerClassByName("NestedClass", false)));
+        var serviceLevel = ServiceLevelDecider.getServiceLevel(computeBlocking(() -> psiFile.getClasses()[0].findInnerClassByName("NestedClass", false)));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
     }
 
@@ -145,7 +145,7 @@ public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 """);
 
         var serviceLevel = ServiceLevelDecider.getServiceLevel(
-            compute(() -> psiFile.getClasses()[0].getInnerClasses()[0].findInnerClassByName("NestedClass", false)));
+            computeBlocking(() -> psiFile.getClasses()[0].getInnerClasses()[0].findInnerClassByName("NestedClass", false)));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
     }
 

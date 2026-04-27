@@ -2,7 +2,7 @@
 
 package com.picimako.justkitting
 
-import com.intellij.openapi.application.ReadAction.compute
+import com.intellij.openapi.application.ReadAction.computeBlocking
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -25,7 +25,7 @@ class PlatformPsiCache(val project: Project) {
     val callMatcher: PsiClass? by lazy { findClass(PlatformNames.CALL_MATCHER) }
 
     private fun findClass(name: String): PsiClass? =
-        compute<PsiClass?, Exception> { JavaPsiFacade.getInstance(project).findClass(name, ProjectScope.getLibrariesScope(project)) }
+        computeBlocking<PsiClass?, Exception> { JavaPsiFacade.getInstance(project).findClass(name, ProjectScope.getLibrariesScope(project)) }
 
     companion object {
         @JvmStatic

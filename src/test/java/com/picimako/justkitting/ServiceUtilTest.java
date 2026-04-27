@@ -2,7 +2,7 @@
 
 package com.picimako.justkitting;
 
-import static com.intellij.openapi.application.ReadAction.compute;
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.intellij.psi.PsiClass;
@@ -22,7 +22,7 @@ public final class ServiceUtilTest extends JustKittingTestBase {
                 @Service(Service.Level.PROJECT)
                 public final class SomeProje<caret>ctService {
                 }""");
-        PsiClass psiClass = (PsiClass) compute(() -> getFixture().getFile().findElementAt(getFixture().getCaretOffset()).getParent());
+        PsiClass psiClass = (PsiClass) computeBlocking(() -> getFixture().getFile().findElementAt(getFixture().getCaretOffset()).getParent());
 
         assertThat(ServiceUtil.isLightService(psiClass)).isTrue();
     }
@@ -37,7 +37,7 @@ public final class ServiceUtilTest extends JustKittingTestBase {
         getFixture().configureByText("NotLightService.java",
             "public final class NotLight<caret>Service {\n" +
                 "}");
-        PsiClass psiClass = (PsiClass) compute(() -> getFixture().getFile().findElementAt(getFixture().getCaretOffset()).getParent());
+        PsiClass psiClass = (PsiClass) computeBlocking(() -> getFixture().getFile().findElementAt(getFixture().getCaretOffset()).getParent());
 
         assertThat(ServiceUtil.isLightService(psiClass)).isFalse();
     }

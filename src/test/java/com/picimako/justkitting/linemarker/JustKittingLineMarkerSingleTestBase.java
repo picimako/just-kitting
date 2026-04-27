@@ -2,7 +2,7 @@
 
 package com.picimako.justkitting.linemarker;
 
-import static com.intellij.openapi.application.ReadAction.compute;
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -28,7 +28,7 @@ public abstract class JustKittingLineMarkerSingleTestBase extends JustKittingTes
         var lineMarker = getLineMarker(fileUnderTest);
 
         assertThat(lineMarker).isNotNull();
-        assertThat(compute(lineMarker::getLineMarkerTooltip)).isEqualTo(lineMarkerToolTip);
+        assertThat(computeBlocking(lineMarker::getLineMarkerTooltip)).isEqualTo(lineMarkerToolTip);
     }
 
     /**

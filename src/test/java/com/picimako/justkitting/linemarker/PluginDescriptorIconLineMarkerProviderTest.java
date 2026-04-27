@@ -2,7 +2,7 @@
 
 package com.picimako.justkitting.linemarker;
 
-import static com.intellij.openapi.application.ReadAction.compute;
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.psi.PsiElement;
@@ -31,7 +31,7 @@ public final class PluginDescriptorIconLineMarkerProviderTest extends JustKittin
 
     @Override
     protected PsiElement getElementAtCaret() {
-        return PsiTreeUtil.getParentOfType(getFixture().getFile().findElementAt(compute(() -> getFixture().getCaretOffset())), XmlAttribute.class);
+        return PsiTreeUtil.getParentOfType(getFixture().getFile().findElementAt(computeBlocking(() -> getFixture().getCaretOffset())), XmlAttribute.class);
     }
 
     //TODO: fix these tests
