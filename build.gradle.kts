@@ -1,6 +1,5 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
-import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 //See gradle/libs.versions.toml
@@ -36,13 +35,14 @@ dependencies {
 
     //Required for 'junit.framework.TestCase' referenced in 'com.intellij.testFramework.UsefulTestCase'
     testImplementation(libs.junit)
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.3")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.11.3")
-    testImplementation("org.assertj:assertj-core:3.27.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.14.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.14.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.14.1")
+    testImplementation("org.assertj:assertj-core:3.27.7")
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
-        create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
+        intellijIdea(providers.gradleProperty("platformVersion"))
 
         // Plugin Dependencies. Uses `platformBundledPlugins` property from the gradle.properties file for bundled IntelliJ Platform plugins.
         bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
@@ -104,51 +104,6 @@ intellijPlatform {
     }
 }
 
-intellijPlatformTesting {
-    val runTestsInIJCommunity by intellijPlatformTesting.testIde.registering {
-        type = IntelliJPlatformType.IntellijIdeaCommunity
-        version = "2025.1"
-        task {
-            useJUnitPlatform {
-                isScanForTestClasses = false
-                include("**/*Test.class")
-                exclude(
-                    //Disabled due to haven't been able to make the tests resolve the bundle properties files. The functionality works in production environment.
-                    "**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class",
-                    //This is a JUnit3 test
-                    "**/LightServicesInlayHintsProviderTest.class")
-            }
-        }
-    }
-
-    val runTestsWithK2InIJCommunity by intellijPlatformTesting.testIde.registering {
-        type = IntelliJPlatformType.IntellijIdeaCommunity
-        version = "2025.1"
-        task {
-            //See https://kotlin.github.io/analysis-api/testing-in-k2-locally.html
-            jvmArgumentProviders += CommandLineArgumentProvider {
-                listOf("-Didea.kotlin.plugin.use.k2=true")
-            }
-            useJUnitPlatform {
-                isScanForTestClasses = false
-                include("**/*Test.class")
-                exclude(
-                    //Disabled due to haven't been able to make the tests resolve the bundle properties files. The functionality works in production environment.
-                    "**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class",
-                    //This is a JUnit3 test
-                    "**/LightServicesInlayHintsProviderTest.class")
-            }
-        }
-    }
-}
-
-//Uncomment this to start the IDE with the K2 Kotlin compiler enabled
-//tasks.named<RunIdeTask>("runIde") {
-//    jvmArgumentProviders += CommandLineArgumentProvider {
-//        listOf("-Didea.kotlin.plugin.use.k2=true")
-//    }
-//}
-
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
     groups.empty()
@@ -158,5 +113,15 @@ changelog {
 tasks {
     wrapper {
         gradleVersion = providers.gradleProperty("gradleVersion").get()
+    }
+    test {
+        useJUnitPlatform {
+            include("**/*Test.class")
+            exclude(
+                //Disabled due to haven't been able to make the tests resolve the bundle properties files. The functionality works in production environment.
+                "**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class",
+                //This is a JUnit3 test
+                "**/LightServicesInlayHintsProviderTest.class")
+        }
     }
 }
