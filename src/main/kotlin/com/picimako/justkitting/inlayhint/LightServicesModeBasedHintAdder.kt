@@ -80,13 +80,13 @@ data class LightServicesModeBasedHintAdder(override var settings: Settings,
         if (lightServices.isNotEmpty()) {
             //Collect and group the classes into collections based on their service level
             val services = linkedMapOf<ServiceLevelDecider.ServiceLevel, MutableList<PsiNameIdentifierOwner>>()
-            ServiceLevelDecider.ServiceLevel.values().forEach { services[it] = mutableListOf() }
+            ServiceLevelDecider.ServiceLevel.entries.forEach { services[it] = mutableListOf() }
             lightServices.forEach { services[ServiceLevelDecider.getServiceLevel(it)]?.add(it) }
 
             //Add hints for all light service classes. The order of service level groups is now determined by the order in which
             //the ServiceLevelHelper.ServiceLevel entries are defined.
             val classCount = MutableInt(0)
-            ServiceLevelDecider.ServiceLevel.values().forEach { addClassReferenceHints(services[it], element, it.displayName, classCount) }
+            ServiceLevelDecider.ServiceLevel.entries.forEach { addClassReferenceHints(services[it], element, it.displayName, classCount) }
 
             //If there are more light services classes than the user-defined max count to display, then add a 'View All' hint as well
             if (lightServices.size > settings.maxNumberOfServicesToDisplay && classCount.toInt() == settings.maxNumberOfServicesToDisplay) {
