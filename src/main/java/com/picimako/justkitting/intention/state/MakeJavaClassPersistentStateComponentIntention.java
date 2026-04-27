@@ -63,8 +63,8 @@ public class MakeJavaClassPersistentStateComponentIntention extends BaseIntentio
         final var element = file.findElementAt(computeBlocking(() -> editor.getCaretModel().getOffset()));
         if (element instanceof PsiIdentifier && computeBlocking(element::getParent) instanceof PsiClass parentClass) {
             return !parentClass.isInterface()
-                && computeBlocking(() -> !parentClass.hasModifierProperty(PsiModifier.ABSTRACT))
                 && !parentClass.isEnum()
+                && computeBlocking(() -> !parentClass.hasModifierProperty(PsiModifier.ABSTRACT))
                 && !isInheritorOfPersistentStateComponent(parentClass);
         }
 

@@ -73,10 +73,13 @@ final class UpdateGradleVersionLineMarkerProvider extends LineMarkerProviderDesc
             if (projectDir != null) {
                 var project = computeBlocking(element::getProject);
                 if (findGradleWrapperProperties(projectDir.getVirtualFile(), project) instanceof PropertiesFile propertiesFile) {
-                    var distributionUrl = computeBlocking(() -> propertiesFile.findPropertyByKey("distributionUrl"));
-                    if (distributionUrl == null) return null;
+                    String url = computeBlocking(() -> {
+                        var distributionUrl = propertiesFile.findPropertyByKey("distributionUrl");
+                        if (distributionUrl == null) return null;
 
-                    String url = computeBlocking(distributionUrl::getValue);
+                        return distributionUrl.getValue();
+                    });
+
                     if (url == null) return null;
 
                     var matcher = WRAPPER_DISTRIBUTION_URL_PATTERN.matcher(url);
@@ -85,8 +88,10 @@ final class UpdateGradleVersionLineMarkerProvider extends LineMarkerProviderDesc
                         // meaning the wrapper should be updated
                         if (!matcher.group("version").equals(computeBlocking(property::getValue))) {
                             String currentType = matcher.group("type");
-                            var pointerToProperty = computeBlocking(() -> SmartPointerManager.getInstance(project).createSmartPsiElementPointer(property, property.getContainingFile()));
-                            return computeBlocking(() -> new UpdateGradleVersionLineMarkerInfo(pointerToProperty, currentType, projectDir));
+                            return computeBlocking(() -> {
+                                var pointerToProperty = SmartPointerManager.getInstance(project).createSmartPsiElementPointer(property, property.getContainingFile());
+                                return new UpdateGradleVersionLineMarkerInfo(pointerToProperty, currentType, projectDir);
+                            });
                         }
                     }
                 }
