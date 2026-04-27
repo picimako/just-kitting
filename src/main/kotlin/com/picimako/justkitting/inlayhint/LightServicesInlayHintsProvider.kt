@@ -65,7 +65,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
 
     override fun createConfigurable(settings: Settings): ImmediateConfigurable {
         return object : ImmediateConfigurable {
-            val lightServicesDisplayModeModel = DefaultComboBoxModel(InlayDisplayMode.values())
+            val lightServicesDisplayModeModel = DefaultComboBoxModel(InlayDisplayMode.entries.toTypedArray())
             val maxNoOfServicesTextField = JBTextField(2)
 
             override val mainCheckboxText: String

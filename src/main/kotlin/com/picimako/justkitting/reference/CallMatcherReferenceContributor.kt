@@ -50,13 +50,13 @@ class CallMatcherReferenceContributor : PsiReferenceContributor() {
                         }
                     } else if (callMatcherArguments.expressionCount > 1 && !isUnsafeLiteral(element as PsiLiteralExpression)) {
                         val className = parentCall.argumentList.expressions[0]
-                        //If the classname is a String we can simply find the class by it, otherwise first we have to evaluate the expression
+                        //If the classname is a String, we can simply find the class by it, otherwise first we have to evaluate the expression
                         val referencedClass: PsiClass? =
                             if (className is PsiLiteralExpression) findClass(className)
-                            else evaluate(className)?.let { findClass(it.toString(), element.getProject()) }
+                            else evaluate(className)?.let { findClass(it.toString(), element.project) }
 
                         //Mapping the PsiMethods to 'it', so that they are passed as PsiElements
-                        referencedClass?.let { reference.add(CallMatcherArgReference(element) { getMethodsByName(element, it, parentCall).map { it }.toTypedArray() }) }
+                        referencedClass?.let { reference.add(CallMatcherArgReference(element) { getMethodsByName(element, it, parentCall).map { method -> method }.toTypedArray() }) }
                     }
                     return if (reference.isNotEmpty()) reference.toTypedArray() else PsiReference.EMPTY_ARRAY
                 }
