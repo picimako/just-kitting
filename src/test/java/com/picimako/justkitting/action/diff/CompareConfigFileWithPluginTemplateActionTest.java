@@ -143,9 +143,6 @@ public final class CompareConfigFileWithPluginTemplateActionTest extends JustKit
             .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[diff\\.java], \\{}:DocumentImpl\\[CheckLicense\\.java]]");
     }
 
-//    public void testNoDiffViewWhenCouldNotFetchContentFromGitHub() {
-//    }
-
     //Helpers
 
     private AnActionEvent wrapInTestActionEvent(VirtualFile file) {

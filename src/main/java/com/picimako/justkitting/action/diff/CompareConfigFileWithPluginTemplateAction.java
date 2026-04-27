@@ -48,13 +48,12 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
     private static final Set<File> DIFFABLE_FILES = Set.of(
         new FileWithPath("build.gradle.kts", 1),
         new FileWithPath("gradle.properties", 1),
-        new FileWithPath("qodana.yml", 1),
+        new FileWithPath("settings.gradle.kts", 1),
         new FileWithPath(".gitignore", 1),
         new FileWithPath(".github/dependabot.yml", 2),
         new FileWithPath(".github/workflows/build.yml", 3),
         new FileWithPath(".github/workflows/release.yml", 3),
         new FileWithPath(".github/workflows/run-ui-tests.yml", 3),
-        new FileWithPath("gradle/libs.versions.toml", 2),
         new FileWithName("CheckLicense.java", CHECK_LICENSE_RAW_URL)
     );
 
