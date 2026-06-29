@@ -8,16 +8,19 @@ import com.intellij.diff.DiffContentFactory;
 import com.intellij.diff.DiffManager;
 import com.intellij.diff.contents.DiffContent;
 import com.intellij.diff.contents.DocumentContent;
+import com.intellij.diff.requests.DiffRequest;
 import com.intellij.diff.requests.SimpleDiffRequest;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.DataKey;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -42,7 +45,7 @@ import java.util.Set;
  * @since 0.3.0
  */
 public class CompareConfigFileWithPluginTemplateAction extends AnAction {
-    private static final Logger LOG = Logger.getInstance(CompareConfigFileWithPluginTemplateAction.class);
+    static final DataKey<Ref<DiffRequest>> DIFF_REQUEST = DataKey.create("diffRequest");
     private static final String CHECK_LICENSE_RAW_URL = "https://raw.githubusercontent.com/JetBrains/marketplace-makemecoffee-plugin/refs/heads/master/src/main/java/com/company/license/CheckLicense.java";
 
     private static final Set<File> DIFFABLE_FILES = Set.of(
@@ -98,7 +101,7 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
              *  object, since that is one common location between test and production code.
              */
             if (ApplicationManager.getApplication().isUnitTestMode())
-                e.getData(DiffDataKeys.DIFF_REQUEST).set(simpleDiffRequest);
+                e.getData(DIFF_REQUEST).set(simpleDiffRequest);
             else
                 DiffManager.getInstance().showDiff(project, simpleDiffRequest);
         }
@@ -218,7 +221,7 @@ public class CompareConfigFileWithPluginTemplateAction extends AnAction {
             }
             client.close();
         } catch (IOException e) {
-            LOG.warn(message("diff.version.remote.could.not.get.content"), e);
+            Logger.getInstance(CompareConfigFileWithPluginTemplateAction.class).warn(message("diff.version.remote.could.not.get.content"), e);
         }
         BalloonHelper.showBalloonForAction(event, "diff.version.remote.could.not.get.content");
         return null;
