@@ -13,11 +13,11 @@ final class ServiceLevelUtil {
 
     @Nullable
     static ServiceLevelDecider.ServiceLevel getServiceLevel(PsiFile psiFile) {
-        if (psiFile instanceof PsiJavaFile javaFile) {
+        if (psiFile instanceof PsiJavaFile javaFile)
             return ServiceLevelDecider.getServiceLevel(computeBlocking(javaFile::getClasses)[0]);
-        } else if (psiFile instanceof KtFile ktFile) {
+        if (psiFile instanceof KtFile ktFile)
             return ServiceLevelDecider.getServiceLevel(computeBlocking(ktFile::getClasses)[0]);
-        }
+
         return null;
     }
 

@@ -17,8 +17,6 @@ public final class ThirdPartyLibraryLoader {
 
     private static final String THIRD_PARTY_LIB_DIRECTORY = "lib";
 
-    //Libraries are from IC-2023.3
-
     /**
      * For classes like {@link com.siyeh.ig.callMatcher.CallMatcher}.
      */
