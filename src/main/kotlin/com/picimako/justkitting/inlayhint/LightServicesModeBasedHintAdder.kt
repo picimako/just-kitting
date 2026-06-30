@@ -2,25 +2,27 @@
 
 package com.picimako.justkitting.inlayhint
 
-import com.picimako.justkitting.ServiceLevelDecider
-import com.picimako.justkitting.resources.JustKittingBundle
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.xml.XmlToken
+import com.picimako.justkitting.ServiceLevelDecider
+import com.picimako.justkitting.resources.JustKittingBundle.message
 import org.apache.commons.lang3.mutable.MutableInt
 
 /**
  * Provides methods to add hints in a composite way based on editor types and display modes. 
  */
 @Suppress("UnstableApiUsage")
-data class LightServicesModeBasedHintAdder(override var settings: Settings,
-                                           override var sink: InlayHintsSink,
-                                           override var factory: PresentationFactory,
-                                           override var editor: Editor,
-                                           override var file: PsiFile) : LightServicesHintItemAdder(settings, sink, factory, editor, file) {
+class LightServicesModeBasedHintAdder(
+    settings: Settings,
+    sink: InlayHintsSink,
+    factory: PresentationFactory,
+    editor: Editor,
+    file: PsiFile
+) : LightServicesHintItemAdder(settings, sink, factory, editor, file) {
 
     /**
      * Adds hints for the code snippet displayed in `Settings > Editor > Inlay Hints`.
@@ -29,8 +31,17 @@ data class LightServicesModeBasedHintAdder(override var settings: Settings,
      */
     fun addPreviewHints(element: XmlToken) {
         when (settings.lightServicesDisplayMode) {
-            InlayDisplayMode.ListOfLightServices -> addLabelHints(element, *JustKittingBundle.message("inlay.hints.light.services.settings.list.display.mode.preview.text").split(",").toTypedArray())
-            InlayDisplayMode.ViewAllOnly -> addLabelHints(element, JustKittingBundle.message("inlay.hints.light.services.view.all.light.services"))
+            InlayDisplayMode.ListOfLightServices -> addLabelHints(
+                element,
+                *message("inlay.hints.light.services.settings.list.display.mode.preview.text")
+                    .split(",").toTypedArray()
+            )
+
+            InlayDisplayMode.ViewAllOnly -> addLabelHints(
+                element,
+                message("inlay.hints.light.services.view.all.light.services")
+            )
+
             else -> {
             }
         }
@@ -86,7 +97,9 @@ data class LightServicesModeBasedHintAdder(override var settings: Settings,
             //Add hints for all light service classes. The order of service level groups is now determined by the order in which
             //the ServiceLevelHelper.ServiceLevel entries are defined.
             val classCount = MutableInt(0)
-            ServiceLevelDecider.ServiceLevel.entries.forEach { addClassReferenceHints(services[it], element, it.displayName, classCount) }
+            ServiceLevelDecider.ServiceLevel.entries.forEach {
+                addClassReferenceHints(services[it], element, it.displayName, classCount)
+            }
 
             //If there are more light services classes than the user-defined max count to display, then add a 'View All' hint as well
             if (lightServices.size > settings.maxNumberOfServicesToDisplay && classCount.toInt() == settings.maxNumberOfServicesToDisplay) {
