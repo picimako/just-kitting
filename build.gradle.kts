@@ -2,13 +2,12 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
-//See gradle/libs.versions.toml
 plugins {
-    id("java") // Java support
-    alias(libs.plugins.kotlin) // Kotlin support
-    alias(libs.plugins.intelliJPlatform) // IntelliJ Platform Gradle Plugin
-    alias(libs.plugins.changelog) // Gradle Changelog Plugin
-    alias(libs.plugins.lombok) // Gradle Lombok Plugin
+    id("java")
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.intelliJPlatform)
+    alias(libs.plugins.changelog)
+    alias(libs.plugins.lombok)
 }
 
 group = providers.gradleProperty("pluginGroup").get()
@@ -23,17 +22,14 @@ kotlin {
 repositories {
     mavenCentral()
 
-    // IntelliJ Platform Gradle Plugin Repositories Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-repositories-extension.html
     intellijPlatform {
         defaultRepositories()
     }
 }
 
-// Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
     //Testing
 
-    //Required for 'junit.framework.TestCase' referenced in 'com.intellij.testFramework.UsefulTestCase'
     testImplementation(libs.junit)
     testImplementation("org.junit.jupiter:junit-jupiter:5.14.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.14.1")
@@ -44,11 +40,9 @@ dependencies {
     intellijPlatform {
         intellijIdea(providers.gradleProperty("platformVersion"))
 
-        // Plugin Dependencies. Uses `platformBundledPlugins` property from the gradle.properties file for bundled IntelliJ Platform plugins.
         bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
         bundledModules(providers.gradleProperty("platformBundledModules").map { it.split(',') })
 
-        // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file for plugin from JetBrains Marketplace.
         plugins(providers.gradleProperty("platformPlugins").map { it.split(',') })
 
         pluginVerifier()
@@ -104,7 +98,6 @@ intellijPlatform {
     }
 }
 
-// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
     groups.empty()
     repositoryUrl = providers.gradleProperty("pluginRepositoryUrl")
