@@ -59,7 +59,7 @@ final class UpdateGradleVersionLineMarkerProvider extends LineMarkerProviderDesc
     }
 
     @Override
-    public @Nullable Icon getIcon() {
+    public Icon getIcon() {
         return AllIcons.Javaee.UpdateRunningApplication;
     }
 
@@ -75,9 +75,7 @@ final class UpdateGradleVersionLineMarkerProvider extends LineMarkerProviderDesc
                 if (findGradleWrapperProperties(projectDir.getVirtualFile(), project) instanceof PropertiesFile propertiesFile) {
                     String url = computeBlocking(() -> {
                         var distributionUrl = propertiesFile.findPropertyByKey("distributionUrl");
-                        if (distributionUrl == null) return null;
-
-                        return distributionUrl.getValue();
+                        return distributionUrl != null ? distributionUrl.getValue() : null;
                     });
 
                     if (url == null) return null;

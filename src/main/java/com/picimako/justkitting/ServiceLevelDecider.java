@@ -139,6 +139,7 @@ public final class ServiceLevelDecider {
         //Utility class
     }
 
+    @SuppressWarnings("LombokGetterMayBeUsed")
     @RequiredArgsConstructor
     public enum ServiceLevel {
         PROJECT(JustKittingBundle.message("service.level.display.name.project")),

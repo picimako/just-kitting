@@ -4,7 +4,19 @@ package com.picimako.justkitting.reference
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.*
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiLiteralExpression
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiMethodCallExpression
+import com.intellij.psi.PsiPolyVariantReference
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.PsiReferenceContributor
+import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.PsiReferenceRegistrar
+import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.PsiLiteralUtil.isUnsafeLiteral
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.util.ProcessingContext
@@ -12,7 +24,6 @@ import com.intellij.util.SmartList
 import com.picimako.justkitting.CallMatcherUtil
 import com.picimako.justkitting.PsiClassFinder.Companion.evaluate
 import com.picimako.justkitting.PsiClassFinder.Companion.findClass
-import java.util.function.Supplier
 
 /**
  * Adds references to the arguments of [com.siyeh.ig.callMatcher.CallMatcher] static factory methods: `staticCall`, `instanceCall`, `exactInstanceCall`.
@@ -51,12 +62,14 @@ class CallMatcherReferenceContributor : PsiReferenceContributor() {
                     } else if (callMatcherArguments.expressionCount > 1 && !isUnsafeLiteral(element as PsiLiteralExpression)) {
                         val className = parentCall.argumentList.expressions[0]
                         //If the classname is a String, we can simply find the class by it, otherwise first we have to evaluate the expression
-                        val referencedClass: PsiClass? =
+                        val referencedClass =
                             if (className is PsiLiteralExpression) findClass(className)
                             else evaluate(className)?.let { findClass(it.toString(), element.project) }
 
                         //Mapping the PsiMethods to 'it', so that they are passed as PsiElements
-                        referencedClass?.let { reference.add(CallMatcherArgReference(element) { getMethodsByName(element, it, parentCall).map { method -> method }.toTypedArray() }) }
+                        referencedClass?.let { reference.add(
+                            CallMatcherArgReference(element) { getMethodsByName(element, it, parentCall).toList().toTypedArray() }
+                        ) }
                     }
                     return if (reference.isNotEmpty()) reference.toTypedArray() else PsiReference.EMPTY_ARRAY
                 }
@@ -66,20 +79,17 @@ class CallMatcherReferenceContributor : PsiReferenceContributor() {
     /**
      * Reference implementation to for class FQN and method name string literals in `CallMatcher` factory method arguments.
      */
-    private class CallMatcherArgReference(element: PsiElement, private val elementsToResolveTo: Supplier<Array<PsiElement>>)
-        : PsiReferenceBase<PsiElement?>(element, TextRange.create(1, element.textRange.length - 1), true), PsiPolyVariantReference {
+    private class CallMatcherArgReference(element: PsiElement, private val elementsToResolveTo: () -> Array<PsiElement>)
+        : PsiReferenceBase<PsiElement?>(element, TextRange.create(1, element.textRange.length - 1), true),
+        PsiPolyVariantReference {
 
-        override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-            return if (!incompleteCode)
-                elementsToResolveTo.get()
-                    .map { element: PsiElement -> PsiElementResolveResult(element) }
-                    .toTypedArray()
+        override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> =
+            if (!incompleteCode)
+                elementsToResolveTo().map { PsiElementResolveResult(it) }.toTypedArray()
             else ResolveResult.EMPTY_ARRAY
-        }
 
-        override fun resolve(): PsiElement? {
-            val resolveResults = multiResolve(false)
-            return if (resolveResults.size == 1) resolveResults[0].element else null
+        override fun resolve(): PsiElement? = multiResolve(false).let {
+            return if (it.size == 1) it[0].element else null
         }
     }
 }
