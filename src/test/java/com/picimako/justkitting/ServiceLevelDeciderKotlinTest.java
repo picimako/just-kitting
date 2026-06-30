@@ -26,7 +26,7 @@ public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
+        var serviceLevel = computeBlocking(() -> ServiceLevelUtil.getServiceLevel(psiFile));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
     }
 
@@ -41,7 +41,7 @@ public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
+        var serviceLevel = computeBlocking(() -> ServiceLevelUtil.getServiceLevel(psiFile));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.APP);
     }
 
@@ -56,7 +56,7 @@ public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
+        var serviceLevel = computeBlocking(() -> ServiceLevelUtil.getServiceLevel(psiFile));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT_AND_APP);
     }
 
@@ -72,7 +72,7 @@ public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
+        var serviceLevel = computeBlocking(() -> ServiceLevelUtil.getServiceLevel(psiFile));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT_AND_APP);
     }
 
@@ -89,7 +89,7 @@ public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
+        var serviceLevel = computeBlocking(() -> ServiceLevelUtil.getServiceLevel(psiFile));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT_AND_APP);
     }
 
@@ -104,7 +104,7 @@ public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
+        var serviceLevel = computeBlocking(() -> ServiceLevelUtil.getServiceLevel(psiFile));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.APP);
     }
 
@@ -124,7 +124,7 @@ public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(computeBlocking(() -> psiFile.getClasses()[0].findInnerClassByName("NestedClass", false)));
+        var serviceLevel = computeBlocking(() -> ServiceLevelDecider.getServiceLevel(psiFile.getClasses()[0].findInnerClassByName("NestedClass", false)));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
     }
 
@@ -144,8 +144,8 @@ public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelDecider.getServiceLevel(
-            computeBlocking(() -> psiFile.getClasses()[0].getInnerClasses()[0].findInnerClassByName("NestedClass", false)));
+        var serviceLevel = computeBlocking(() -> ServiceLevelDecider.getServiceLevel(
+            psiFile.getClasses()[0].getInnerClasses()[0].findInnerClassByName("NestedClass", false)));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
     }
 
@@ -163,7 +163,7 @@ public final class ServiceLevelDeciderKotlinTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
+        var serviceLevel = computeBlocking(() -> ServiceLevelUtil.getServiceLevel(psiFile));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
     }
 }

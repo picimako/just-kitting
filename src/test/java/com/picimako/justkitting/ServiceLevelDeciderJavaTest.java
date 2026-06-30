@@ -2,6 +2,7 @@
 
 package com.picimako.justkitting;
 
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.intellij.psi.PsiJavaFile;
@@ -23,7 +24,7 @@ public final class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
+        var serviceLevel = computeBlocking(() -> ServiceLevelUtil.getServiceLevel(psiFile));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT);
 
     }
@@ -39,7 +40,7 @@ public final class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
+        var serviceLevel = computeBlocking(() -> ServiceLevelUtil.getServiceLevel(psiFile));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.APP);
     }
 
@@ -54,7 +55,7 @@ public final class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
+        var serviceLevel = computeBlocking(() -> ServiceLevelUtil.getServiceLevel(psiFile));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.PROJECT_AND_APP);
     }
 
@@ -69,7 +70,7 @@ public final class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
                 }
                 """);
 
-        var serviceLevel = ServiceLevelUtil.getServiceLevel(psiFile);
+        var serviceLevel = computeBlocking(() -> ServiceLevelUtil.getServiceLevel(psiFile));
         assertThat(serviceLevel).isSameAs(ServiceLevelDecider.ServiceLevel.APP);
     }
 }
