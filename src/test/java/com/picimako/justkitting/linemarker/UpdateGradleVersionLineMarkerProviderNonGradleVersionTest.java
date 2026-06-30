@@ -1,8 +1,8 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.linemarker;
 
-import static com.intellij.openapi.application.ReadAction.compute;
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 
 import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor;
 import com.intellij.lang.properties.psi.Property;
@@ -22,7 +22,7 @@ public final class UpdateGradleVersionLineMarkerProviderNonGradleVersionTest ext
 
     @Override
     protected PsiElement getElementAtCaret() {
-        return compute(() -> PsiTreeUtil.getParentOfType(getFixture().getFile().findElementAt(getFixture().getCaretOffset()), Property.class));
+        return computeBlocking(() -> PsiTreeUtil.getParentOfType(getFixture().getFile().findElementAt(getFixture().getCaretOffset()), Property.class));
     }
     @Override
     protected LineMarkerProviderDescriptor getLineMarkerProvider() {

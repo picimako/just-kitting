@@ -1,9 +1,8 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.linemarker;
 
 import static com.intellij.patterns.XmlPatterns.xmlAttribute;
-import static com.intellij.patterns.XmlPatterns.xmlTag;
 import static com.intellij.util.ReflectionUtil.getStaticFieldValue;
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
@@ -11,9 +10,12 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.patterns.XmlNamedElementPattern.XmlAttributePattern;
+import com.intellij.patterns.XmlPatterns;
+import com.intellij.patterns.XmlTagPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlAttribute;
 import com.picimako.justkitting.resources.JustKittingBundle;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,24 +41,33 @@ final class PluginDescriptorIconLineMarkerProvider extends RelatedItemLineMarker
     //Actions
 
     private static final XmlAttributePattern ACTIONS_ACTION_ICON_ATTRIBUTE_PATTERN =
-        xmlAttribute().withLocalName("icon")
-            .withParent(xmlTag().withLocalName("action")
-                .withParent(xmlTag().withLocalName("actions")
-                    .withParent(xmlTag().withLocalName("idea-plugin"))));
+        iconAttribute()
+            .withParent(xmlTag("action")
+                .withParent(xmlTag("actions")
+                    .withParent(xmlTag("idea-plugin"))));
+
     private static final XmlAttributePattern GROUP_ACTION_ICON_ATTRIBUTE_PATTERN =
-        xmlAttribute().withLocalName("icon")
-            .withParent(xmlTag().withLocalName("action")
-                .withParent(xmlTag().withLocalName("group")
-                    .withParent(xmlTag().withLocalName("actions")
-                        .withParent(xmlTag().withLocalName("idea-plugin")))));
+        iconAttribute()
+            .withParent(xmlTag("action")
+                .withParent(xmlTag("group")
+                    .withParent(xmlTag("actions")
+                        .withParent(xmlTag("idea-plugin")))));
 
     //Tool Window
 
     private static final XmlAttributePattern TOOL_WINDOW_ICON_ATTRIBUTE_PATTERN =
-        xmlAttribute().withLocalName("icon")
-            .withParent(xmlTag().withLocalName("toolWindow")
-                .withParent(xmlTag().withLocalName("extensions")
-                    .withParent(xmlTag().withLocalName("idea-plugin"))));
+        iconAttribute()
+            .withParent(xmlTag("toolWindow")
+                .withParent(xmlTag("extensions")
+                    .withParent(xmlTag("idea-plugin"))));
+
+    private static XmlAttributePattern iconAttribute() {
+        return xmlAttribute().withLocalName("icon");
+    }
+
+    private static XmlTagPattern.Capture xmlTag(@NonNls String localName) {
+        return XmlPatterns.xmlTag().withLocalName(localName);
+    }
 
     @Override
     protected void collectNavigationMarkers(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {

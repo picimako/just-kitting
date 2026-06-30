@@ -1,4 +1,4 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.inspection;
 
@@ -49,7 +49,7 @@ public final class OptimizeExpressionsInspectionTest extends JustKittingInspecti
                 import com.intellij.psi.PsiElement;
 
                 class EmptyArray {
-                \tPsiElement[] array = new PsiElement[1];
+                   PsiElement[] array = new PsiElement[1];
                 }""");
     }
 

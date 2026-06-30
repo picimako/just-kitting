@@ -1,8 +1,8 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting;
 
-import static com.intellij.openapi.application.ReadAction.compute;
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 import static com.picimako.justkitting.PlatformNames.SERVICE_ANNOTATION;
 
 import com.intellij.codeInsight.AnnotationUtil;
@@ -53,7 +53,7 @@ public final class ServiceLevelDecider {
         var specifiedServiceLevels = getSpecifiedServiceLevels(targetClass);
 
         final var levels = specifiedServiceLevels != null
-            ? convertToServiceLevelNames(specifiedServiceLevels, compute(targetClass::getProject))
+            ? convertToServiceLevelNames(specifiedServiceLevels, computeBlocking(targetClass::getProject))
             : Collections.emptyList();
 
         var level = ServiceLevel.NOT_SURE;
@@ -79,7 +79,7 @@ public final class ServiceLevelDecider {
      */
     private static <T extends PsiNamedElement> @Nullable List<?> getSpecifiedServiceLevels(@Nullable T targetClass) {
         if (targetClass instanceof PsiClass javaServiceClass) {
-            return compute(() -> Optional.ofNullable(javaServiceClass.getAnnotation(SERVICE_ANNOTATION))
+            return computeBlocking(() -> Optional.ofNullable(javaServiceClass.getAnnotation(SERVICE_ANNOTATION))
                 .map(serviceAnnotation -> AnnotationUtil.arrayAttributeValues(serviceAnnotation.findAttributeValue("value"))))
                 .orElse(null);
         }
@@ -108,7 +108,7 @@ public final class ServiceLevelDecider {
             .map(expression -> {
                 //Handles Java annotation values
                 if (expression instanceof PsiReferenceExpression levelRef)
-                    return compute(() -> levelRef.isReferenceTo(cache.getServiceLevelProject()) || levelRef.isReferenceTo(cache.getServiceLevelApp()))
+                    return computeBlocking(() -> levelRef.isReferenceTo(cache.getServiceLevelProject()) || levelRef.isReferenceTo(cache.getServiceLevelApp()))
                         ? levelRef.getReferenceName()
                         : null;
 
@@ -139,6 +139,7 @@ public final class ServiceLevelDecider {
         //Utility class
     }
 
+    @SuppressWarnings("LombokGetterMayBeUsed")
     @RequiredArgsConstructor
     public enum ServiceLevel {
         PROJECT(JustKittingBundle.message("service.level.display.name.project")),

@@ -1,4 +1,4 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.inlayhint
 
@@ -65,7 +65,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
 
     override fun createConfigurable(settings: Settings): ImmediateConfigurable {
         return object : ImmediateConfigurable {
-            val lightServicesDisplayModeModel = DefaultComboBoxModel(InlayDisplayMode.values())
+            val lightServicesDisplayModeModel = DefaultComboBoxModel(InlayDisplayMode.entries.toTypedArray())
             val maxNoOfServicesTextField = JBTextField(2)
 
             override val mainCheckboxText: String

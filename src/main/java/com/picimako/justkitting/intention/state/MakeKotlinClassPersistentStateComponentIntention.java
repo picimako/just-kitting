@@ -1,8 +1,8 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.intention.state;
 
-import static com.intellij.openapi.application.ReadAction.compute;
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.codeInspection.util.IntentionFamilyName;
@@ -39,8 +39,8 @@ import java.util.List;
  */
 public class MakeKotlinClassPersistentStateComponentIntention extends BaseIntentionAction {
     private static final List<AnAction> KOTLIN_ACTIONS = List.of(
-        new KotlinConversionActions.WithStandaloneStateObject(),
-        new KotlinConversionActions.WithSelfAsState());
+        new WithStandaloneStateObject(),
+        new WithSelfAsState());
 
     @Override
     public @IntentionName @NotNull String getText() {
@@ -54,9 +54,9 @@ public class MakeKotlinClassPersistentStateComponentIntention extends BaseIntent
 
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-        final var element = file.findElementAt(compute(() -> editor.getCaretModel().getOffset()));
-        if (element != null && element.getNode().getElementType() == KtTokens.IDENTIFIER && compute(element::getParent) instanceof KtClass parentClass) {
-            return compute(() -> !parentClass.isInterface()
+        final var element = file.findElementAt(computeBlocking(() -> editor.getCaretModel().getOffset()));
+        if (element != null && element.getNode().getElementType() == KtTokens.IDENTIFIER && computeBlocking(element::getParent) instanceof KtClass parentClass) {
+            return computeBlocking(() -> !parentClass.isInterface()
                    && !parentClass.isEnum()
                    && !parentClass.hasModifier(KtTokens.ABSTRACT_KEYWORD)
                    && !parentClass.isValue()

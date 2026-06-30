@@ -13,7 +13,6 @@ but can still be useful to improve the plugin development process. They are in t
 - [Caching](docs/caching.md)
 - [CallMatcher](docs/call_matcher.md)
 - [PersistentStateComponents](docs/persistent_state_components.md)
-- [Inspections](docs/inspections.md)
 - [Plugin Configuration](docs/plugin_configuration.md)
 - [Miscellaneous](docs/misc.md)
 <!-- Plugin description end -->
@@ -30,8 +29,6 @@ Please use your best judgement when using these features to make sure they actua
 If you'd like to contribute, first please check whether the functionality you are implementing would be a better fit for the
 official DevKit plugin, and whether there is already a [JetBrains YouTrack ticket](https://youtrack.jetbrains.com/issues?q=Subsystem:%20%7BPlugin%20Development%20(DevKit)%7D) for that.
 This is to minimize the chance of clashing with the roadmap and development of the DevKit plugin.
-
-You can find the developer documentation [here](/docs/dev_docs.md).
 
 ## Kotlin support
 

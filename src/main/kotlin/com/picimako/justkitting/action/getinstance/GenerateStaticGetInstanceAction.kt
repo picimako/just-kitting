@@ -1,4 +1,4 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.action.getinstance
 
@@ -6,7 +6,7 @@ import com.intellij.codeInsight.CodeInsightActionHandler
 import com.intellij.codeInsight.actions.BaseCodeInsightAction
 import com.intellij.lang.LanguageCodeInsightActionHandler
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.ReadAction.compute
+import com.intellij.openapi.application.ReadAction.computeBlocking
 import com.intellij.openapi.components.Service.Level.APP
 import com.intellij.openapi.components.Service.Level.PROJECT
 import com.intellij.openapi.editor.Editor
@@ -89,7 +89,7 @@ class GenerateStaticGetInstanceAction : BaseCodeInsightAction() {
 
         override fun isValidFor(editor: Editor?, file: PsiFile?): Boolean {
             return getStaticOrTopLevelClass(file!!, editor!!)?.let {
-                compute<Boolean, Exception> { it.nameIdentifier != null
+                computeBlocking <Boolean, Exception> { it.nameIdentifier != null
                     && !it.isEnum
                     //There is no static 'getInstance()' method
                     && !ContainerUtil.exists(it.methods) { method -> GET_INSTANCE == method.name && isStatic(method) }
@@ -115,7 +115,7 @@ class GenerateStaticGetInstanceAction : BaseCodeInsightAction() {
 
         override fun isValidFor(editor: Editor?, file: PsiFile?): Boolean {
             return getParentClass(file!!, editor!!)?.let {
-                compute<Boolean, Exception> {
+                computeBlocking<Boolean, Exception> {
                     it.name != null
                         && !it.isEnum()
                         && !hasGetInstanceFunction(getCompanionObject(it))

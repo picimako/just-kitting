@@ -1,4 +1,4 @@
-//Copyright 2022 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting;
 
@@ -17,20 +17,17 @@ public final class ThirdPartyLibraryLoader {
 
     private static final String THIRD_PARTY_LIB_DIRECTORY = "lib";
 
-    //Libraries are from IC-2023.3
-
-    /**
-     * For classes like {@link com.siyeh.ig.callMatcher.CallMatcher}.
-     */
     public static void loadJavaImpl(@NotNull CodeInsightTestFixture fixture) {
         loadLibrary(fixture, "java-impl", "java-impl.jar");
+        //com.siyeh.ig.callMatcher.CallMatcher
+        loadLibrary(fixture, "java-analysis-impl", "intellij.java.analysis.impl.jar");
     }
 
-    /**
-     * For Java PSI element types, like {@link com.intellij.psi.PsiElement} and {@link com.intellij.openapi.components.Service}.
-     */
-    public static void loadUtil8(@NotNull CodeInsightTestFixture fixture) {
+    public static void loadPlatform(@NotNull CodeInsightTestFixture fixture) {
+        //com.intellij.openapi.util.ModificationTracker
         loadLibrary(fixture, "util-8", "util-8.jar");
+        //com.intellij.psi.PsiElement, com.intellij.openapi.components.Service
+        loadLibrary(fixture, "platform-core", "intellij.platform.core.jar");
     }
 
     /**

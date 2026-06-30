@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+## [1.5.0]
+### Changed
+- New supported IDE version range: 2026.1+.
+- [60](https://github.com/picimako/just-kitting/issues/60): Removed **libs.versions.toml** and **qodana.yml** from, and added **settings.gradle.kts** to the list  
+  of files comparable with their versions in the intellij-platform-plugin-template.
+- Removed some deprecated API usage.
+- Minor improvements.
+
 ## [1.4.0]
 ### Changed
 - New supported IDE version range: 2025.1+.

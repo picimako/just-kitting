@@ -6,7 +6,7 @@ import com.intellij.codeInsight.CodeInsightActionHandler
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.application.ReadAction.compute
+import com.intellij.openapi.application.ReadAction.computeBlocking
 import com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.Editor
@@ -112,7 +112,7 @@ internal class KotlinGetInstanceGenerationAction(serviceLevel: Service.Level) :
  * Returns the parent Kotlin class of the element at where the caret is currently placed.
  */
 fun getParentClass(file: PsiFile, editor: Editor): KtClass? {
-    return compute<KtClass?, Exception> {
+    return computeBlocking<KtClass?, Exception> {
         file.findElementAt(editor.caretModel.offset)?.let {
             PsiTreeUtil.getParentOfType(it, KtClass::class.java)
         }

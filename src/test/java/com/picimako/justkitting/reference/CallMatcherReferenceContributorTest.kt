@@ -1,8 +1,8 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.reference
 
-import com.intellij.openapi.application.ReadAction.compute
+import com.intellij.openapi.application.ReadAction.computeBlocking
 import com.intellij.psi.*
 import com.intellij.psi.util.MethodSignature
 import com.picimako.justkitting.JustKittingTestBase
@@ -72,7 +72,7 @@ class CallMatcherReferenceContributorTest : JustKittingTestBase() {
                 """.trimIndent()
         )
         val element = findElementAtCaret()
-        assertThat(compute<Array<PsiReference>, Exception> { element?.references }).isEmpty()
+        assertThat(computeBlocking<Array<PsiReference>, Exception> { element?.references }).isEmpty()
     }
 
     //Method reference
@@ -282,11 +282,11 @@ class CallMatcherReferenceContributorTest : JustKittingTestBase() {
     }
 
     private fun findElementAtCaret(): PsiElement? =
-        compute<PsiElement, Exception> { fixture.file.findElementAt(fixture.caretOffset)!!.parent }
+        computeBlocking<PsiElement, Exception> { fixture.file.findElementAt(fixture.caretOffset)!!.parent }
 
     private fun resolveElementReferences(element: PsiElement?): Array<ResolveResult> =
-        compute<Array<ResolveResult>, Exception> { (element?.references[0] as PsiPolyVariantReference).multiResolve(false) }
+        computeBlocking<Array<ResolveResult>, Exception> { (element?.references[0] as PsiPolyVariantReference).multiResolve(false) }
 
     private fun getMethodSignatureOfResult(resolveResult: ResolveResult): MethodSignature? =
-        compute<MethodSignature, Exception> { (resolveResult.element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY) }
+        computeBlocking<MethodSignature, Exception> { (resolveResult.element as PsiMethod?)!!.getSignature(PsiSubstitutor.EMPTY) }
 }

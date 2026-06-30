@@ -1,8 +1,8 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.linemarker;
 
-import static com.intellij.openapi.application.ReadAction.compute;
+import static com.intellij.openapi.application.ReadAction.computeBlocking;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
@@ -36,7 +36,7 @@ public abstract class JustKittingLineMarkerCollectionTestBase extends ContentRoo
         var lineMarkers = getLineMarkers(fileUnderTest);
 
         assertThat(lineMarkers).hasSize(1);
-        assertThat(compute(() -> lineMarkers.getFirst().getLineMarkerTooltip())).isEqualTo(lineMarkerToolTip);
+        assertThat(computeBlocking(() -> lineMarkers.getFirst().getLineMarkerTooltip())).isEqualTo(lineMarkerToolTip);
     }
 
     /**

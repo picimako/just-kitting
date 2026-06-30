@@ -1,4 +1,4 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.intention.state
 
@@ -12,7 +12,7 @@ class ConversionActionsKotlinTest : JustKittingActionTestBase() {
 
     @Test
     fun testConvertsClassWithStandaloneStateObject() {
-        checkAction("SomeComponent.kt", { KotlinConversionActions.WithStandaloneStateObject() },
+        checkAction("SomeComponent.kt", { WithStandaloneStateObject() },
             """
                     class SomeCom<caret>ponent {
                     }
@@ -41,7 +41,7 @@ class ConversionActionsKotlinTest : JustKittingActionTestBase() {
 
     @Test
     fun testConvertsClassWithSelfAsState() {
-        checkAction("SomeComponent.kt", { KotlinConversionActions.WithSelfAsState() },
+        checkAction("SomeComponent.kt", { WithSelfAsState() },
             """
                     class SomeC<caret>omponent {
                     }

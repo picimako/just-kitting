@@ -1,4 +1,4 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.inlayhint
 
@@ -14,7 +14,7 @@ class LightServicesInlayHintsProviderTest : InlayHintsProviderTestCase() {
 
     override fun setUp() {
         super.setUp()
-        ThirdPartyLibraryLoader.loadUtil8(myFixture)
+        ThirdPartyLibraryLoader.loadPlatform(myFixture)
     }
 
     override fun getTestDataPath(): String {

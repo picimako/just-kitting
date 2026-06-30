@@ -1,10 +1,7 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.inlayhint
 
-import com.picimako.justkitting.ServiceLevelDecider
-import com.picimako.justkitting.inlayhint.LightServiceLookup.lookupLightServiceClasses
-import com.picimako.justkitting.resources.JustKittingBundle
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.presentation.InsetPresentation
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
@@ -13,18 +10,22 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.xml.XmlToken
+import com.picimako.justkitting.ServiceLevelDecider
+import com.picimako.justkitting.inlayhint.LightServiceLookup.lookupLightServiceClasses
+import com.picimako.justkitting.resources.JustKittingBundle.message
 import org.apache.commons.lang3.mutable.MutableInt
-import java.util.function.Supplier
 
 /**
  * Adds various types of hints that are leveraged in a composite way in [LightServicesModeBasedHintAdder].
  */
 @Suppress("UnstableApiUsage")
-abstract class LightServicesHintItemAdder(open var settings: Settings,
-                                          open var sink: InlayHintsSink,
-                                          open var factory: PresentationFactory,
-                                          open var editor: Editor,
-                                          open var file: PsiFile) : LightServicesHintPresentationAware(factory, editor, file) {
+abstract class LightServicesHintItemAdder(
+    open var settings: Settings,
+    open var sink: InlayHintsSink,
+    factory: PresentationFactory,
+    editor: Editor,
+    file: PsiFile
+) : LightServicesHintPresentationAware(factory, editor, file) {
 
     /**
      * Adds all the `services` PsiClasses as hints to the `extensionsTag` under the `serviceLevel` group.
@@ -45,9 +46,17 @@ abstract class LightServicesHintItemAdder(open var settings: Settings,
      * @param serviceLevel the level of service (project, app) of the PsiClasses
      * @param classCount stores the number of class hints added
      */
-    fun <T: PsiNameIdentifierOwner> addClassReferenceHints(services: MutableList<T>?, extensionsTag: XmlToken, serviceLevel: String, classCount: MutableInt) {
-        if (classCount.value < settings.maxNumberOfServicesToDisplay && services!!.isNotEmpty()) {
-            addLabelHints(extensionsTag, JustKittingBundle.message("inlay.hints.light.services.list.display.mode.group.title", serviceLevel))
+    fun <T : PsiNameIdentifierOwner> addClassReferenceHints(
+        services: MutableList<T>?,
+        extensionsTag: XmlToken,
+        serviceLevel: String,
+        classCount: MutableInt
+    ) {
+        if (classCount.toInt() < settings.maxNumberOfServicesToDisplay && services!!.isNotEmpty()) {
+            addLabelHints(
+                extensionsTag,
+                message("inlay.hints.light.services.list.display.mode.group.title", serviceLevel)
+            )
             for (service in services.sortedBy { it.name }) {
                 addClassReferenceHint(extensionsTag, service)
                 if (classCount.incrementAndGet() == settings.maxNumberOfServicesToDisplay) return
@@ -59,7 +68,12 @@ abstract class LightServicesHintItemAdder(open var settings: Settings,
      * Adds non-clickable hints for all provided `labels`.
      */
     fun addLabelHints(extensionsTagToken: XmlToken, vararg labels: String) {
-        labels.forEach { addHintFor(extensionsTagToken, presentationFactory.inset(basePresentation(it), down = 3, top = 3)) }
+        labels.forEach {
+            addHintFor(
+                extensionsTagToken,
+                presentationFactory.inset(basePresentation(it), down = 3, top = 3)
+            )
+        }
     }
 
     /**
@@ -73,22 +87,37 @@ abstract class LightServicesHintItemAdder(open var settings: Settings,
      * project, instead of working with a pre-processed collection of them. Since, for [InlayDisplayMode.ListOfLightServices] the View All hint is displayed
      * only when there is definitely a light service in the project, the empty map will not interfere with that logic.
      */
-    fun addViewAllServicesHint(extensionsTag: XmlToken, classes: Map<ServiceLevelDecider.ServiceLevel, MutableList<PsiNameIdentifierOwner>> = emptyMap()) {
-        val classesSupplier =
-            if (classes.isNotEmpty()) Supplier { classes.flatMap { (_, values) -> values } }
-            else Supplier { lookupLightServiceClasses(extensionsTag.project).toList() }
-        addHintFor(extensionsTag, presentationFactory.inset(viewAllServicesPresentation(classesSupplier, extensionsTag.textRange.startOffset), down = 1))
+    fun addViewAllServicesHint(
+        extensionsTag: XmlToken,
+        classes: Map<ServiceLevelDecider.ServiceLevel, MutableList<PsiNameIdentifierOwner>> = emptyMap()
+    ) {
+        val classesSupplier = {
+            if (classes.isNotEmpty()) classes.flatMap { (_, values) -> values }
+            else lookupLightServiceClasses(extensionsTag.project).toList()
+        }
+        addHintFor(
+            element = extensionsTag,
+            insetPres = presentationFactory.inset(
+                base = viewAllServicesPresentation(classesSupplier, extensionsTag.textRange.startOffset),
+                down = 1
+            )
+        )
     }
 
     /**
      * Adds a formatted PsiClass reference hint to the given `element`.
      */
-    private fun <T: PsiNameIdentifierOwner> addClassReferenceHint(element: XmlToken, psiClass: T) {
+    private fun <T : PsiNameIdentifierOwner> addClassReferenceHint(element: XmlToken, psiClass: T) {
         addHintFor(element, presentationFactory.inset(classReferencePresentation(psiClass), down = 1))
     }
 
     private fun addHintFor(element: PsiElement, insetPres: InsetPresentation) {
-        sink.addBlockElement(element.parent.textRange.startOffset, relatesToPrecedingText = true, showAbove = true, priority = 0,
-                presentation = presentationFactory.inset(insetPres, left = calculateBlockInlayStartOffset(element as XmlToken)))
+        sink.addBlockElement(
+            element.parent.textRange.startOffset, relatesToPrecedingText = true, showAbove = true, priority = 0,
+            presentation = presentationFactory.inset(
+                insetPres,
+                left = calculateBlockInlayStartOffset(element as XmlToken)
+            )
+        )
     }
 }

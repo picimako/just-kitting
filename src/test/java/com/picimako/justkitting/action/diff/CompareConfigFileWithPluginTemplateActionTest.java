@@ -1,4 +1,4 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.action.diff;
 
@@ -13,6 +13,7 @@ import com.intellij.testFramework.TestDataPath;
 import com.picimako.justkitting.action.JustKittingActionTestBase;
 import org.junit.jupiter.api.Test;
 
+import static com.picimako.justkitting.action.diff.CompareConfigFileWithPluginTemplateAction.DIFF_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -79,7 +80,7 @@ public final class CompareConfigFileWithPluginTemplateActionTest extends JustKit
         var diffRequest = new Ref<DiffRequest>();
         var e = TestActionEvent.createTestEvent(dataId -> CommonDataKeys.PROJECT.is(dataId)
                 ? getProject()
-                : DiffDataKeys.DIFF_REQUEST.is(dataId) ? diffRequest : null);
+                : DIFF_REQUEST.is(dataId) ? diffRequest : null);
 
         new CompareConfigFileWithPluginTemplateAction().actionPerformed(e);
 
@@ -143,9 +144,6 @@ public final class CompareConfigFileWithPluginTemplateActionTest extends JustKit
             .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[diff\\.java], \\{}:DocumentImpl\\[CheckLicense\\.java]]");
     }
 
-//    public void testNoDiffViewWhenCouldNotFetchContentFromGitHub() {
-//    }
-
     //Helpers
 
     private AnActionEvent wrapInTestActionEvent(VirtualFile file) {
@@ -160,7 +158,7 @@ public final class CompareConfigFileWithPluginTemplateActionTest extends JustKit
         return TestActionEvent.createTestEvent(dataId -> {
             if (CommonDataKeys.VIRTUAL_FILE.is(dataId)) return file;
             if (CommonDataKeys.PROJECT.is(dataId)) return getProject();
-            if (DiffDataKeys.DIFF_REQUEST.is(dataId)) return diffRequest;
+            if (DIFF_REQUEST.is(dataId)) return diffRequest;
             return null;
         });
     }

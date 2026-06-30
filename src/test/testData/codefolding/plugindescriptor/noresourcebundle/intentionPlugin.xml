@@ -26,7 +26,7 @@
         <category>Some category</category>
         <className<fold text='...' expand='true'>>com.picimako.DummyIntention
         </className</fold>>
-    <fold text='...' expand='false'></fold></intentionAction</fold></fold>>
+    </fold><fold text='...' expand='false'></intentionAction</fold></fold>>
 
     <intentionAction<fold text='...' expand='true'>><fold text=' at Some category / DummyIntention ' expand='false'>
         <category>Some category</category>

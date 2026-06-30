@@ -1,11 +1,11 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.intention.callmatcher;
 
+import static com.intellij.util.containers.ContainerUtil.map;
 import static com.picimako.justkitting.CallMatcherUtil.EXACT_INSTANCE_CALL;
 import static com.picimako.justkitting.CallMatcherUtil.INSTANCE_CALL;
 import static com.picimako.justkitting.CallMatcherUtil.STATIC_CALL;
-import static java.util.stream.Collectors.joining;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -109,8 +109,6 @@ public class JavaCallMatcherGenerator implements CallMatcherGenerator<PsiMethod,
      * @param parameterList the method's parameter list
      */
     private static String generateParameters(PsiParameterList parameterList) {
-        return Arrays.stream(parameterList.getParameters())
-            .map(parameter -> "\"" + parameter.getType().getCanonicalText() + "\"")
-            .collect(joining(", "));
+        return String.join(", ", map(parameterList.getParameters(), param -> "\"" + param.getType().getCanonicalText() + "\""));
     }
 }

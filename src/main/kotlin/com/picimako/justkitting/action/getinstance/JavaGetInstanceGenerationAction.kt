@@ -1,9 +1,9 @@
-//Copyright 2025 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+//Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
 package com.picimako.justkitting.action.getinstance
 
 import com.intellij.codeInsight.CodeInsightActionHandler
-import com.intellij.openapi.application.ReadAction.compute
+import com.intellij.openapi.application.ReadAction.computeBlocking
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.Editor
@@ -53,11 +53,11 @@ internal class JavaGetInstanceGenerationAction(serviceLevel: Service.Level) : Ge
  * and where the action would be invoked.
  */
 fun getStaticOrTopLevelClass(file: PsiFile, editor: Editor): PsiClass? {
-    return compute<PsiClass?, Exception> {
+    return computeBlocking<PsiClass?, Exception> {
         val element = file.findElementAt(editor.caretModel.offset )
         getParentOfType(element, PsiClass::class.java).let {
             //If there is a parent class, and 'it' is either static, or it is the same class as the top level class in the current file
-            return@compute if (it != null && (isStatic(it) || it.manager.areElementsEquivalent(it, getTopLevelClass(element!!))))
+            return@computeBlocking if (it != null && (isStatic(it) || it.manager.areElementsEquivalent(it, getTopLevelClass(element!!))))
                 it
             else null
         }
