@@ -21,13 +21,10 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiLiteralExpression;
-import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Optional;
 
 /**
  * Reports method name arguments of calls to {@link com.siyeh.ig.callMatcher.CallMatcher} if they don't exist in the current context of the call matcher.
@@ -58,13 +55,13 @@ public class CallMatcherInspection extends LocalInspectionTool {
 
                 var referencedClassFqn = parentCall.getArgumentList().getExpressions()[0];
                 if (!literalExpr.getManager().areElementsEquivalent(literalExpr, referencedClassFqn) && !isUnsafeLiteral(literalExpr)) {
-                    Optional.ofNullable(findClass(referencedClassFqn))
-                        .ifPresent(referencedClass -> {
-                            var methodCountAndMessage = getMethodCountAndMessage(literalExpr, referencedClass, parentCall);
-                            if (!methodCountAndMessage.equals(Pair.empty()) && methodCountAndMessage.first == 0) {
-                                holder.registerProblem(literalExpr, JustKittingBundle.message(methodCountAndMessage.second), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL);
-                            }
-                        });
+                    var referencedClass = findClass(referencedClassFqn);
+                    if (referencedClass != null) {
+                        var methodCountAndMessage = getMethodCountAndMessage(literalExpr, referencedClass, parentCall);
+                        if (!methodCountAndMessage.equals(Pair.empty()) && methodCountAndMessage.first == 0) {
+                            holder.registerProblem(literalExpr, JustKittingBundle.message(methodCountAndMessage.second), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL);
+                        }
+                    }
                 }
             }
 
@@ -79,14 +76,14 @@ public class CallMatcherInspection extends LocalInspectionTool {
             @NotNull
             private Pair<Integer, String> getMethodCountAndMessage(PsiElement methodNameArg, @NotNull PsiClass referencedClass, PsiMethodCallExpression parentCall) {
                 boolean isExactInstance = CALL_MATCHER_EXACT_INSTANCE_MATCHER.matches(parentCall);
-                PsiMethod[] methodsInClass = referencedClass.findMethodsByName(StringUtil.unquoteString(methodNameArg.getText()), !isExactInstance);
-                if (isExactInstance) {
+                var methodsInClass = referencedClass.findMethodsByName(StringUtil.unquoteString(methodNameArg.getText()), !isExactInstance);
+                if (isExactInstance)
                     return Pair.create(filterByNonStatic(methodsInClass).length, "inspection.call.matcher.no.exact.instance.method.with.name");
-                } else if (CALL_MATCHER_STATIC_MATCHER.matches(parentCall)) {
+                if (CALL_MATCHER_STATIC_MATCHER.matches(parentCall))
                     return Pair.create(filterByStatic(methodsInClass).length, "inspection.call.matcher.no.static.method.with.name");
-                } else if (CALL_MATCHER_INSTANCE_MATCHER.matches(parentCall)) {
+                if (CALL_MATCHER_INSTANCE_MATCHER.matches(parentCall))
                     return Pair.create(filterByNonStatic(methodsInClass).length, "inspection.call.matcher.no.instance.method.with.name");
-                }
+
                 return Pair.empty();
             }
         };

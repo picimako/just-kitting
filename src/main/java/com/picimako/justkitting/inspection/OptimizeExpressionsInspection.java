@@ -167,36 +167,32 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
     }
 
     /**
-     * Replaces {@code PsiCall.getArgumentList().getExpressions().length} empty/non-empty comparisons
-     * with {@code isEmpty()} or {@code !isEmpty()} depending on the expression.
-     */
-    private static final class ReplaceWithIsEmptyQuickFix implements LocalQuickFix {
-        private final String negate;
-        private final boolean isExpressionAtLeft;
+         * Replaces {@code PsiCall.getArgumentList().getExpressions().length} empty/non-empty comparisons
+         * with {@code isEmpty()} or {@code !isEmpty()} depending on the expression.
+         */
+        private record ReplaceWithIsEmptyQuickFix(String negate, boolean isExpressionAtLeft) implements LocalQuickFix {
+            public ReplaceWithIsEmptyQuickFix(boolean negate, boolean isExpressionAtLeft) {
+                this(negate ? "!" : "", isExpressionAtLeft);
+            }
 
-        public ReplaceWithIsEmptyQuickFix(boolean negate, boolean isExpressionAtLeft) {
-            this.negate = negate ? "!" : "";
-            this.isExpressionAtLeft = isExpressionAtLeft;
-        }
+            @Override
+            public void applyFix(@NotNull Project project, ProblemDescriptor descriptor) {
+                var binaryExpression = (PsiBinaryExpression) descriptor.getPsiElement();
+                getGetArgumentList(isExpressionAtLeft ? binaryExpression.getLOperand() : binaryExpression.getROperand())
+                    .ifPresent(getArgumentList -> {
+                        var isEmpty = getElementFactory(project).createExpressionFromText(negate + getArgumentList.getText() + ".isEmpty()", binaryExpression);
+                        binaryExpression.replace(isEmpty);
+                    });
+            }
 
-        @Override
-        public void applyFix(@NotNull Project project, ProblemDescriptor descriptor) {
-            var binaryExpression = (PsiBinaryExpression) descriptor.getPsiElement();
-            getGetArgumentList(isExpressionAtLeft ? binaryExpression.getLOperand() : binaryExpression.getROperand())
-                .ifPresent(getArgumentList -> {
-                    var isEmpty = getElementFactory(project).createExpressionFromText(negate + getArgumentList.getText() + ".isEmpty()", binaryExpression);
-                    binaryExpression.replace(isEmpty);
-                });
-        }
+            @Override
+            public @IntentionName @NotNull String getName() {
+                return JustKittingBundle.message("inspection.replace.with.is.empty", negate);
+            }
 
-        @Override
-        public @IntentionName @NotNull String getName() {
-            return JustKittingBundle.message("inspection.replace.with.is.empty", negate);
+            @Override
+            public @IntentionFamilyName @NotNull String getFamilyName() {
+                return JustKittingBundle.message("inspection.optimize.expressions.family");
+            }
         }
-
-        @Override
-        public @IntentionFamilyName @NotNull String getFamilyName() {
-            return JustKittingBundle.message("inspection.optimize.expressions.family");
-        }
-    }
 }

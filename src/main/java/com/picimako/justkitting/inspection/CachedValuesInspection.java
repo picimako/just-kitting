@@ -24,6 +24,7 @@ import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.PsiNewExpression;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.picimako.justkitting.PlatformNames;
 import com.picimako.justkitting.resources.JustKittingBundle;
 import com.siyeh.ig.callMatcher.CallMatcher;
 import lombok.AccessLevel;
@@ -32,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -66,19 +66,18 @@ public class CachedValuesInspection extends LocalInspectionTool {
             @Override
             public void visitMethodCallExpression(@NotNull PsiMethodCallExpression expression) {
                 //If it is a static call to 'CachedValueProvider.Result.create()'
-                if (expression.getMethodExpression().getReferenceNameElement() != null && RESULT_CREATE_MATCHER.matches(expression)) {
-                    checkForMissingOrEmptyDependencies(expression.getArgumentList(), () -> expression.getMethodExpression().getReferenceNameElement(), PsiMethodCallExpression.class);
+                var referenceNameElement = expression.getMethodExpression().getReferenceNameElement();
+                if (referenceNameElement != null && RESULT_CREATE_MATCHER.matches(expression)) {
+                    checkForMissingOrEmptyDependencies(expression.getArgumentList(), () -> referenceNameElement, PsiMethodCallExpression.class);
                 }
             }
 
             @Override
             public void visitNewExpression(@NotNull PsiNewExpression expression) {
                 //If it is a constructor call to 'new CachedValueProvider.Result()'
-                if (Optional.ofNullable(expression.getClassOrAnonymousClassReference())
-                    .filter(cls -> CACHED_VALUE_PROVIDER_RESULT.equals(cls.getQualifiedName()))
-                    .isPresent()) {
-                    checkForMissingOrEmptyDependencies(expression.getArgumentList(), () -> expression.getClassOrAnonymousClassReference().getReferenceNameElement(), PsiNewExpression.class);
-                }
+                var classRef = expression.getClassOrAnonymousClassReference();
+                if (classRef != null && CACHED_VALUE_PROVIDER_RESULT.equals(classRef.getQualifiedName()))
+                    checkForMissingOrEmptyDependencies(expression.getArgumentList(), () -> classRef.getReferenceNameElement(), PsiNewExpression.class);
             }
 
             @Override
@@ -91,21 +90,24 @@ public class CachedValuesInspection extends LocalInspectionTool {
                                                             Class<? extends PsiCall> expressionType) {
                 if (arguments == null) return;
 
-                //If only the 'value' parameter is specified, but no dependency
-                if (arguments.getExpressionCount() == 1) {
-                    holder.registerProblem(problemElement.get(),
-                        JustKittingBundle.message("inspection.cached.value.provider.result.without.dependency"),
-                        new AddDependencyQuickFix(expressionType, ModificationTracker.MODIFICATION_TRACKER_NEVER_CHANGED),
-                        new AddDependencyQuickFix(expressionType, ModificationTracker.PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT));
-                }
-                //If there is a dependency specified as an empty Collection, defined by EMPTY_COLLECTION_MATCHER
-                else if (arguments.getExpressionCount() == 2
-                    && arguments.getExpressions()[1] instanceof PsiMethodCallExpression
-                    && EMPTY_COLLECTION_MATCHER.matches(arguments.getExpressions()[1])) {
-                    holder.registerProblem(problemElement.get(),
-                        JustKittingBundle.message("inspection.cached.value.provider.result.without.dependency"),
-                        new ReplaceDependencyQuickFix(expressionType, ModificationTracker.MODIFICATION_TRACKER_NEVER_CHANGED),
-                        new ReplaceDependencyQuickFix(expressionType, ModificationTracker.PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT));
+                switch (arguments.getExpressionCount()) {
+                    //If only the 'value' parameter is specified, but no dependency
+                    case 1 -> {
+                        holder.registerProblem(problemElement.get(),
+                            JustKittingBundle.message("inspection.cached.value.provider.result.without.dependency"),
+                            new AddDependencyQuickFix(expressionType, ModificationTracker.MODIFICATION_TRACKER_NEVER_CHANGED),
+                            new AddDependencyQuickFix(expressionType, ModificationTracker.PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT));
+                    }
+                    //If there is a dependency specified as an empty Collection, defined by EMPTY_COLLECTION_MATCHER
+                    case 2 -> {
+                        if (arguments.getExpressions()[1] instanceof PsiMethodCallExpression
+                            && EMPTY_COLLECTION_MATCHER.matches(arguments.getExpressions()[1])) {
+                            holder.registerProblem(problemElement.get(),
+                                JustKittingBundle.message("inspection.cached.value.provider.result.without.dependency"),
+                                new ReplaceDependencyQuickFix(expressionType, ModificationTracker.MODIFICATION_TRACKER_NEVER_CHANGED),
+                                new ReplaceDependencyQuickFix(expressionType, ModificationTracker.PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT));
+                        }
+                    }
                 }
             }
         };
@@ -169,8 +171,8 @@ public class CachedValuesInspection extends LocalInspectionTool {
      */
     @RequiredArgsConstructor
     private enum ModificationTracker {
-        MODIFICATION_TRACKER_NEVER_CHANGED("ModificationTracker.NEVER_CHANGED", "com.intellij.openapi.util.ModificationTracker.NEVER_CHANGED"),
-        PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT("PsiModificationTracker.MODIFICATION_COUNT", "com.intellij.psi.util.PsiModificationTracker.MODIFICATION_COUNT");
+        MODIFICATION_TRACKER_NEVER_CHANGED("ModificationTracker.NEVER_CHANGED", PlatformNames.MODIFICATION_TRACKER_NEVER_CHANGED),
+        PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT("PsiModificationTracker.MODIFICATION_COUNT", PlatformNames.PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT);
 
         private final String name;
         private final String fqn;

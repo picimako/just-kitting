@@ -27,6 +27,10 @@ public final class PlatformNames {
     public static final String PSI_EXPRESSION_LIST = "com.intellij.psi.PsiExpressionList";
     public static final String PSI_CALL = "com.intellij.psi.PsiCall";
 
+    //Modification trackers
+    public static final String MODIFICATION_TRACKER_NEVER_CHANGED = "com.intellij.openapi.util.ModificationTracker.NEVER_CHANGED";
+    public static final String PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT = "com.intellij.psi.util.PsiModificationTracker.MODIFICATION_COUNT";
+
     private PlatformNames() {
         //Utility class
     }
