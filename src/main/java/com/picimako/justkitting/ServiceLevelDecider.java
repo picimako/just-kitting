@@ -11,11 +11,9 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReferenceExpression;
 import com.picimako.justkitting.resources.JustKittingBundle;
-import kotlin.Pair;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.kotlin.asJava.elements.KtLightPsiLiteral;
 import org.jetbrains.kotlin.psi.KtAnnotationEntry;
 import org.jetbrains.kotlin.psi.KtClass;
 import org.jetbrains.kotlin.psi.ValueArgument;
@@ -123,10 +121,6 @@ public final class ServiceLevelDecider {
                      */
                     if (argumentText.endsWith(PROJECT)) return PROJECT;
                     if (argumentText.endsWith(APP)) return APP;
-                }
-                //Handles Kotlin cases at least in integration tests, but might occur in the wild too.
-                else if (expression instanceof KtLightPsiLiteral levelRef) {
-                    return levelRef.getValue() instanceof Pair<?, ?> levelRefValue ? levelRefValue.getSecond().toString() : null;
                 }
                 return null;
             })

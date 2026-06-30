@@ -29,6 +29,8 @@ public final class ServiceLevelDeciderJavaTest extends JustKittingTestBase {
 
     }
 
+
+    
     @Test
     public void testApplicationServiceForAnnotation() {
         PsiJavaFile psiFile = (PsiJavaFile) getFixture().configureByText("SomeService.java",
