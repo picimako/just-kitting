@@ -2,6 +2,9 @@
 
 package com.picimako.justkitting.intention.state;
 
+import static com.picimako.justkitting.PlatformNames.PERSISTENT_STATE_COMPONENT;
+import static com.picimako.justkitting.PlatformNames.STATE_ANNOTATION;
+
 import com.intellij.codeInsight.actions.BaseCodeInsightAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -11,9 +14,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import org.jetbrains.annotations.NotNull;
-
-import static com.picimako.justkitting.PlatformNames.PERSISTENT_STATE_COMPONENT;
-import static com.picimako.justkitting.PlatformNames.STATE_ANNOTATION;
 
 /**
  * Base class for the child intention actions for converting Java classes to {@code PersistentStateComponent}s.
@@ -105,18 +105,19 @@ abstract class BaseJavaPersistentStateComponentConversionIntention extends BaseC
     }
 
     protected static ConversionContext createContext(@NotNull Project project, Editor editor, PsiFile file) {
-        var context = new ConversionContext();
-        context.factory = PsiElementFactory.getInstance(project);
-        context.styleManager = JavaCodeStyleManager.getInstance(project);
-        context.targetClass = (PsiClass) file.findElementAt(editor.getCaretModel().getOffset()).getParent();
-        context.project = project;
-        return context;
+        return new ConversionContext(
+            PsiElementFactory.getInstance(project),
+            JavaCodeStyleManager.getInstance(project),
+            (PsiClass) file.findElementAt(editor.getCaretModel().getOffset()).getParent(),
+            project
+        );
     }
 
-    static final class ConversionContext {
-        PsiElementFactory factory;
-        JavaCodeStyleManager styleManager;
-        PsiClass targetClass;
-        Project project;
+    record ConversionContext(
+        PsiElementFactory factory,
+        JavaCodeStyleManager styleManager,
+        PsiClass targetClass,
+        Project project
+    ) {
     }
 }

@@ -18,7 +18,6 @@ import org.jetbrains.kotlin.psi.KtPsiFactory
  * and not context-dependent individually.
  *
  * @see MakeJavaClassPersistentStateComponentIntention
- * @see KotlinConversionActions
  */
 abstract class BaseKotlinPersistentStateComponentConversionIntention : BaseCodeInsightAction() {
     data class ConversionContext(@JvmField val factory: KtPsiFactory, @JvmField val targetClass: KtClass?, @JvmField val project: Project?)

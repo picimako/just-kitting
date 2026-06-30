@@ -12,7 +12,7 @@ class ConversionActionsKotlinTest : JustKittingActionTestBase() {
 
     @Test
     fun testConvertsClassWithStandaloneStateObject() {
-        checkAction("SomeComponent.kt", { KotlinConversionActions.WithStandaloneStateObject() },
+        checkAction("SomeComponent.kt", { WithStandaloneStateObject() },
             """
                     class SomeCom<caret>ponent {
                     }
@@ -41,7 +41,7 @@ class ConversionActionsKotlinTest : JustKittingActionTestBase() {
 
     @Test
     fun testConvertsClassWithSelfAsState() {
-        checkAction("SomeComponent.kt", { KotlinConversionActions.WithSelfAsState() },
+        checkAction("SomeComponent.kt", { WithSelfAsState() },
             """
                     class SomeC<caret>omponent {
                     }

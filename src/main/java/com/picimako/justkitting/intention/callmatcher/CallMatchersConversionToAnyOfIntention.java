@@ -3,9 +3,11 @@
 package com.picimako.justkitting.intention.callmatcher;
 
 import static com.intellij.openapi.application.ReadAction.computeBlocking;
+import static com.intellij.util.containers.ContainerUtil.all;
+import static com.intellij.util.containers.ContainerUtil.exists;
+import static com.intellij.util.containers.ContainerUtil.map;
 import static com.picimako.justkitting.PlatformNames.CALL_MATCHER;
 import static com.siyeh.ig.callMatcher.CallMatcher.instanceCall;
-import static java.util.stream.Collectors.joining;
 
 import com.intellij.codeInsight.CodeInsightUtil;
 import com.intellij.codeInsight.intention.IntentionAction;
@@ -22,7 +24,6 @@ import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.JavaTokenType;
 import com.intellij.psi.PsiBinaryExpression;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiFile;
@@ -97,14 +98,23 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
             }
             return expressionInRange instanceof PsiBinaryExpression binaryExpr
                 //Both side is a method call to one of the CallMatcher.<matches> methods, with the same parameter expression
-                ? MATCHES_MATCHERS.stream().anyMatch(matchesType -> areBothOperandsCallToMatches(binaryExpr, matchesType))
-                && firstArgumentOf(binaryExpr.getLOperand()).textMatches(firstArgumentOf(binaryExpr.getROperand()))
+                ? isBothSideMethodCall(binaryExpr)
                 //All operands are method calls to one of the CallMatcher.<matches> methods, with the same parameter expression
-                : Arrays.stream(polyadicExpr.getOperands()).allMatch(PsiMethodCallExpression.class::isInstance)
-                && MATCHES_MATCHERS.stream().anyMatch(matchesType -> Arrays.stream(polyadicExpr.getOperands()).allMatch(operand -> isCallToCallMatcher(operand, matchesType)))
-                && Arrays.stream(polyadicExpr.getOperands()).map(operand -> firstArgumentOf(operand).getText()).distinct().count() == 1;
+                : areAllOperandsMethodCalls(polyadicExpr);
         }
         return false;
+    }
+
+    private boolean areAllOperandsMethodCalls(PsiPolyadicExpression polyadicExpr) {
+        var operands = polyadicExpr.getOperands();
+        return all(operands, PsiMethodCallExpression.class::isInstance)
+            && exists(MATCHES_MATCHERS, matchesType -> all(operands, operand -> isCallToCallMatcher(operand, matchesType)))
+            && Arrays.stream(operands).map(operand -> firstArgumentOf(operand).getText()).distinct().count() == 1;
+    }
+
+    private boolean isBothSideMethodCall(PsiBinaryExpression binaryExpr) {
+        return exists(MATCHES_MATCHERS, matchesType -> areBothOperandsCallToMatches(binaryExpr, matchesType))
+            && firstArgumentOf(binaryExpr.getLOperand()).textMatches(firstArgumentOf(binaryExpr.getROperand()));
     }
 
     private boolean areBothOperandsCallToMatches(PsiBinaryExpression binaryExpression, CallMatcher matchesType) {
@@ -176,7 +186,7 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
      */
     private void introduceCombinedCallMatcher(PsiExpression expressionInRange, PsiClass selectedParentClass, PsiFile file, Editor editor) {
         var elementFactory = JavaPsiFacade.getElementFactory(file.getProject());
-        PsiElement anyOfField = JavaCodeStyleManager.getInstance(file.getProject())
+        var anyOfField = JavaCodeStyleManager.getInstance(file.getProject())
             .shortenClassReferences(elementFactory
                 .createFieldFromText("private static final com.siyeh.ig.callMatcher.CallMatcher ANY_OF = CallMatcher.anyOf(" + callMatcherAnyOfParamListFrom(expressionInRange) + ");", file));
         WriteCommandAction.runWriteCommandAction(file.getProject(), () -> {
@@ -200,7 +210,7 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
     private String callMatcherAnyOfParamListFrom(PsiExpression expressionInRange) {
         return expressionInRange instanceof PsiBinaryExpression binaryExpression
             ? getQualifierText(binaryExpression.getLOperand()) + ", " + getQualifierText(binaryExpression.getROperand())
-            : Arrays.stream(((PsiPolyadicExpression) expressionInRange).getOperands()).map(this::getQualifierText).collect(joining(","));
+            : String.join(",", map(((PsiPolyadicExpression) expressionInRange).getOperands(), this::getQualifierText));
     }
 
     /**

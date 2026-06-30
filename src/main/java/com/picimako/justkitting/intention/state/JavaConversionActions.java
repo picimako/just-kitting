@@ -74,13 +74,12 @@ final class JavaConversionActions {
 
                 runWriteCommandAction(project, () -> {
                     addStateAnnotation(context);
-                    addPersistentStateComponentToImplementsList(context, context.targetClass.getName() + ".State");
+                    addPersistentStateComponentToImplementsList(context, context.targetClass().getName() + ".State");
                     addStandaloneStateClass(context);
                     //Add getState() and loadState() methods with the corresponding state field
-                    context.targetClass.add(context.factory.createFieldFromText("private State myState = new State();", context.targetClass));
-                    context.targetClass.add(context.factory.createMethodFromText("@Override\npublic State getState() {return myState;}", context.targetClass));
-                    context.targetClass.add(context.factory.createMethodFromText("@Override\npublic void loadState(State state) {myState = state;}", context.targetClass));
-
+                    context.targetClass().add(context.factory().createFieldFromText("private State myState = new State();", context.targetClass()));
+                    context.targetClass().add(context.factory().createMethodFromText("@Override\npublic State getState() {return myState;}", context.targetClass()));
+                    context.targetClass().add(context.factory().createMethodFromText("@Override\npublic void loadState(State state) {myState = state;}", context.targetClass()));
                 });
             };
         }
@@ -133,12 +132,12 @@ final class JavaConversionActions {
 
                 runWriteCommandAction(project, () -> {
                     addStateAnnotation(context);
-                    String className = context.targetClass.getName();
+                    String className = context.targetClass().getName();
                     addPersistentStateComponentToImplementsList(context, className);
                     //Add getState() and loadState() methods
-                    context.targetClass.add(context.factory.createMethodFromText("@Override\npublic " + className + " getState() {return this;}", context.targetClass));
-                    context.targetClass.add(context.styleManager.shortenClassReferences(context.factory
-                        .createMethodFromText("@Override\npublic void loadState(" + className + " state) {com.intellij.util.xmlb.XmlSerializerUtil.copyBean(state, this);}", context.targetClass)));
+                    context.targetClass().add(context.factory().createMethodFromText("@Override\npublic " + className + " getState() {return this;}", context.targetClass()));
+                    context.targetClass().add(context.styleManager().shortenClassReferences(context.factory()
+                        .createMethodFromText("@Override\npublic void loadState(" + className + " state) {com.intellij.util.xmlb.XmlSerializerUtil.copyBean(state, this);}", context.targetClass())));
                 });
             };
         }

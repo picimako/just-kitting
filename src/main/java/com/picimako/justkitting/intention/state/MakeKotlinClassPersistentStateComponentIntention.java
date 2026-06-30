@@ -39,8 +39,8 @@ import java.util.List;
  */
 public class MakeKotlinClassPersistentStateComponentIntention extends BaseIntentionAction {
     private static final List<AnAction> KOTLIN_ACTIONS = List.of(
-        new KotlinConversionActions.WithStandaloneStateObject(),
-        new KotlinConversionActions.WithSelfAsState());
+        new WithStandaloneStateObject(),
+        new WithSelfAsState());
 
     @Override
     public @IntentionName @NotNull String getText() {
