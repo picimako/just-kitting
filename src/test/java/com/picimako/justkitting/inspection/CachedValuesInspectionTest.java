@@ -19,7 +19,7 @@ public final class CachedValuesInspectionTest extends JustKittingInspectionTestB
 
     @BeforeEach
     protected void setUp() {
-        ThirdPartyLibraryLoader.loadUtil8(getFixture());
+        ThirdPartyLibraryLoader.loadPlatform(getFixture());
         ThirdPartyLibraryLoader.loadJavaImpl(getFixture());
     }
 

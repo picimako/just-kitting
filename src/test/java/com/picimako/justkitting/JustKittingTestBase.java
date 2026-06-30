@@ -30,7 +30,7 @@ public abstract class JustKittingTestBase extends LightJavaCodeInsightFixtureTes
 
     @BeforeEach
     protected void setUp() throws Exception {
-        ThirdPartyLibraryLoader.loadUtil8(getFixture());
+        ThirdPartyLibraryLoader.loadPlatform(getFixture());
     }
 
     protected Project getProject() {

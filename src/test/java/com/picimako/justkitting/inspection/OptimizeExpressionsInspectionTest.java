@@ -49,7 +49,7 @@ public final class OptimizeExpressionsInspectionTest extends JustKittingInspecti
                 import com.intellij.psi.PsiElement;
 
                 class EmptyArray {
-                \tPsiElement[] array = new PsiElement[1];
+                   PsiElement[] array = new PsiElement[1];
                 }""");
     }
 
