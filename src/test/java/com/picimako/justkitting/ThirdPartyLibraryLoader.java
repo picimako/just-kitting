@@ -22,6 +22,7 @@ public final class ThirdPartyLibraryLoader {
      */
     public static void loadJavaImpl(@NotNull CodeInsightTestFixture fixture) {
         loadLibrary(fixture, "java-impl", "java-impl.jar");
+        loadLibrary(fixture, "java-analysis-impl", "intellij.java.analysis.impl.jar");
     }
 
     /**
