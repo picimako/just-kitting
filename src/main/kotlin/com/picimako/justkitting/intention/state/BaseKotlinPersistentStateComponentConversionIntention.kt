@@ -8,6 +8,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.picimako.justkitting.PlatformNames
 import com.picimako.justkitting.importIfNotAlreadyAdded
+import org.jetbrains.kotlin.idea.base.psi.addAnnotation
+import org.jetbrains.kotlin.idea.base.psi.addSuperType
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtPsiFactory
 
@@ -30,12 +32,12 @@ abstract class BaseKotlinPersistentStateComponentConversionIntention : BaseCodeI
          * [com.intellij.openapi.components.Storage] annotation with a dummy text.
          *
          * ### From:
-         * ```
+         * ```kotlin
          * class SomeComponent {
          * }
          * ```
          * ### To:
-         * ```
+         * ```kotlin
          * import com.intellij.openapi.components.State
          * import com.intellij.openapi.components.Storage
          *
@@ -50,7 +52,7 @@ abstract class BaseKotlinPersistentStateComponentConversionIntention : BaseCodeI
                 @State(name = "${context.targetClass?.name}", storages = [Storage("<storage name>")])
             """.trimIndent())
 
-            context.targetClass?.addAnnotationEntry(annotationEntry)
+            context.targetClass?.addAnnotation(annotationEntry)
             val containingFile = context.targetClass!!.containingKtFile
             importIfNotAlreadyAdded(containingFile, PlatformNames.STATE_ANNOTATION, context.factory)
             importIfNotAlreadyAdded(containingFile, PlatformNames.STORAGE_ANNOTATION, context.factory)
@@ -61,12 +63,12 @@ abstract class BaseKotlinPersistentStateComponentConversionIntention : BaseCodeI
          * state class name provided in the `stateClassName` argument.
          *
          * ### From:
-         * ```
+         * ```kotlin
          * class SomeComponent {
          * }
          * ```
          * ### To (given stateClassName is 'SomeComponent.State'):
-         * ```
+         * ```kotlin
          * import com.intellij.openapi.components.PersistentStateComponent
          *
          * class SomeComponent : PersistentStateComponent<SomeComponent.State> {
@@ -77,7 +79,7 @@ abstract class BaseKotlinPersistentStateComponentConversionIntention : BaseCodeI
          */
         @JvmStatic
         protected fun addPersistentStateComponentToImplementsList(context: ConversionContext, stateClassName: String) {
-            context.targetClass?.addSuperTypeListEntry(context.factory.createSuperTypeEntry("PersistentStateComponent<$stateClassName>"))
+            context.targetClass?.addSuperType(context.factory.createSuperTypeEntry("PersistentStateComponent<$stateClassName>"))
             importIfNotAlreadyAdded(context.targetClass!!.containingKtFile, PlatformNames.PERSISTENT_STATE_COMPONENT, context.factory)
         }
 
@@ -85,12 +87,12 @@ abstract class BaseKotlinPersistentStateComponentConversionIntention : BaseCodeI
          * Adds an inner class named `State` within the target component class.
          *
          * ### From:
-         * ```
+         * ```kotlin
          * class SomeComponent {
          * }
          * ```
          * ### To:
-         * ```
+         * ```kotlin
          * class SomeComponent {
          *     class State {
          *     }

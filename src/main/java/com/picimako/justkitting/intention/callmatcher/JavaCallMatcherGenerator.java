@@ -17,12 +17,11 @@ import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiParameterList;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.ui.SimpleListCellRenderer;
 import com.picimako.justkitting.resources.JustKittingBundle;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.ui.dsl.listCellRenderer.BuilderKt;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -68,8 +67,13 @@ public class JavaCallMatcherGenerator implements CallMatcherGenerator<PsiMethod,
             };
 
             JBPopupFactory.getInstance()
-                .createListPopup(project, step, listCellRenderer -> SimpleListCellRenderer.create("", Object::toString))
-                .showInBestPositionFor(editor);
+                .createListPopup(project, step, __ -> BuilderKt.listCellRenderer(
+                    row -> {
+                        row.text(row.getValue().toString(), null);
+                        return kotlin.Unit.INSTANCE;
+                    }
+                )
+            ).showInBestPositionFor(editor);
         }
     }
 
@@ -84,7 +88,7 @@ public class JavaCallMatcherGenerator implements CallMatcherGenerator<PsiMethod,
             //Class name: CallMatcher.instanceCall("SomeClassName",
             .append(method.getContainingClass().getQualifiedName()).append("\", ")
             //Method name: CallMatcher.instanceCall("SomeClassName", "someMethodName")
-            .append("\"").append(method.getName()).append("\"").append(")");
+            .append("\"").append(method.getName()).append("\")");
 
         var parameterList = method.getParameterList();
         if (!parameterList.isEmpty()) {

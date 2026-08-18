@@ -26,10 +26,10 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.ui.DocumentAdapter
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import com.intellij.util.ui.JBUI
 import com.picimako.justkitting.inlayhint.Settings.Companion.MAX_NO_OF_SERVICES
 import com.picimako.justkitting.resources.JustKittingBundle
@@ -82,7 +82,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                         //Add combobox to select display mode
                         val lightServicesDisplayMode = comboBox<InlayDisplayMode>(
                             lightServicesDisplayModeModel,
-                            SimpleListCellRenderer.create("") { it.displayName }
+                            listCellRenderer { text(value!!.displayName)}
                         ).component
 
                         //Update Settings properties and related UI controls
