@@ -17,7 +17,7 @@ import com.intellij.util.containers.ContainerUtil
 import com.picimako.justkitting.ListPopupHelper
 import com.picimako.justkitting.ServiceLevelDecider
 import com.picimako.justkitting.ServiceLevelDecider.ServiceLevel
-import com.picimako.justkitting.resources.JustKittingBundle
+import com.picimako.justkitting.resources.JustKittingBundle.message
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtObjectDeclaration
 
@@ -76,7 +76,7 @@ class GenerateStaticGetInstanceAction : BaseCodeInsightAction() {
         protected fun chooseAppOrProjectLevelFromList(actions: List<GetInstanceGenerationAction<*, *>>, editor: Editor) {
             ApplicationManager.getApplication().invokeLater {
                 ListPopupHelper.showActionsInListPopup(
-                    JustKittingBundle.message("action.generate.getinstance.level.list.title"), actions, editor)
+                    message("action.generate.getinstance.level.list.title"), actions, editor)
             }
         }
     }

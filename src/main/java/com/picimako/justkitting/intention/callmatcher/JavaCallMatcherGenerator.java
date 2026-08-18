@@ -6,6 +6,7 @@ import static com.intellij.util.containers.ContainerUtil.map;
 import static com.picimako.justkitting.CallMatcherUtil.EXACT_INSTANCE_CALL;
 import static com.picimako.justkitting.CallMatcherUtil.INSTANCE_CALL;
 import static com.picimako.justkitting.CallMatcherUtil.STATIC_CALL;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -17,10 +18,9 @@ import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiParameterList;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.picimako.justkitting.resources.JustKittingBundle;
+import com.intellij.ui.dsl.listCellRenderer.BuilderKt;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.ui.dsl.listCellRenderer.BuilderKt;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -42,8 +42,8 @@ public class JavaCallMatcherGenerator implements CallMatcherGenerator<PsiMethod,
     public void generateCallMatcherForMethod(@Nullable PsiMethod method, Consumer<String> postActions) {
         if (method == null) {
             CommonRefactoringUtil.showErrorHint(project, editor,
-                JustKittingBundle.message("intention.call.matcher.could.not.resolve.method.message"),
-                JustKittingBundle.message("intention.call.matcher.could.not.resolve.method.title"),
+                message("intention.call.matcher.could.not.resolve.method.message"),
+                message("intention.call.matcher.could.not.resolve.method.title"),
                 "");
             return;
         }
@@ -57,7 +57,7 @@ public class JavaCallMatcherGenerator implements CallMatcherGenerator<PsiMethod,
             //Displays a popup list with the options {@code instanceCall} and {@code exactInstanceCall}
             // to let the user choose.
             var step = new BaseListPopupStep<>(
-                JustKittingBundle.message("intention.call.matcher.select.instance.call.type"),
+                message("intention.call.matcher.select.instance.call.type"),
                 List.of(INSTANCE_CALL, EXACT_INSTANCE_CALL)) {
                 @Override
                 public @Nullable PopupStep<?> onChosen(String instanceCallType, boolean finalChoice) {

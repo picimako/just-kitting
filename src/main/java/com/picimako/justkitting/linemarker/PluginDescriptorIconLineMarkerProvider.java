@@ -4,6 +4,7 @@ package com.picimako.justkitting.linemarker;
 
 import static com.intellij.patterns.XmlPatterns.xmlAttribute;
 import static com.intellij.util.ReflectionUtil.getStaticFieldValue;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
@@ -14,7 +15,6 @@ import com.intellij.patterns.XmlPatterns;
 import com.intellij.patterns.XmlTagPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlAttribute;
-import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,7 +77,7 @@ final class PluginDescriptorIconLineMarkerProvider extends RelatedItemLineMarker
             var icon = determineIcon(element);
             if (icon != null)
                 result.add(NavigationGutterIconBuilder.create(icon)
-                    .setTooltipText(JustKittingBundle.message("line.marker.action.xml.icon"))
+                    .setTooltipText(message("line.marker.action.xml.icon"))
                     .setTarget(null)
                     .createLineMarkerInfo(element.getFirstChild()));
         }
@@ -107,7 +107,7 @@ final class PluginDescriptorIconLineMarkerProvider extends RelatedItemLineMarker
 
     @Override
     public String getName() {
-        return JustKittingBundle.message("line.marker.action.xml.icon.name");
+        return message("line.marker.action.xml.icon.name");
     }
 
     @Override

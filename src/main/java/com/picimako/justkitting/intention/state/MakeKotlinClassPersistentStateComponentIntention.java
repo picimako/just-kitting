@@ -3,6 +3,7 @@
 package com.picimako.justkitting.intention.state;
 
 import static com.intellij.openapi.application.ReadAction.computeBlocking;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
 
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.codeInspection.util.IntentionFamilyName;
@@ -13,7 +14,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import com.picimako.justkitting.ListPopupHelper;
-import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.lexer.KtTokens;
 import org.jetbrains.kotlin.psi.KtClass;
@@ -44,12 +44,12 @@ public class MakeKotlinClassPersistentStateComponentIntention extends BaseIntent
 
     @Override
     public @IntentionName @NotNull String getText() {
-        return JustKittingBundle.message("intention.convert.to.persistent.state.component.text");
+        return message("intention.convert.to.persistent.state.component.text");
     }
 
     @Override
     public @NotNull @IntentionFamilyName String getFamilyName() {
-        return JustKittingBundle.message("intention.convert.to.persistent.state.component.family", "Kotlin");
+        return message("intention.convert.to.persistent.state.component.family", "Kotlin");
     }
 
     @Override

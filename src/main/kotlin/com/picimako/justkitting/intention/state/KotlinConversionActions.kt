@@ -10,7 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.picimako.justkitting.importIfNotAlreadyAdded
-import com.picimako.justkitting.resources.JustKittingBundle
+import com.picimako.justkitting.resources.JustKittingBundle.message
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
@@ -60,7 +60,7 @@ import org.jetbrains.kotlin.psi.psiUtil.startOffset
 class WithStandaloneStateObject : BaseKotlinPersistentStateComponentConversionIntention() {
     override fun update(presentation: Presentation, project: Project, editor: Editor, file: PsiFile) {
         super.update(presentation, project, editor, file)
-        presentation.text = JustKittingBundle.message("intention.persistent.state.use.standalone.state.object")
+        presentation.text = message("intention.persistent.state.use.standalone.state.object")
     }
 
     override fun getHandler(): CodeInsightActionHandler =
@@ -128,7 +128,7 @@ class WithStandaloneStateObject : BaseKotlinPersistentStateComponentConversionIn
 class WithSelfAsState : BaseKotlinPersistentStateComponentConversionIntention() {
     override fun update(presentation: Presentation, project: Project, editor: Editor, file: PsiFile) {
         super.update(presentation, project, editor, file)
-        presentation.text = JustKittingBundle.message("intention.persistent.state.use.self.as.state")
+        presentation.text = message("intention.persistent.state.use.self.as.state")
     }
 
     override fun getHandler(): CodeInsightActionHandler =

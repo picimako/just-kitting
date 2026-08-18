@@ -7,6 +7,7 @@ import static com.intellij.util.containers.ContainerUtil.all;
 import static com.intellij.util.containers.ContainerUtil.exists;
 import static com.intellij.util.containers.ContainerUtil.map;
 import static com.picimako.justkitting.PlatformNames.CALL_MATCHER;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
 import static com.siyeh.ig.callMatcher.CallMatcher.instanceCall;
 
 import com.intellij.codeInsight.CodeInsightUtil;
@@ -38,7 +39,6 @@ import com.intellij.refactoring.rename.inplace.MemberInplaceRenamer;
 import com.intellij.util.Consumer;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
-import com.picimako.justkitting.resources.JustKittingBundle;
 import com.siyeh.ig.callMatcher.CallMatcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -76,12 +76,12 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
 
     @Override
     public @IntentionName @NotNull String getText() {
-        return JustKittingBundle.message("intention.call.matcher.combine.to.any.of.name");
+        return message("intention.call.matcher.combine.to.any.of.name");
     }
 
     @Override
     public @NotNull @IntentionFamilyName String getFamilyName() {
-        return JustKittingBundle.message("intention.call.matcher.family.name");
+        return message("intention.call.matcher.family.name");
     }
 
     //---- Availability check ----
@@ -168,7 +168,7 @@ public class CallMatchersConversionToAnyOfIntention implements IntentionAction {
      * Shows a list popup with the available parent classes.
      */
     private void introduceCombinedCallMatcherInSelectedClass(List<PsiClass> parentClasses, Consumer<PsiClass> introduceField, Editor editor, Project project) {
-        var step = new BaseListPopupStep<>(JustKittingBundle.message("intention.call.matcher.combine.to.any.of.select.class"), parentClasses) {
+        var step = new BaseListPopupStep<>(message("intention.call.matcher.combine.to.any.of.select.class"), parentClasses) {
             @Override
             public @Nullable PopupStep<?> onChosen(PsiClass selectedParentClass, boolean finalChoice) {
                 introduceField.consume(selectedParentClass);

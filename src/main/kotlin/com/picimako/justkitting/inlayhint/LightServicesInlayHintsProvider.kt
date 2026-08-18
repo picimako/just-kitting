@@ -32,7 +32,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import com.intellij.util.ui.JBUI
 import com.picimako.justkitting.inlayhint.Settings.Companion.MAX_NO_OF_SERVICES
-import com.picimako.justkitting.resources.JustKittingBundle
+import com.picimako.justkitting.resources.JustKittingBundle.message
 import java.util.function.Supplier
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComponent
@@ -53,7 +53,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
         get() = SettingsKey("light.services")
 
     override val name: String
-        get() = JustKittingBundle.message("inlay.hints.light.services.settings.type.title")
+        get() = message("inlay.hints.light.services.settings.type.title")
 
     override val previewText: String
         get() = """
@@ -69,7 +69,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
             val maxNoOfServicesTextField = JBTextField(2)
 
             override val mainCheckboxText: String
-                get() = JustKittingBundle.message("inlay.hints.light.services.settings.show.hints.option")
+                get() = message("inlay.hints.light.services.settings.show.hints.option")
 
             override fun createComponent(listener: ChangeListener): JComponent {
                 val panel = panel {
@@ -77,7 +77,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                     /*
                      * Display mode: [<combobox with options>]
                      */
-                    row(JustKittingBundle.message("inlay.hints.light.services.display.mode.label")) {
+                    row(message("inlay.hints.light.services.display.mode.label")) {
 
                         //Add combobox to select display mode
                         val lightServicesDisplayMode = comboBox<InlayDisplayMode>(
@@ -96,7 +96,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                     /*
                      * Max number of services to display: [<text field>]
                      */
-                    row(JustKittingBundle.message("inlay.hints.light.services.settings.max.no.of.services.label")) {
+                    row(message("inlay.hints.light.services.settings.max.no.of.services.label")) {
                         cell(maxNoOfServicesTextField)
                             .bindText({ settings.maxNumberOfServicesToDisplay.toString() })
                             { value ->
@@ -131,7 +131,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                             try {
                                 if (maxServices.toInt() !in 1..MAX_NO_OF_SERVICES) {
                                     ValidationInfo(
-                                        JustKittingBundle.message(
+                                        message(
                                             "inlay.hints.light.services.settings.value.must.be.between.x.and.y",
                                             1,
                                             MAX_NO_OF_SERVICES
@@ -143,7 +143,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                                 }
                             } catch (_: NumberFormatException) {
                                 ValidationInfo(
-                                    JustKittingBundle.message("inlay.hints.light.services.settings.value.must.be.a.number"),
+                                    message("inlay.hints.light.services.settings.value.must.be.a.number"),
                                     maxNoOfServicesTextField
                                 )
                             }
