@@ -31,10 +31,10 @@ dependencies {
     //Testing
 
     testImplementation(libs.junit)
-    testImplementation("org.junit.jupiter:junit-jupiter:5.14.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.14.1")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.14.1")
-    testImplementation("org.assertj:assertj-core:3.27.7")
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.vintage.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(libs.assertj)
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
@@ -108,9 +108,8 @@ tasks {
             include("**/*Test.class")
             exclude(
                 //Disabled due to haven't been able to make the tests resolve the bundle properties files. The functionality works in production environment.
-                "**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class",
-                //This is a JUnit3 test
-                "**/LightServicesInlayHintsProviderTest.class")
+                "**/PluginDescriptorTagsFoldingBuilderResourceBundleTest.class"
+            )
         }
     }
 }
