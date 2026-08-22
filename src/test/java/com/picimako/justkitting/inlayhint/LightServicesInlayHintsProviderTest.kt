@@ -7,7 +7,7 @@ import com.intellij.testFramework.utils.inlays.InlayHintsProviderTestCase
 import com.picimako.justkitting.ThirdPartyLibraryLoader
 
 /**
- * Functional test for [LightServicesInlayHintsProvider].
+ * Integration test for [LightServicesInlayHintsProvider].
  */
 @Suppress("UnstableApiUsage")
 class LightServicesInlayHintsProviderTest : InlayHintsProviderTestCase() {
@@ -36,82 +36,195 @@ class LightServicesInlayHintsProviderTest : InlayHintsProviderTestCase() {
         myFixture.copyFileToProject("AProjectAndApplicationService.kt")
     }
 
-    fun testNoHint() {
+    //No hint
+
+    fun `test no hint when there is no light service in the project`() {
         doTestProvider(
             "plugin.xml",
             """
-<idea-plugin>
-    <extensions defaultExtensionNs="com.intellij">
-    </extensions>
-</idea-plugin>
-""".trimIndent(),
+                <idea-plugin>
+                    <extensions defaultExtensionNs="com.intellij">
+                    </extensions>
+                </idea-plugin>
+                """.trimIndent(),
             LightServicesInlayHintsProvider(),
             Settings(),
             false)
     }
 
-    fun testListOfServicesWithoutViewAll() {
-        loadLightServiceFiles()
+    fun `test no hint in non-plugin descriptor file called plugin xml`() {
         doTestProvider(
             "plugin.xml",
             """
-<idea-plugin>
-<# block -- Project light services --
-AProjectService
--- Application light services --
-AnApplicationService
--- Project and application light services --
-AProjectAndApplicationService #>
-/*<# block -- Project light services --
-AProjectService
--- Application light services --
-AnApplicationService
--- Project and application light services --
-AProjectAndApplicationService #>*/
-    <extensions defaultExtensionNs="com.intellij">
-    </extensions>
-</idea-plugin>
-""".trimIndent(),
+                <non-idea-plugin>
+                     <extensions defaultExtensionNs="com.intellij">
+                    </extensions>
+                </non-idea-plugin>
+                """.trimIndent(),
             LightServicesInlayHintsProvider(),
             Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 3),
             false)
     }
 
-    fun testListOfServicesWithViewAll() {
-        loadLightServiceFiles()
+    fun `test no hint on non-extension tag`() {
         doTestProvider(
             "plugin.xml",
             """
-<idea-plugin>
-<# block -- Project light services --
-AProjectService
-View all light services... #>
-/*<# block -- Project light services --
-AProjectService
-View all light services... #>*/
-    <extensions defaultExtensionNs="com.intellij">
-    </extensions>
-</idea-plugin>
-""".trimIndent(),
+                <idea-plugin>
+                    <actions>
+                    </actions>
+                </idea-plugin>
+                """.trimIndent(),
             LightServicesInlayHintsProvider(),
-            Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 1),
+            Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 3),
             false)
     }
 
-    fun testViewAllOnly() {
+    fun `test no hint on extensions with non-comintellij namespace`() {
+        doTestProvider(
+            "plugin.xml",
+            """
+                <idea-plugin>
+                    <extensions defaultExtensionNs="non.matching.namespace">
+                    </extensions>
+                </idea-plugin>
+                """.trimIndent(),
+            LightServicesInlayHintsProvider(),
+            Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 3),
+            false)
+    }
+
+    //plugin.xml
+
+    fun `test list of services without View All - plugin xml`() {
         loadLightServiceFiles()
         doTestProvider(
             "plugin.xml",
             """
-<idea-plugin>
-<# block View all light services... #>
-/*<# block View all light services... #>*/
-    <extensions defaultExtensionNs="com.intellij">
-    </extensions>
-</idea-plugin>
-""".trimIndent(),
+                <idea-plugin>
+                <# block -- Project light services --
+                AProjectService
+                -- Application light services --
+                AnApplicationService
+                -- Project and application light services --
+                AProjectAndApplicationService #>
+                /*<# block -- Project light services --
+                AProjectService
+                -- Application light services --
+                AnApplicationService
+                -- Project and application light services --
+                AProjectAndApplicationService #>*/
+                    <extensions defaultExtensionNs="com.intellij">
+                    </extensions>
+                </idea-plugin>
+                """.trimIndent(),
+            LightServicesInlayHintsProvider(),
+            Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 3),
+            true)
+    }
+
+    fun `test list of services with View All - plugin xml`() {
+        loadLightServiceFiles()
+        doTestProvider(
+            "plugin.xml",
+            """
+                <idea-plugin>
+                <# block -- Project light services --
+                AProjectService
+                View all light services... #>
+                /*<# block -- Project light services --
+                AProjectService
+                View all light services... #>*/
+                    <extensions defaultExtensionNs="com.intellij">
+                    </extensions>
+                </idea-plugin>
+                """.trimIndent(),
+            LightServicesInlayHintsProvider(),
+            Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 1),
+            true)
+    }
+
+    fun `test View All only - plugin xml`() {
+        loadLightServiceFiles()
+        doTestProvider(
+            "plugin.xml",
+            """
+                <idea-plugin>
+                <# block View all light services... #>
+                /*<# block View all light services... #>*/
+                    <extensions defaultExtensionNs="com.intellij">
+                    </extensions>
+                </idea-plugin>
+                """.trimIndent(),
             LightServicesInlayHintsProvider(),
             Settings(lightServicesDisplayMode = InlayDisplayMode.ViewAllOnly),
-            false)
+            true)
+    }
+
+    //Modules descriptor
+
+    fun `test list of services without View All - module descriptor`() {
+        loadLightServiceFiles()
+        doTestProvider(
+            "module.descriptor.xml",
+            """
+                <idea-plugin>
+                <# block -- Project light services --
+                AProjectService
+                -- Application light services --
+                AnApplicationService
+                -- Project and application light services --
+                AProjectAndApplicationService #>
+                /*<# block -- Project light services --
+                AProjectService
+                -- Application light services --
+                AnApplicationService
+                -- Project and application light services --
+                AProjectAndApplicationService #>*/
+                    <extensions defaultExtensionNs="com.intellij">
+                    </extensions>
+                </idea-plugin>
+                """.trimIndent(),
+            LightServicesInlayHintsProvider(),
+            Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 3),
+            true)
+    }
+
+    fun `test list of services with View All - module descriptor`() {
+        loadLightServiceFiles()
+        doTestProvider(
+            "module.descriptor.xml",
+            """
+                <idea-plugin>
+                <# block -- Project light services --
+                AProjectService
+                View all light services... #>
+                /*<# block -- Project light services --
+                AProjectService
+                View all light services... #>*/
+                    <extensions defaultExtensionNs="com.intellij">
+                    </extensions>
+                </idea-plugin>
+                """.trimIndent(),
+            LightServicesInlayHintsProvider(),
+            Settings(lightServicesDisplayMode = InlayDisplayMode.ListOfLightServices, maxNumberOfServicesToDisplay = 1),
+            true)
+    }
+
+    fun `test View All only - module descriptor`() {
+        loadLightServiceFiles()
+        doTestProvider(
+            "module.descriptor.xml",
+            """
+                <idea-plugin>
+                <# block View all light services... #>
+                /*<# block View all light services... #>*/
+                    <extensions defaultExtensionNs="com.intellij">
+                    </extensions>
+                </idea-plugin>
+                """.trimIndent(),
+            LightServicesInlayHintsProvider(),
+            Settings(lightServicesDisplayMode = InlayDisplayMode.ViewAllOnly),
+            true)
     }
 }

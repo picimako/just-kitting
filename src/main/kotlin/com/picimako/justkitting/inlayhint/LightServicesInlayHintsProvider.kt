@@ -39,9 +39,10 @@ import javax.swing.JComponent
 import javax.swing.event.DocumentEvent
 
 /**
- * Provides inlay hints for the `<extensions>` starting tag in a plugin's main plugin.xml file.
+ * Provides inlay hints for the `<extensions>` starting tag in a plugin's main plugin.xml file and module descriptor files.
  *
  * The `<extensions>` tag is selected because it usually contains the majority of plugin functionality declarations.
+ * For now, if there is no `<extensions>` tag present, no hint is provided.
  *
  * Both the display mode and the number of services to display are configurable within `Settings > Editor > Inlay Hints`
  *
@@ -119,7 +120,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
             }
 
             /**
-             * ComponentValidator is used since CellBuilder.intTextField with its validation mechanism won't work for some reason
+             * ComponentValidator is used since CellBuilder.intTextField with its validation mechanism won't work for some reason.
              *
              * See [Validation errors](https://jetbrains.design/intellij/principles/validation_errors/).
              */
@@ -169,34 +170,31 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                     //For the preview in Inlay Hints settings, there is no need to query the project for actual light services, hence the distinction
                     val isSettingsPreview = isInSettingsPreview()
                     //limit the hint to the plugin's main config file. Exclude optional dependencies' configurations
-                    if (!file.project.service<DumbService>().isDumb && isExtensionsPluginXmlTagToken(isSettingsPreview, element)) {
+                    if (!file.project.service<DumbService>().isDumb && isExtensionsXmlTagToken(element)) {
                         if (isSettingsPreview) hintAdder.addPreviewHints(element as XmlToken)
-                        else hintAdder.addRealHints(element as XmlToken)
+                        else hintAdder.addRealHints(element as XmlToken, isPluginXml = file.name == "plugin.xml")
                         return false //don't traverse child elements, found the <extensions> tag
                     }
                 }
                 return true
             }
 
-            private fun isExtensionsPluginXmlTagToken(isSettingsPreview: Boolean, element: PsiElement) =
-                if (isSettingsPreview) isElementToShowHintFor(element) else file.name == "plugin.xml" && isElementToShowHintFor(element)
-
             private fun isInSettingsPreview() = editor.editorKind == EditorKind.UNTYPED && file.name == "Dummy.xml"
 
             /**
-             * Validates whether `file` and `element` is the `<extensions>` XML tag with `defaultExtensionNs="com.intellij"`
-             * attribute within a plugin.xml file.
+             * Validates whether `element` is the `<extensions>` XML tag with `defaultExtensionNs="com.intellij"`
+             * attribute within a plugin or module descriptor file (with `<idea-plugin>` root tag).
              *
              * Since there is a separate inspection reporting that the `<extensions>` tag doesn't have `defaultExtensionNs="com.intellij"` specified,
              * that construct is ignored in this hints provider.
              *
-             * It uses a simplified check to determine if the file is an actual plugin descriptor because
+             * It uses a simplified check to determine if the file is an actual plugin/module descriptor because
              * [org.jetbrains.idea.devkit.util.DescriptorUtil.isPluginXml] returns null due to null file descriptor being returned
              * by the underlying logic.
              *
              * @see org.jetbrains.idea.devkit.inspections.PluginXmlDomInspection
              */
-            private fun isElementToShowHintFor(element: PsiElement): Boolean {
+            private fun isExtensionsXmlTagToken(element: PsiElement): Boolean {
                 return file is XmlFile && file.rootTag?.name == "idea-plugin" &&
                         psiElement(XmlToken::class.java)
                             .withElementType(XmlTokenType.XML_START_TAG_START)

@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [1.6.0]
+### Changed
+- New supported IDE version range: 2026.2+.
+- [63](https://github.com/picimako/just-kitting/issues/63): The light services inlay hint is now displayed in module
+descriptor files too. There it lists the light services in the corresponding modules.
+
 ## [1.5.0]
 ### Changed
 - New supported IDE version range: 2026.1+.
