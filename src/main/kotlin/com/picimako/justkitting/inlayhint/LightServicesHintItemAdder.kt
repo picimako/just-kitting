@@ -112,12 +112,13 @@ abstract class LightServicesHintItemAdder(
     }
 
     private fun addHintFor(element: PsiElement, insetPres: InsetPresentation) {
+        val inlayStartOffset = calculateBlockInlayStartOffset(element as XmlToken) ?: return
         sink.addBlockElement(
-            element.parent.textRange.startOffset, relatesToPrecedingText = true, showAbove = true, priority = 0,
-            presentation = presentationFactory.inset(
-                insetPres,
-                left = calculateBlockInlayStartOffset(element as XmlToken)
-            )
+            offset = element.parent.textRange.startOffset,
+            relatesToPrecedingText = true,
+            showAbove = true,
+            priority = 0,
+            presentation = presentationFactory.inset(insetPres, left = inlayStartOffset)
         )
     }
 }

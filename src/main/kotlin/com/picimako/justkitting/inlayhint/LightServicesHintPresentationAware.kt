@@ -95,12 +95,18 @@ abstract class LightServicesHintPresentationAware(
         }
     }
 
-    protected fun calculateBlockInlayStartOffset(element: XmlToken): Int {
+    /**
+     * In case of `null` return value no inlay hint is added. See [LightServicesHintItemAdder.addHintFor].
+     */
+    protected fun calculateBlockInlayStartOffset(element: XmlToken): Int? {
         val width = EditorUtil.getPlainSpaceWidth(editor)
-        val document = PsiDocumentManager.getInstance(file.project).getDocument(file)
-        val line = document!!.getLineNumber(element.parent.textRange.startOffset)
+
+        val document = PsiDocumentManager.getInstance(file.project).getDocument(file) ?: return null
+        val parentStartOffset = element.parent?.textRange?.startOffset ?: return null
+
+        val line = document.getLineNumber(parentStartOffset)
         val startOffset = document.getLineStartOffset(line)
-        return (element.parent.textRange.startOffset - startOffset) * width
+        return (parentStartOffset - startOffset) * width
     }
 
     /**

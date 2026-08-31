@@ -14,6 +14,9 @@
 - [63](https://github.com/picimako/just-kitting/issues/63): The light services inlay hint is now displayed in module
 descriptor files too. There it lists the light services in the corresponding modules.
 
+### Fixed
+- Fixed some potential `NullPointerException`s when calculating the offsets for the light services inlay hints.
+
 ## [1.5.0]
 ### Changed
 - New supported IDE version range: 2026.1+.
