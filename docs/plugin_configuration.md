@@ -6,7 +6,7 @@
   * [Supported tags](#supported-tags)
     * [extensions.localInspection / extensions.globalInspection](#extensionslocalinspection--extensionsglobalinspection)
     * [extensions.intentionAction](#extensionsintentionaction)
-* [Extension icon line marker icons](#extension-icon-line-marker-icons)
+* [Extension/Action icon line markers](#extensionaction-icon-line-markers)
 * [Line marker for updating the Gradle Wrapper version](#line-marker-for-updating-the-gradle-wrapper-version)
 <!-- TOC -->
 
@@ -105,19 +105,23 @@ For now, the plugin cannot evaluate the family name of `IntentionAction` classes
 
 ![intention_action_tag_folding](assets/intention_action_tag_folding.PNG)
 
-## Extension icon line marker icons
+## Extension/Action icon line markers
 
 ![](https://img.shields.io/badge/linemarker-orange) ![](https://img.shields.io/badge/since-1.0.0-blue) [![](https://img.shields.io/badge/implementation-AnActionIconLineMarkerProvider-blue)](../src/main/java/com/picimako/justkitting/linemarker/AnActionIconLineMarkerProvider.java)
 
-In order to improve the comprehension of extension and action registrations in plugin descriptor files, the following two tag attributes
+To improve the comprehension of extension and action registrations in plugin descriptor files, the following two tag attributes
 are extended with a line marker to show the referenced icons:
 - `idea-plugin.actions.action@icon`
-- `idea-plugin.actions.group.action@icon`
+- `idea-plugin.actions.group.action@icon` at any level of nesting of `<group>` tags
 - `idea-plugin.extensions.toolWindow@icon`
 
-Currently, icons in `com.intellij.icons.AllIcons` as well as in any class residing in the `icons` package are supported,
-and it works on plugin descriptor files in the intellij-community project too. Icons specified by relative path within the current project,
-or by fully qualified names are not supported.
+Currently supported locations:
+- icons in `com.intellij.icons.AllIcons`
+- classes residing in the top-level `icons` package,
+- fully qualified names to a certain extent
+
+It works on plugin/modules descriptor files in plugins and the intellij-community project.
+Icons specified by a relative path within the current project are not supported.
 
 The line marker is enabled by default and can be disabled under `Settings > Editor > General > Gutter Icons > Just Kitting >
 Extension and action icons in IDE plugin descriptor files`.

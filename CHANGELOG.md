@@ -8,6 +8,8 @@
 ### Added
 - [61](https://github.com/picimako/just-kitting/issues/61): Added a new tool window to interact with
 `com.intellij.ide.util.PropertiesComponent`. You can set, query and delete values on the application and project levels.
+- Action and tool window icons in plugin/module descriptor XMLs are displayed in the gutter for icon classes other than
+`AllIcons` and once situated in `icons` packages. It can't load icons from all plugins but makes an attempt to do so.
 
 ### Changed
 - New supported IDE version range: 2026.2+.
