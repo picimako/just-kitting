@@ -5,6 +5,10 @@
 ## [Unreleased]
 
 ## [1.6.0]
+### Added
+- [61](https://github.com/picimako/just-kitting/issues/61): Added a new tool window to interact with
+`com.intellij.ide.util.PropertiesComponent`. You can set, query and delete values on the application and project levels.
+
 ### Changed
 - New supported IDE version range: 2026.2+.
 - [63](https://github.com/picimako/just-kitting/issues/63): The light services inlay hint is now displayed in module

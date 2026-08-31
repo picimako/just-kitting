@@ -14,6 +14,7 @@ but can still be useful to improve the plugin development process. They are in t
 - [CallMatcher](docs/call_matcher.md)
 - [PersistentStateComponents](docs/persistent_state_components.md)
 - [Plugin Configuration](docs/plugin_configuration.md)
+- [PropertiesComponent](docs/properties_component.md)
 - [Miscellaneous](docs/misc.md)
 <!-- Plugin description end -->
 
@@ -27,12 +28,20 @@ Please use your best judgement when using these features to make sure they actua
 ## Contributions
 
 If you'd like to contribute, first please check whether the functionality you are implementing would be a better fit for the
-official DevKit plugin, and whether there is already a [JetBrains YouTrack ticket](https://youtrack.jetbrains.com/issues?q=Subsystem:%20%7BPlugin%20Development%20(DevKit)%7D) for that.
+official DevKit plugin, and whether there is already a JetBrains YouTrack ticket:
+- [Subsystem: Plugin Development (DevKit)](https://youtrack.jetbrains.com/issues?q=Subsystem:%20%7BPlugin%20Development%20(DevKit)%7D)
+- [Subsystem: DevKit ](https://youtrack.jetbrains.com/issues?q=Subsystem:%20DevKit%20) 
+for that.
+
 This is to minimize the chance of clashing with the roadmap and development of the DevKit plugin.
 
 ## Kotlin support
 
 Most of the functionality in this plugin is implemented for Java code, with some also supporting Kotlin as well.
+
+## Icons
+
+Icons used in the `PropertiesComponent` tool window were generated with the [IntelliJ Icon Blender](https://jreznot.github.io/intellij-icon-blender/).
 
 ## License
 

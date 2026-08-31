@@ -64,6 +64,9 @@
                             serviceImplementation="com.picimako.justkitting.codefolding.JustKittingCodeFoldingSettingsImpl"/>
 
         <codeInsight.lineMarkerProvider language="XML" implementationClass="com.picimako.justkitting.linemarker.PluginDescriptorIconLineMarkerProvider"/>
+
+        <toolWindow id="PropertiesComponent" anchor="right" icon="AllIcons.Actions.Properties" doNotActivateOnStart="true"
+                    factoryClass="com.picimako.justkitting.properties.PropertiesComponentToolWindowFactory"/>
     </extensions>
 
     <actions>
