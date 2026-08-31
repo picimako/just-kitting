@@ -1,6 +1,6 @@
 //Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
-package com.picimako.justkitting.inlayhint
+package com.picimako.justkitting.inlayhint.services
 
 import com.intellij.codeInsight.hints.ChangeListener
 import com.intellij.codeInsight.hints.FactoryInlayHintsCollector
@@ -31,7 +31,7 @@ import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import com.intellij.util.ui.JBUI
-import com.picimako.justkitting.inlayhint.Settings.Companion.MAX_NO_OF_SERVICES
+import com.picimako.justkitting.inlayhint.services.Settings.Companion.MAX_NO_OF_SERVICES
 import com.picimako.justkitting.resources.JustKittingBundle.message
 import java.util.function.Supplier
 import javax.swing.DefaultComboBoxModel

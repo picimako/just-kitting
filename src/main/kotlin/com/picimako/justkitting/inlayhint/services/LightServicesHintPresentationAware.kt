@@ -2,7 +2,7 @@
 
 @file:Suppress("UnstableApiUsage")
 
-package com.picimako.justkitting.inlayhint
+package com.picimako.justkitting.inlayhint.services
 
 import com.intellij.codeInsight.hints.InlayPresentationFactory
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
