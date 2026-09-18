@@ -57,6 +57,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
         get() = message("inlay.hints.light.services.settings.type.title")
 
     override val previewText: String
+        //language=XML
         get() = """
                 <idea-plugin>
                     <extensions defaultExtensionNs="com.intellij">
@@ -163,13 +164,13 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
 
     override fun getCollectorFor(file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): InlayHintsCollector {
         return object : FactoryInlayHintsCollector(editor) {
-            val hintAdder = LightServicesModeBasedHintAdder(settings, sink, factory, editor, file)
+            private val hintAdder = LightServicesModeBasedHintAdder(settings, sink, factory, editor, file)
 
             override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
                 if (settings.lightServicesDisplayMode != InlayDisplayMode.Disabled) {
                     //For the preview in Inlay Hints settings, there is no need to query the project for actual light services, hence the distinction
                     val isSettingsPreview = isInSettingsPreview()
-                    //limit the hint to the plugin's main config file. Exclude optional dependencies' configurations
+                    //limit the hint to the plugin.xml or module descriptor file. Exclude optional dependencies' configurations
                     if (!file.project.service<DumbService>().isDumb && isExtensionsXmlTagToken(element)) {
                         if (isSettingsPreview) hintAdder.addPreviewHints(element as XmlToken)
                         else hintAdder.addRealHints(element as XmlToken, isPluginXml = file.name == "plugin.xml")

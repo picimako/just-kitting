@@ -52,7 +52,14 @@
             </className>
         </intentionAction>
 
-        <codeInsight.inlayProvider language="XML" implementationClass="com.picimako.justkitting.inlayhint.LightServicesInlayHintsProvider"/>
+        <codeInsight.inlayProvider language="XML" implementationClass="com.picimako.justkitting.inlayhint.services.LightServicesInlayHintsProvider"/>
+        <codeInsight.declarativeInlayProvider
+                language="XML"
+                group="OTHER_GROUP"
+                isEnabledByDefault="true"
+                implementationClass="com.picimako.justkitting.inlayhint.buildfile.ModuleBuildFileInlayHintsProvider"
+                nameKey="inlay.hints.module.build.file"
+                providerId="just.kitting.module.build.file"/>
         <psi.referenceContributor language="JAVA" implementation="com.picimako.justkitting.reference.CallMatcherReferenceContributor"/>
 
         <defaultLiveTemplates file="/liveTemplates/JustKitting.xml"/>

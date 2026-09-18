@@ -10,6 +10,8 @@
 `com.intellij.ide.util.PropertiesComponent`. You can set, query and delete values on the application and project levels.
 - Action and tool window icons in plugin/module descriptor XMLs are displayed in the gutter for icon classes other than
 `AllIcons` and once situated in `icons` packages. It can't load icons from all plugins but makes an attempt to do so.
+- [64](https://github.com/picimako/just-kitting/issues/64): Added inlay hints in `plugin.xml` files after each `idea-plugin.content.module` tag. The inlay hint is clickable and
+navigates to the `build.gradle.kts` file of the linked module descriptor file's parent module.
 
 ### Changed
 - New supported IDE version range: 2026.2+.

@@ -8,6 +8,7 @@
     * [extensions.intentionAction](#extensionsintentionaction)
 * [Extension/Action icon line markers](#extensionaction-icon-line-markers)
 * [Line marker for updating the Gradle Wrapper version](#line-marker-for-updating-the-gradle-wrapper-version)
+* [Inlay hints to navigate to module build files from plugin.xml](#inlay-hints-to-navigate-to-module-build-files-from-pluginxml)
 <!-- TOC -->
 
 ## Configuration file diffs with the IntelliJ Platform Plugin Template
@@ -145,3 +146,31 @@ Upon clicking the line marker, it creates a new Gradle run configuration (or reu
 ```
 wrapper --gradle-version=<value of gradleVersion> --distribution-type=<type, i.e. bin or all, from distributionUrl>
 ```
+
+## Inlay hints to navigate to module build files from plugin.xml
+
+![](https://img.shields.io/badge/inlayhint-orange) ![](https://img.shields.io/badge/since-1.6.0-blue) [![](https://img.shields.io/badge/implementation-AnActionIconLineMarkerProvider-blue)](../src/main/kotlin/com/picimako/justkitting/inlayhint/buildfile/ModuleBuildFileInlayHintsProvider.kt)
+
+The `plugin.xml` file in multi-module (i.e. split-mode) projects defines content modules like this
+(using the [intellij-platform-modular-plugin-template](https://github.com/JetBrains/intellij-platform-modular-plugin-template) as the example):
+
+```xml
+<idea-plugin>
+    <content>
+      <module name="modular.plugin.shared" loading="required"/>
+      <module name="modular.plugin.frontend"/>
+      <module name="modular.plugin.backend"/>
+    </content>
+</idea-plugin>
+```
+
+The `name` attribute of each `<module>` tag resolves to the corresponding module's module descriptor files,
+e.g. for the example above `PROJECT_ROOT/frontend/src/main/resources/modular.plugin.frontend.xml` for the frontend module.
+
+If one wants to navigate to the build file (`build.gradle.kts`, `BUILD.bazel`) of a module from the `plugin.xml`, there is
+no direct and quick way, but e.g. navigating through Search Everywhere, the Project View, etc.
+
+In order to make this navigation easier, an inlay hint is added after each `<module>` tag that, upon Ctrl/Cmd + clicking on it,
+resolves the module's build file and opens it on a new editor tab or focuses on it if it is already open.
+
+![module_build_file_inlay_hint](assets/module_build_file_inlay_hint.PNG)
