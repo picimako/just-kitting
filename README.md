@@ -1,7 +1,7 @@
 # Just Kitting IntelliJ plugin
 
 [![Version](https://img.shields.io/jetbrains/plugin/v/21139-just-kitting.svg)](https://plugins.jetbrains.com/plugin/21139-just-kitting)
-![Build](https://github.com/picimako/mockitools/workflows/Build/badge.svg)
+![Build](https://github.com/picimako/just-kitting/workflows/Build/badge.svg)
 
 <!-- Plugin description -->
 A plugin for JetBrains IDE plugin developers to provide them with extra functionality during plugin development, besides the official DevKit plugin.
