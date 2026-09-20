@@ -60,6 +60,13 @@
                 implementationClass="com.picimako.justkitting.inlayhint.buildfile.ModuleBuildFileInlayHintsProvider"
                 nameKey="inlay.hints.module.build.file"
                 providerId="just.kitting.module.build.file"/>
+        <codeInsight.declarativeInlayProvider
+                language="kotlin"
+                group="OTHER_GROUP"
+                isEnabledByDefault="false"
+                implementationClass="com.picimako.justkitting.inlayhint.enums.EnumFieldInlayHintsProvider"
+                nameKey="inlay.hints.enum.field"
+                providerId="just.kitting.enum.fields"/>
         <psi.referenceContributor language="JAVA" implementation="com.picimako.justkitting.reference.CallMatcherReferenceContributor"/>
 
         <defaultLiveTemplates file="/liveTemplates/JustKitting.xml"/>

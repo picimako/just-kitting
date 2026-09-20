@@ -27,3 +27,21 @@ psiMethodCallExpression.getArgumentList().getExpressions().length > 0;
 psiMethodCallExpression.getArgumentList().isEmpty();
 !psiMethodCallExpression.getArgumentList().isEmpty();
 ```
+
+## Enum field inlay hints
+
+![](https://img.shields.io/badge/inlayhint-orange) ![](https://img.shields.io/badge/since-1.6.0-blue) [![](https://img.shields.io/badge/implementation-OptimizeExpressionsInspection-blue)](../src/main/kotlin/com/picimako/justkitting/inlayhint/enums/EnumFieldInlayHintsProvider.kt)
+
+This inlay hint is a small utility that displays the value of a specific field of an enum constant after each usage of that constant.
+
+It can be useful in cases where the specified field value truly adds more context to the enum's usage, for instance,
+showing the actual response code value for the `com.intellij.microservices.http.HttpCode` enum constants.
+
+![enum-field-inlay-hints](assets/enum_field_inlay_hints.PNG)
+
+It is disabled by default because it supports only two enums at the moment and might be useful in specific circumstances.
+
+NOTES:
+* it doesn't support enums implemented in Java
+* it requires the enum classes to be on the classpath to resolve
+* the list enums and field names are not configurable yet

@@ -12,6 +12,7 @@
 `AllIcons` and once situated in `icons` packages. It can't load icons from all plugins but makes an attempt to do so.
 - [64](https://github.com/picimako/just-kitting/issues/64): Added inlay hints in `plugin.xml` files after each `idea-plugin.content.module` tag. The inlay hint is clickable and
 navigates to the `build.gradle.kts` file of the linked module descriptor file's parent module.
+- [65](https://github.com/picimako/just-kitting/issues/65): Added inlay hints for enum constants for pre-configured enums and field names. Has very limited enum support and is disabled by default.
 
 ### Changed
 - New supported IDE version range: 2026.2+.
