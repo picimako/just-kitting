@@ -174,3 +174,6 @@ In order to make this navigation easier, an inlay hint is added after each `<mod
 resolves the module's build file and opens it on a new editor tab or focuses on it if it is already open.
 
 ![module_build_file_inlay_hint](assets/module_build_file_inlay_hint.PNG)
+
+NOTE: the inlay hints provider uses a naive approach for finding the build file, so it may not be able to find it
+in all cases.

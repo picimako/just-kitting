@@ -29,7 +29,7 @@ private const val BUILD_BAZEL = "BUILD.bazel"
 /**
  * Display an inlay hint in `plugin.xml` files after each `idea-plugin.content.module` tag.
  *
- * The inlay hint is clickable as navigates to the `build.gradle.kts` or `BUILD.bazel` file of the
+ * The inlay hint is clickable and navigates to the `build.gradle.kts` or `BUILD.bazel` file of the
  * linked module descriptor file's parent module.
  *
  * NOTE: this is not yet covered with integration tests
