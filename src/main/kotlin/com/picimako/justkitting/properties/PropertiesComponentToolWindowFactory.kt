@@ -15,7 +15,7 @@ class PropertiesComponentToolWindowFactory : ToolWindowFactory {
         val contentManager = toolWindow.contentManager
 
         val panel = contentManager.factory.createContent(PropertiesComponentPanel.create(project), null, true)
-        panel.isCloseable = false
+        panel.isCloseable = true
 
         contentManager.addContent(panel)
     }
