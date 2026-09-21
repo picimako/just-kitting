@@ -79,15 +79,14 @@
     </extensions>
 
     <actions>
+        <!--suppress PluginXmlCapitalization -->
         <action id="just.kitting.generate.service.static.getter"
-                class="com.picimako.justkitting.action.getinstance.GenerateStaticGetInstanceAction"
-                text="Service getInstance()" description="${project.description}">
+                class="com.picimako.justkitting.action.getinstance.GenerateStaticGetInstanceAction">
             <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup2"/>
         </action>
 
         <action id="just.kitting.compare.config.file.with.plugin.template"
-                class="com.picimako.justkitting.action.diff.CompareConfigFileWithPluginTemplateAction"
-                text="Compare with Platform Plugin Template Version">
+                class="com.picimako.justkitting.action.diff.CompareConfigFileWithPluginTemplateAction">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CompareFileWithEditor"/>
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="CompareClipboardWithSelection"/>
         </action>
