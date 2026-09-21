@@ -58,9 +58,7 @@ public class PluginDescriptorTagsFoldingBuilder extends CustomFoldingBuilder {
      * This is a workaround because {@link DescriptorUtil#isPluginXml} doesn't seem to work in unit test mode.
      */
     private static boolean isPluginDescriptor(XmlFile xmlFile) {
-        return ApplicationManager.getApplication().isUnitTestMode()
-               ? xmlFile.getName().toLowerCase().endsWith("plugin.xml")
-               : DescriptorUtil.isPluginXml(xmlFile);
+        return DescriptorUtil.getIdeaPlugin(xmlFile) != null;
     }
 
     //Placeholder text

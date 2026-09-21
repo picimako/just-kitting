@@ -2,7 +2,6 @@
 
 package com.picimako.justkitting.codefolding.plugindescriptor;
 
-import com.intellij.testFramework.TestDataPath;
 import com.picimako.justkitting.codefolding.ContentRootsJustKittingCodeFoldingTestBase;
 import com.picimako.justkitting.codefolding.JustKittingCodeFoldingSettings;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Integration test for {@link PluginDescriptorTagsFoldingBuilder}.
  */
-@TestDataPath("$CONTENT_ROOT/testData/codefolding/plugindescriptor/resourcebundle")
 public final class PluginDescriptorTagsFoldingBuilderResourceBundleTest extends ContentRootsJustKittingCodeFoldingTestBase {
 
     @Override
@@ -18,10 +16,8 @@ public final class PluginDescriptorTagsFoldingBuilderResourceBundleTest extends 
         return "src/test/testData/codefolding/plugindescriptor/resourcebundle";
     }
 
-    //Folding - inspections
-
     @Test
-    public void testPlugin() {
+    public void testFoldingInPluginXml() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
 
         getFixture().copyFileToProject("src/main/resources/messages/LowerLevelBundle.properties");
@@ -30,7 +26,16 @@ public final class PluginDescriptorTagsFoldingBuilderResourceBundleTest extends 
     }
 
     @Test
-    public void testPluginWithTopLevelResourceBundle() {
+    public void testFoldingInModuleDescriptor() {
+        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
+
+        getFixture().copyFileToProject("src/main/resources/messages/LowerLevelBundle.properties");
+
+        doXmlTestFolding("src/main/resources/my.plugin.module.descriptor.xml");
+    }
+
+    @Test
+    public void testFoldingInPluginXmlWithTopLevelResourceBundle() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
 
         getFixture().copyFileToProject("src/main/resources/messages/LowerLevelBundle.properties");
