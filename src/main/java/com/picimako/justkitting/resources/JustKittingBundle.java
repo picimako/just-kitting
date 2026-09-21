@@ -11,15 +11,11 @@ import org.jetbrains.annotations.PropertyKey;
 /**
  * Resource bundle for all messages in this plugin.
  */
-public class JustKittingBundle extends DynamicBundle {
+public final class JustKittingBundle {
 
     @NonNls
     public static final String JUST_KITTING_BUNDLE = "messages.JustKittingBundle";
-    private static final JustKittingBundle INSTANCE = new JustKittingBundle();
-
-    private JustKittingBundle() {
-        super(JUST_KITTING_BUNDLE);
-    }
+    private static final DynamicBundle INSTANCE = new DynamicBundle(JustKittingBundle.class, JUST_KITTING_BUNDLE);
 
     public static @Nls String message(@NotNull @PropertyKey(resourceBundle = JUST_KITTING_BUNDLE) String key, Object @NotNull ... params) {
         return INSTANCE.getMessage(key, params);
