@@ -20,43 +20,49 @@ public final class PluginDescriptorTagsFoldingBuilderNoResourceBundleTest extend
 
     @Test
     public void testNoFoldingInspectionPlugin() {
-        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(false);
-        doXmlTestFolding();
+        performTest(false);
     }
 
     @Test
     public void testNoFoldingIntentionPlugin() {
-        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(false);
-        doXmlTestFolding();
+        performTest(false);
     }
 
-    //Folding - all
+    //All
 
     @Test
     public void testPlugin() {
-        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
-        doXmlTestFolding();
+        performTest(true);
     }
 
-    //Folding - inspections
+    //Inspections
 
     @Test
     public void testOtherLocalInspectionPlugin() {
-        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
-        doXmlTestFolding();
+        performTest(true);
     }
 
     @Test
     public void testOtherGlobalInspectionPlugin() {
-        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
-        doXmlTestFolding();
+        performTest(true);
     }
 
-    //Folding - intention actions
+    //Intention actions
 
     @Test
     public void testIntentionPlugin() {
-        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
+        performTest(true);
+    }
+
+    //Declarative inlay hints
+
+    @Test
+    public void testDeclarativeInlayHintPlugin() {
+        performTest(true);
+    }
+
+    private void performTest(boolean collapsePluginDescriptorTags) {
+        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(collapsePluginDescriptorTags);
         doXmlTestFolding();
     }
 }

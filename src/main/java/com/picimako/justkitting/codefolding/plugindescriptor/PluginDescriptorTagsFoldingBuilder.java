@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Provides code folding for various XML tags within plugin descriptor files.
- * <p>
- * Descriptor files other than {@code plugin.xml} are also supported.
+ * Provides code folding for various XML tags within plugin.xml and module descriptor files.
  *
  * @since 0.4.0
  */
@@ -31,7 +29,9 @@ public class PluginDescriptorTagsFoldingBuilder extends CustomFoldingBuilder {
     private static final Set<PluginDescriptorTagFolder> TAG_FOLDERS = Set.of(
         new InspectionFolder("localInspection"),
         new InspectionFolder("globalInspection"),
-        new IntentionActionFolder());
+        new IntentionActionFolder(),
+        new CodeInsightDeclarativeInlayProviderFolder()
+    );
 
     @Override
     protected void buildLanguageFoldRegions(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiElement root, @NotNull Document document, boolean quick) {
@@ -54,9 +54,6 @@ public class PluginDescriptorTagsFoldingBuilder extends CustomFoldingBuilder {
         }
     }
 
-    /**
-     * This is a workaround because {@link DescriptorUtil#isPluginXml} doesn't seem to work in unit test mode.
-     */
     private static boolean isPluginDescriptor(XmlFile xmlFile) {
         return DescriptorUtil.getIdeaPlugin(xmlFile) != null;
     }

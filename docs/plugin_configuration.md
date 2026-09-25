@@ -6,6 +6,7 @@
   * [Supported tags](#supported-tags)
     * [extensions.localInspection / extensions.globalInspection](#extensionslocalinspection--extensionsglobalinspection)
     * [extensions.intentionAction](#extensionsintentionaction)
+    * [extensions.codeInsight.declarativeInlayProvider](#extensionscodeinsightdeclarativeinlayprovider)
 * [Extension/Action icon line markers](#extensionaction-icon-line-markers)
 * [Line marker for updating the Gradle Wrapper version](#line-marker-for-updating-the-gradle-wrapper-version)
 * [Inlay hints to navigate to module build files from plugin.xml](#inlay-hints-to-navigate-to-module-build-files-from-pluginxml)
@@ -105,6 +106,26 @@ For now, the plugin cannot evaluate the family name of `IntentionAction` classes
 **Example:**
 
 ![intention_action_tag_folding](assets/intention_action_tag_folding.PNG)
+
+#### extensions.codeInsight.declarativeInlayProvider
+
+![](https://img.shields.io/badge/since-1.6.0-blue) [![](https://img.shields.io/badge/implementation-CodeInsightDeclarativeInlayProviderFolder-blue)](../src/main/java/com/picimako/justkitting/codefolding/plugindescriptor/CodeInsightDeclarativeInlayProviderFolder.java)
+
+The `<codeInsight.declarativeInlayProvider>` tags within `<extensions defaultExtensionNs="com.intellij">` fold in the form of
+**for [language] at [group] / [resolved nameKey] ...**.
+
+| Attribute  | Attribute value example | Placeholder text                                                                                                                                |
+|------------|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| `language` | JAVA                    | *for JAVA*                                                                                                                                      |
+| `group`    | OTHER_GROUP             | *at OTHER_GROUP* when specified. `at [missing group]` when the attribute is not specified.                                                            |
+| `nameKey`  | some.name.key           | The resolve message when resolvable. `[missing nameKey]` when the attribute is not specified. `[unresolved nameKey]` when could not resolve it. |
+
+If the language is not configured (e.g. not available in earlier platform versions) the tag folds without the language as
+**at [group] / [resolved nameKey] ...**
+
+It folds `<codeInsight.declarativeInlayProvider>` tags with child `<option>` tags too, but those child tags are not incorporated into the placeholder text.
+
+![declarative_inlay_provider_tag_folding](assets/declarative_inlay_provider_tag_folding.PNG)
 
 ## Extension/Action icon line markers
 

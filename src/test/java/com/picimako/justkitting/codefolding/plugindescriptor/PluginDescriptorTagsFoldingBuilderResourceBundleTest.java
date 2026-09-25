@@ -16,6 +16,8 @@ public final class PluginDescriptorTagsFoldingBuilderResourceBundleTest extends 
         return "src/test/testData/codefolding/plugindescriptor/resourcebundle";
     }
 
+    //plugin.xml
+
     @Test
     public void testFoldingInPluginXml() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
@@ -26,15 +28,6 @@ public final class PluginDescriptorTagsFoldingBuilderResourceBundleTest extends 
     }
 
     @Test
-    public void testFoldingInModuleDescriptor() {
-        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
-
-        getFixture().copyFileToProject("src/main/resources/messages/LowerLevelBundle.properties");
-
-        doXmlTestFolding("src/main/resources/my.plugin.module.descriptor.xml");
-    }
-
-    @Test
     public void testFoldingInPluginXmlWithTopLevelResourceBundle() {
         JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
 
@@ -42,5 +35,16 @@ public final class PluginDescriptorTagsFoldingBuilderResourceBundleTest extends 
         getFixture().copyFileToProject("src/main/resources/messages/TopLevelBundle.properties");
 
         doXmlTestFolding("src/main/resources/META-INF/topLevelResourceBundlePlugin.xml");
+    }
+
+    //module descriptor
+
+    @Test
+    public void testFoldingInModuleDescriptor() {
+        JustKittingCodeFoldingSettings.getInstance().setCollapsePluginDescriptorTags(true);
+
+        getFixture().copyFileToProject("src/main/resources/messages/LowerLevelBundle.properties");
+
+        doXmlTestFolding("src/main/resources/my.plugin.module.descriptor.xml");
     }
 }
