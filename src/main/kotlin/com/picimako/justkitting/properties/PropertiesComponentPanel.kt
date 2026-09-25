@@ -23,6 +23,7 @@ import com.intellij.ui.dsl.builder.Row
 import com.intellij.ui.dsl.builder.actionButton
 import com.intellij.ui.dsl.builder.bind
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.rows
 import com.intellij.ui.dsl.builder.text
 import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import com.picimako.justkitting.ServiceLevelDecider.ServiceLevel
@@ -107,6 +108,7 @@ class PropertiesComponentPanel {
                     }
                     row {
                         textArea()
+                            .rows(3) //Initial custom height, so that it is apparent that the field is a multi-row area
                             .text(settings.value)
                             .apply { component.emptyText.text = message("pc.key.value.value.empty.text") }
                             .align(AlignX.FILL)
