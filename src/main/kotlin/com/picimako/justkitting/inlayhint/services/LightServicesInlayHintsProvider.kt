@@ -50,7 +50,7 @@ import javax.swing.event.DocumentEvent
  *
  * @since 0.1.0
  */
-@Suppress("UnstableApiUsage", "HardCodedStringLiteral")
+@Suppress("HardCodedStringLiteral")
 class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
     override val key: SettingsKey<Settings>
         get() = SettingsKey("light.services")
@@ -82,19 +82,17 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                      * Display mode: [<combobox with options>]
                      */
                     row(message("inlay.hints.light.services.display.mode.label")) {
-
                         //Add combobox to select display mode
-                        val lightServicesDisplayMode = comboBox<InlayDisplayMode>(
-                            lightServicesDisplayModeModel,
-                            listCellRenderer { text(value!!.displayName)}
-                        ).component
-
-                        //Update Settings properties and related UI controls
-                        lightServicesDisplayMode.addActionListener {
-                            settings.lightServicesDisplayMode = lightServicesDisplayMode.selectedItem as InlayDisplayMode
-                            maxNoOfServicesTextField.isEnabled = settings.lightServicesDisplayMode == InlayDisplayMode.ListOfLightServices
-                            listener.settingsChanged()
-                        }
+                        comboBox(lightServicesDisplayModeModel, listCellRenderer { text(value!!.displayName) })
+                            .component.apply {
+                                //Update Settings properties and related UI controls
+                                addActionListener {
+                                    settings.lightServicesDisplayMode = selectedItem as InlayDisplayMode
+                                    maxNoOfServicesTextField.isEnabled =
+                                        settings.lightServicesDisplayMode == InlayDisplayMode.ListOfLightServices
+                                    listener.settingsChanged()
+                                }
+                            }
                     }
 
                     /*
@@ -112,7 +110,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
 
                         maxNoOfServicesTextField.document.addDocumentListener(object : DocumentAdapter() {
                             override fun textChanged(e: DocumentEvent) {
-                                ComponentValidator.getInstance(maxNoOfServicesTextField).ifPresent { v: ComponentValidator -> v.revalidate() }
+                                ComponentValidator.getInstance(maxNoOfServicesTextField).ifPresent { it.revalidate() }
                                 listener.settingsChanged()
                             }
                         })
@@ -123,36 +121,32 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
             }
 
             /**
-             * ComponentValidator is used since CellBuilder.intTextField with its validation mechanism won't work for some reason.
+             * `ComponentValidator` is used since `CellBuilder.intTextField` with its validation mechanism won't work for some reason.
              *
              * See [Validation errors](https://jetbrains.design/intellij/principles/validation_errors/).
              */
             private fun installValidatorForMaxNoOfServices() {
                 ComponentValidator(ApplicationManager.getApplication()).withValidator(Supplier {
                     maxNoOfServicesTextField.let {
-                        val maxServices: String = it.text
-                        if (maxServices.isNotBlank()) {
-                            try {
-                                if (maxServices.toInt() !in 1..MAX_NO_OF_SERVICES) {
-                                    ValidationInfo(
-                                        message(
-                                            "inlay.hints.light.services.settings.value.must.be.between.x.and.y",
-                                            1,
-                                            MAX_NO_OF_SERVICES
-                                        ), maxNoOfServicesTextField
-                                    )
-                                } else {
-                                    settings.maxNumberOfServicesToDisplay = maxServices.toInt()
-                                    null
-                                }
-                            } catch (_: NumberFormatException) {
+                        try {
+                            val maxServicesAsInt = it.text.toInt()
+                            if (maxServicesAsInt in 1..MAX_NO_OF_SERVICES) {
+                                settings.maxNumberOfServicesToDisplay = maxServicesAsInt
+                                null
+                            } else {
                                 ValidationInfo(
-                                    message("inlay.hints.light.services.settings.value.must.be.a.number"),
-                                    maxNoOfServicesTextField
+                                    message(
+                                        "inlay.hints.light.services.settings.value.must.be.between.x.and.y",
+                                        1,
+                                        MAX_NO_OF_SERVICES
+                                    ), it
                                 )
                             }
-                        } else {
-                            null
+                        } catch (_: NumberFormatException) {
+                            ValidationInfo(
+                                message("inlay.hints.light.services.settings.value.must.be.a.number"),
+                                it
+                            )
                         }
                     }
                 }).installOn(maxNoOfServicesTextField)

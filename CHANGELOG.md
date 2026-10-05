@@ -22,6 +22,7 @@ descriptor files too. There it lists the light services in the corresponding mod
 
 ### Fixed
 - Fixed some potential `NullPointerException`s when calculating the offsets for the light services inlay hints.
+- Plugin/module descriptor files inside JAR files no longer show the light services inlay hint.
 
 ## [1.5.0]
 ### Changed
