@@ -1,5 +1,7 @@
 //Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
+@file:Suppress("UnstableApiUsage")
+
 package com.picimako.justkitting.inlayhint.services
 
 import com.intellij.codeInsight.hints.ChangeListener
@@ -162,7 +164,11 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
         }
     }
 
-    override fun getCollectorFor(file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): InlayHintsCollector {
+    override fun getCollectorFor(file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink)
+            : InlayHintsCollector {
+        //Descriptors inside JARs are excluded, so that they don't show a false list of light services from the current project
+        if (file.virtualFile.path.contains(".jar!/")) return NoopInlayHintsCollector()
+
         return object : FactoryInlayHintsCollector(editor) {
             private val hintAdder = LightServicesModeBasedHintAdder(settings, sink, factory, editor, file)
 
@@ -212,4 +218,8 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
     override fun createSettings(): Settings = Settings()
 
     override fun isLanguageSupported(language: Language): Boolean = language is XMLLanguage
+}
+
+private class NoopInlayHintsCollector : InlayHintsCollector {
+    override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean = false
 }
