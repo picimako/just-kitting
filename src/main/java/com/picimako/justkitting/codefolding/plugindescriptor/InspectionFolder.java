@@ -3,20 +3,16 @@
 package com.picimako.justkitting.codefolding.plugindescriptor;
 
 import static com.intellij.openapi.util.text.StringUtil.isEmpty;
+import static com.intellij.util.containers.ContainerUtil.exists;
 
 import com.intellij.lang.folding.FoldingDescriptor;
-import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.SmartList;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.idea.devkit.util.DescriptorUtil;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.UnaryOperator;
@@ -29,9 +25,9 @@ import java.util.function.UnaryOperator;
 @RequiredArgsConstructor
 public final class InspectionFolder extends PluginDescriptorTagFolder {
     /**
-     * Folding happens only when at least one these attributes is specified. Otherwise, there is nothing to fold.
+     * Folding happens only when at least one of these attributes is specified. Otherwise, there is nothing to fold.
      */
-    private static final Set<String> FOLDABLE_LOCAL_INSPECTION_ATTRIBUTES = Set.of(
+    private static final Set<String> FOLDABLE_ATTRIBUTES = Set.of(
         "language", "groupPath", "groupPathKey", "groupName", "groupKey", "displayName", "key"
     );
 
@@ -52,7 +48,7 @@ public final class InspectionFolder extends PluginDescriptorTagFolder {
                 localInspection.getNode(),
                 /*
                  * Folding starts at the first attribute's start offset, and ends at before the tag's closing > symbol.
-                 * This handles the both cases when the first attribute is on the same line as the tag name,
+                 * This handles both cases when the first attribute is on the same line as the tag name,
                  * and also when it is in the next line.
                  */
                 TextRange.create(attributes[0].getNameElement().getTextOffset(), localInspection.getTextRange().getEndOffset() - 1),
@@ -62,8 +58,7 @@ public final class InspectionFolder extends PluginDescriptorTagFolder {
 
     @Override
     public boolean isEligibleForFolding(XmlTag localInspection) {
-        var attributes = localInspection.getAttributes();
-        return attributes.length != 0 && Arrays.stream(attributes).anyMatch(attribute -> FOLDABLE_LOCAL_INSPECTION_ATTRIBUTES.contains(attribute.getName()));
+        return exists(localInspection.getAttributes(), attribute -> FOLDABLE_ATTRIBUTES.contains(attribute.getName()));
     }
 
     @Override
@@ -80,15 +75,6 @@ public final class InspectionFolder extends PluginDescriptorTagFolder {
         return placeholderLanguage + (!placeholderLanguage.isEmpty() && !placeholderPath.isEmpty() ? " " + placeholderPath : placeholderPath);
     }
 
-    /**
-     * Builds the placeholder text for the {@code language} attribute. For example for the JAVA language,
-     * the placeholder text will be {@code for JAVA}
-     *
-     * @return the placeholder text, or empty string if there is no language attribute, or its value is empty
-     */
-    private static String buildLanguage(String language) {
-        return !language.isEmpty() ? "for " + language : "";
-    }
 
     /**
      * Group and name attributes can be specified as explicit string literals or as message bundle keys.
@@ -171,89 +157,5 @@ public final class InspectionFolder extends PluginDescriptorTagFolder {
         return !isEmpty(displayName)
             ? literalValueFormatter.apply(displayName)
             : resolveMessageFromBundle(localInspection, keyAttrName, primaryBundle, wrapInSingleQuotes);
-    }
-
-    private static String resolveMessageFromBundle(XmlTag localInspection, String keyAttrName,
-                                                   @NotNull InspectionFolder.Bundle primaryBundle,
-                                                   boolean wrapInSingleQuotes) {
-        var bundle = primaryBundle;
-        while (bundle != Bundle.NONE) {
-            //GROUP_BUNDLE or BUNDLE
-            if (!bundle.attributeName.isEmpty()) {
-                var bundleAttr = localInspection.getAttribute(bundle.attributeName);
-                if (bundleAttr != null) {
-                    var references = getReferences(bundleAttr.getValueElement());
-                    if (references.isEmpty()) return asKey(localInspection.getAttributeValue(keyAttrName));
-
-                    //For now, it always takes the first ResourceBundleReference, regardless if there are e.g. localizations for more languages
-                    var resolved = findFirstBundleReference(references);
-                    if (resolved.isPresent() && resolved.get() instanceof PropertiesFile propertiesFile) {
-                        return findMessageInPropertiesOrDefaultToKey(propertiesFile, localInspection.getAttributeValue(keyAttrName), wrapInSingleQuotes);
-                    }
-                }
-                bundle = bundle.fallbackTo;
-            }
-            //PLUGIN_DESCRIPTOR: <resource-bundle>
-            else {
-                /*
-                 * <idea-plugin>
-                 *   <resource-bundle>...</resource-bundle>
-                 * </idea-plugin>
-                 */
-                var resourceBundleTag = DescriptorUtil.getIdeaPlugin((XmlFile) localInspection.getContainingFile()).getResourceBundle().getXmlTag();
-                if (resourceBundleTag == null) return asKey(localInspection.getAttributeValue(keyAttrName));
-
-                //For now, it always takes the first ResourceBundleReference, regardless if there are e.g. localizations for more languages
-                return findFirstBundleReference(getReferences(resourceBundleTag))
-                    .map(resolved -> resolved instanceof PropertiesFile propertiesFile
-                        ? findMessageInPropertiesOrDefaultToKey(propertiesFile, localInspection.getAttributeValue(keyAttrName), wrapInSingleQuotes)
-                        : null)
-                    .orElseGet(() -> asKey(localInspection.getAttributeValue(keyAttrName)));
-            }
-        }
-        return asKey(localInspection.getAttributeValue(keyAttrName));
-    }
-
-    /**
-     * Resource bundle locations used by inspection EPs.
-     */
-    @RequiredArgsConstructor
-    private enum Bundle {
-        /**
-         * Used when none of the EP XML tag attributes, nor the {@code <resource-bundle>} tag is specified.
-         */
-        NONE("", null),
-        /**
-         * <pre>{@code
-         * <idea-plugin>
-         *   <resource-bundle>...</resource-bundle>
-         * </idea-plugin>
-         * }</pre>
-         */
-        PLUGIN_DESCRIPTOR("", NONE),
-        /**
-         * <pre>{@code
-         * <localInspection bundle="message.JustKittingBundle" />
-         * }</pre>
-         */
-        BUNDLE("bundle", PLUGIN_DESCRIPTOR),
-        /**
-         * <pre>{@code
-         * <localInspection groupBundle="message.JustKittingBundle" />
-         * }</pre>
-         */
-        GROUP_BUNDLE("groupBundle", BUNDLE);
-
-        /**
-         * The XML tag attribute name associated with this bundle location. Empty string, if the location
-         * is not represented by an XML tag attribute.
-         */
-        @NotNull
-        final String attributeName;
-        /**
-         * The location this bundle definition will fall back to, in case it is not specified.
-         */
-        @Nullable
-        final InspectionFolder.Bundle fallbackTo;
     }
 }

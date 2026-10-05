@@ -3,6 +3,7 @@
 package com.picimako.justkitting.inspection;
 
 import static com.picimako.justkitting.PlatformNames.CACHED_VALUE_PROVIDER_RESULT;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
 import static com.siyeh.ig.callMatcher.CallMatcher.staticCall;
 
 import com.intellij.codeInspection.LocalInspectionTool;
@@ -25,7 +26,6 @@ import com.intellij.psi.PsiNewExpression;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.picimako.justkitting.PlatformNames;
-import com.picimako.justkitting.resources.JustKittingBundle;
 import com.siyeh.ig.callMatcher.CallMatcher;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -94,7 +94,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
                     //If only the 'value' parameter is specified, but no dependency
                     case 1 -> {
                         holder.registerProblem(problemElement.get(),
-                            JustKittingBundle.message("inspection.cached.value.provider.result.without.dependency"),
+                            message("inspection.cached.value.provider.result.without.dependency"),
                             new AddDependencyQuickFix(expressionType, ModificationTracker.MODIFICATION_TRACKER_NEVER_CHANGED),
                             new AddDependencyQuickFix(expressionType, ModificationTracker.PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT));
                     }
@@ -103,7 +103,7 @@ public class CachedValuesInspection extends LocalInspectionTool {
                         if (arguments.getExpressions()[1] instanceof PsiMethodCallExpression
                             && EMPTY_COLLECTION_MATCHER.matches(arguments.getExpressions()[1])) {
                             holder.registerProblem(problemElement.get(),
-                                JustKittingBundle.message("inspection.cached.value.provider.result.without.dependency"),
+                                message("inspection.cached.value.provider.result.without.dependency"),
                                 new ReplaceDependencyQuickFix(expressionType, ModificationTracker.MODIFICATION_TRACKER_NEVER_CHANGED),
                                 new ReplaceDependencyQuickFix(expressionType, ModificationTracker.PSI_MODIFICATION_TRACKER_MODIFICATION_COUNT));
                         }
@@ -155,12 +155,12 @@ public class CachedValuesInspection extends LocalInspectionTool {
 
         @Override
         public @IntentionFamilyName @NotNull String getFamilyName() {
-            return JustKittingBundle.message("inspection.cached.value.provider.add.never.changed.quick.fix.family");
+            return message("inspection.cached.value.provider.add.never.changed.quick.fix.family");
         }
 
         @Override
         public @IntentionName @NotNull String getName() {
-            return JustKittingBundle.message(quickFixKey, modificationTracker.name);
+            return message(quickFixKey, modificationTracker.name);
         }
     }
 

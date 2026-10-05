@@ -6,8 +6,10 @@
   * [Supported tags](#supported-tags)
     * [extensions.localInspection / extensions.globalInspection](#extensionslocalinspection--extensionsglobalinspection)
     * [extensions.intentionAction](#extensionsintentionaction)
-* [Extension icon line marker icons](#extension-icon-line-marker-icons)
+    * [extensions.codeInsight.declarativeInlayProvider](#extensionscodeinsightdeclarativeinlayprovider)
+* [Extension/Action icon line markers](#extensionaction-icon-line-markers)
 * [Line marker for updating the Gradle Wrapper version](#line-marker-for-updating-the-gradle-wrapper-version)
+* [Inlay hints to navigate to module build files from plugin.xml](#inlay-hints-to-navigate-to-module-build-files-from-pluginxml)
 <!-- TOC -->
 
 ## Configuration file diffs with the IntelliJ Platform Plugin Template
@@ -105,19 +107,43 @@ For now, the plugin cannot evaluate the family name of `IntentionAction` classes
 
 ![intention_action_tag_folding](assets/intention_action_tag_folding.PNG)
 
-## Extension icon line marker icons
+#### extensions.codeInsight.declarativeInlayProvider
+
+![](https://img.shields.io/badge/since-1.6.0-blue) [![](https://img.shields.io/badge/implementation-CodeInsightDeclarativeInlayProviderFolder-blue)](../src/main/java/com/picimako/justkitting/codefolding/plugindescriptor/CodeInsightDeclarativeInlayProviderFolder.java)
+
+The `<codeInsight.declarativeInlayProvider>` tags within `<extensions defaultExtensionNs="com.intellij">` fold in the form of
+**for [language] at [group] / [resolved nameKey] ...**.
+
+| Attribute  | Attribute value example | Placeholder text                                                                                                                                |
+|------------|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| `language` | JAVA                    | *for JAVA*                                                                                                                                      |
+| `group`    | OTHER_GROUP             | *at OTHER_GROUP* when specified. `at [missing group]` when the attribute is not specified.                                                            |
+| `nameKey`  | some.name.key           | The resolve message when resolvable. `[missing nameKey]` when the attribute is not specified. `[unresolved nameKey]` when could not resolve it. |
+
+If the language is not configured (e.g. not available in earlier platform versions) the tag folds without the language as
+**at [group] / [resolved nameKey] ...**
+
+It folds `<codeInsight.declarativeInlayProvider>` tags with child `<option>` tags too, but those child tags are not incorporated into the placeholder text.
+
+![declarative_inlay_provider_tag_folding](assets/declarative_inlay_provider_tag_folding.PNG)
+
+## Extension/Action icon line markers
 
 ![](https://img.shields.io/badge/linemarker-orange) ![](https://img.shields.io/badge/since-1.0.0-blue) [![](https://img.shields.io/badge/implementation-AnActionIconLineMarkerProvider-blue)](../src/main/java/com/picimako/justkitting/linemarker/AnActionIconLineMarkerProvider.java)
 
-In order to improve the comprehension of extension and action registrations in plugin descriptor files, the following two tag attributes
+To improve the comprehension of extension and action registrations in plugin descriptor files, the following two tag attributes
 are extended with a line marker to show the referenced icons:
 - `idea-plugin.actions.action@icon`
-- `idea-plugin.actions.group.action@icon`
+- `idea-plugin.actions.group.action@icon` at any level of nesting of `<group>` tags
 - `idea-plugin.extensions.toolWindow@icon`
 
-Currently, icons in `com.intellij.icons.AllIcons` as well as in any class residing in the `icons` package are supported,
-and it works on plugin descriptor files in the intellij-community project too. Icons specified by relative path within the current project,
-or by fully qualified names are not supported.
+Currently supported locations:
+- icons in `com.intellij.icons.AllIcons`
+- classes residing in the top-level `icons` package,
+- fully qualified names to a certain extent
+
+It works on plugin/modules descriptor files in plugins and the intellij-community project.
+Icons specified by a relative path within the current project are not supported.
 
 The line marker is enabled by default and can be disabled under `Settings > Editor > General > Gutter Icons > Just Kitting >
 Extension and action icons in IDE plugin descriptor files`.
@@ -141,3 +167,34 @@ Upon clicking the line marker, it creates a new Gradle run configuration (or reu
 ```
 wrapper --gradle-version=<value of gradleVersion> --distribution-type=<type, i.e. bin or all, from distributionUrl>
 ```
+
+## Inlay hints to navigate to module build files from plugin.xml
+
+![](https://img.shields.io/badge/inlayhint-orange) ![](https://img.shields.io/badge/since-1.6.0-blue) [![](https://img.shields.io/badge/implementation-AnActionIconLineMarkerProvider-blue)](../src/main/kotlin/com/picimako/justkitting/inlayhint/buildfile/ModuleBuildFileInlayHintsProvider.kt)
+
+The `plugin.xml` file in multi-module (i.e. split-mode) projects defines content modules like this
+(using the [intellij-platform-modular-plugin-template](https://github.com/JetBrains/intellij-platform-modular-plugin-template) as the example):
+
+```xml
+<idea-plugin>
+    <content>
+      <module name="modular.plugin.shared" loading="required"/>
+      <module name="modular.plugin.frontend"/>
+      <module name="modular.plugin.backend"/>
+    </content>
+</idea-plugin>
+```
+
+The `name` attribute of each `<module>` tag resolves to the corresponding module's module descriptor files,
+e.g. for the example above `PROJECT_ROOT/frontend/src/main/resources/modular.plugin.frontend.xml` for the frontend module.
+
+If one wants to navigate to the build file (`build.gradle.kts`, `BUILD.bazel`) of a module from the `plugin.xml`, there is
+no direct and quick way, but e.g. navigating through Search Everywhere, the Project View, etc.
+
+In order to make this navigation easier, an inlay hint is added after each `<module>` tag that, upon Ctrl/Cmd + clicking on it,
+resolves the module's build file and opens it on a new editor tab or focuses on it if it is already open.
+
+![module_build_file_inlay_hint](assets/module_build_file_inlay_hint.PNG)
+
+NOTE: the inlay hints provider uses a naive approach for finding the build file, so it may not be able to find it
+in all cases.

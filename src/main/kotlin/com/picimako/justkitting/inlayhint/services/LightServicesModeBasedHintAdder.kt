@@ -1,6 +1,6 @@
 //Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
-package com.picimako.justkitting.inlayhint
+package com.picimako.justkitting.inlayhint.services
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
@@ -50,10 +50,10 @@ class LightServicesModeBasedHintAdder(
     /**
      * Adds hints for the `<extensions>` tag when it is in the project's actual plugin.xml.
      */
-    fun addRealHints(element: XmlToken) {
+    fun addRealHints(element: XmlToken, isPluginXml: Boolean) {
         when (settings.lightServicesDisplayMode) {
-            InlayDisplayMode.ListOfLightServices -> addHintsForLimitedList(element)
-            InlayDisplayMode.ViewAllOnly -> addHintsForViewAllOnly(element)
+            InlayDisplayMode.ListOfLightServices -> addHintsForLimitedList(element, isPluginXml)
+            InlayDisplayMode.ViewAllOnly -> addHintsForViewAllOnly(element, isPluginXml)
             else -> {
             }
         }
@@ -86,8 +86,8 @@ class LightServicesModeBasedHintAdder(
      *
      * @see ServiceLevelDecider.ServiceLevel
      */
-    private fun addHintsForLimitedList(element: XmlToken) {
-        val lightServices = LightServiceLookup.lookupLightServiceClasses(file.project)
+    private fun addHintsForLimitedList(element: XmlToken, isPluginXml: Boolean) {
+        val lightServices = LightServiceLookup.lookupLightServiceClasses(file, isPluginXml)
         if (lightServices.isNotEmpty()) {
             //Collect and group the classes into collections based on their service level
             val services = linkedMapOf<ServiceLevelDecider.ServiceLevel, MutableList<PsiNameIdentifierOwner>>()
@@ -111,8 +111,8 @@ class LightServicesModeBasedHintAdder(
     /**
      * Adds a single, `View all light services...` hint for the [InlayDisplayMode.ViewAllOnly] display mode.
      */
-    private fun addHintsForViewAllOnly(element: XmlToken) {
-        if (LightServiceLookup.isProjectHasLightService(file.project)) {
+    private fun addHintsForViewAllOnly(element: XmlToken, isPluginXml: Boolean) {
+        if (LightServiceLookup.isProjectHasLightService(file, isPluginXml)) {
             addViewAllServicesHint(element)
         }
     }

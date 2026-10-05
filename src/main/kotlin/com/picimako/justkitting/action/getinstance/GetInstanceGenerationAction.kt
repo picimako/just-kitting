@@ -8,7 +8,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import com.picimako.justkitting.resources.JustKittingBundle
+import com.picimako.justkitting.resources.JustKittingBundle.message
 
 /**
  * Base class for generating a static `getInstance()` method for service retrieval.
@@ -36,7 +36,7 @@ protected constructor(protected val serviceLevel: Service.Level) : BaseCodeInsig
      * Returns the text of the action. It appears in the action list in which users can choose which level of service they
      * are generating the method for.
      */
-    private fun getText(): String = if (serviceLevel == Service.Level.PROJECT) JustKittingBundle.message("action.generate.getinstance.project.level") else JustKittingBundle.message("action.generate.getinstance.application.level")
+    private fun getText(): String = if (serviceLevel == Service.Level.PROJECT) message("action.generate.getinstance.project.level") else message("action.generate.getinstance.application.level")
 
     fun invokeHandler(project: Project, editor: Editor, file: PsiFile) {
         handler.invoke(project, editor, file)

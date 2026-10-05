@@ -2,6 +2,9 @@
 
 package com.picimako.justkitting.action.diff;
 
+import static com.picimako.justkitting.resources.JustKittingBundle.JUST_KITTING_BUNDLE;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
+
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys;
 import com.intellij.openapi.ui.MessageType;
@@ -11,8 +14,6 @@ import com.intellij.util.ui.JBInsets;
 import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.PropertyKey;
-
-import static com.picimako.justkitting.resources.JustKittingBundle.JUST_KITTING_BUNDLE;
 
 /**
  * Utility for showing balloons via {@link JBPopupFactory}.
@@ -28,7 +29,7 @@ final class BalloonHelper {
     static void showBalloonForAction(@NotNull AnActionEvent e, @PropertyKey(resourceBundle = JUST_KITTING_BUNDLE) String messageKey) {
         if (e.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT) != null) {
             var relativePoint = JBPopupFactory.getInstance().guessBestPopupLocation(e.getDataContext());
-            JBPopupFactory.getInstance().createHtmlTextBalloonBuilder(JustKittingBundle.message(messageKey), MessageType.WARNING, null)
+            JBPopupFactory.getInstance().createHtmlTextBalloonBuilder(message(messageKey), MessageType.WARNING, null)
                     .setBorderInsets(JBInsets.create(3, 3))
                     .createBalloon()
                     .show(relativePoint, Balloon.Position.below);

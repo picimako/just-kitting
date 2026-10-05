@@ -4,6 +4,7 @@ package com.picimako.justkitting.intention.state;
 
 import static com.intellij.openapi.application.ReadAction.computeBlocking;
 import static com.picimako.justkitting.PlatformNames.PERSISTENT_STATE_COMPONENT;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
 
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.codeInspection.util.IntentionFamilyName;
@@ -19,7 +20,6 @@ import com.intellij.psi.PsiModifier;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.picimako.justkitting.ListPopupHelper;
-import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,12 +50,12 @@ public class MakeJavaClassPersistentStateComponentIntention extends BaseIntentio
 
     @Override
     public @IntentionName @NotNull String getText() {
-        return JustKittingBundle.message("intention.convert.to.persistent.state.component.text");
+        return message("intention.convert.to.persistent.state.component.text");
     }
 
     @Override
     public @NotNull @IntentionFamilyName String getFamilyName() {
-        return JustKittingBundle.message("intention.convert.to.persistent.state.component.family", "Java");
+        return message("intention.convert.to.persistent.state.component.family", "Java");
     }
 
     @Override

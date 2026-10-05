@@ -4,6 +4,7 @@ package com.picimako.justkitting.inspection;
 
 import static com.intellij.psi.JavaPsiFacade.getElementFactory;
 import static com.picimako.justkitting.PlatformNames.PSI_CALL;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalInspectionToolSession;
@@ -30,7 +31,6 @@ import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.psi.util.ConstantEvaluationOverflowException;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.picimako.justkitting.PlatformNames;
-import com.picimako.justkitting.resources.JustKittingBundle;
 import com.siyeh.ig.callMatcher.CallMatcher;
 import com.siyeh.ig.psiutils.TypeUtils;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +64,7 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
                     && isZero(expression.getArrayDimensions()[0])
                     && hasEmptyArrayConstantField(expression.getClassReference())) {
                     holder.registerProblem(expression,
-                        JustKittingBundle.message("inspection.empty.array.creation", expression.getClassReference().getReferenceName()),
+                        message("inspection.empty.array.creation", expression.getClassReference().getReferenceName()),
                         ProblemHighlightType.WEAK_WARNING,
                         new ReplaceWithEmptyArrayConstantQuickFix(expression.getClassReference().getReferenceName()));
                 }
@@ -76,9 +76,9 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
                 //If any of the expression operands is a reference to 'PsiArgumentList.getExpressions().length'
                 if ((isLeftBound = isGetExpressionsLength(expr.getLOperand(), expr.getROperand())) || isGetExpressionsLength(expr.getROperand(), expr.getLOperand())) {
                     if (expr.getOperationTokenType() == JavaTokenType.EQEQ) {
-                        holder.registerProblem(expr, JustKittingBundle.message("inspection.use.expression.list.is.empty", ""), new ReplaceWithIsEmptyQuickFix(false, isLeftBound));
+                        holder.registerProblem(expr, message("inspection.use.expression.list.is.empty", ""), new ReplaceWithIsEmptyQuickFix(false, isLeftBound));
                     } else if (expr.getOperationTokenType() == (isLeftBound ? JavaTokenType.GT : JavaTokenType.LT)) {
-                        holder.registerProblem(expr, JustKittingBundle.message("inspection.use.expression.list.is.empty", "!"), new ReplaceWithIsEmptyQuickFix(true, isLeftBound));
+                        holder.registerProblem(expr, message("inspection.use.expression.list.is.empty", "!"), new ReplaceWithIsEmptyQuickFix(true, isLeftBound));
                     }
                 }
             }
@@ -124,12 +124,12 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
 
         @Override
         public @IntentionName @NotNull String getName() {
-            return JustKittingBundle.message("inspection.replace.with.empty.array.constant", arrayType);
+            return message("inspection.replace.with.empty.array.constant", arrayType);
         }
 
         @Override
         public @IntentionFamilyName @NotNull String getFamilyName() {
-            return JustKittingBundle.message("inspection.optimize.expressions.family");
+            return message("inspection.optimize.expressions.family");
         }
     }
 
@@ -187,12 +187,12 @@ public class OptimizeExpressionsInspection extends LocalInspectionTool {
 
             @Override
             public @IntentionName @NotNull String getName() {
-                return JustKittingBundle.message("inspection.replace.with.is.empty", negate);
+                return message("inspection.replace.with.is.empty", negate);
             }
 
             @Override
             public @IntentionFamilyName @NotNull String getFamilyName() {
-                return JustKittingBundle.message("inspection.optimize.expressions.family");
+                return message("inspection.optimize.expressions.family");
             }
         }
 }

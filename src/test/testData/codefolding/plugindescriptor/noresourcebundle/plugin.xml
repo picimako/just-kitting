@@ -128,7 +128,7 @@
         <className<fold text='...' expand='true'>>com.picimako.DummyIntention
         </className</fold>>
         <descriptionDirectoryName>directory name</descriptionDirectoryName>
-<fold text='...' expand='false'></fold></intentionAction</fold></fold>>
+</fold><fold text='...' expand='false'></intentionAction</fold></fold>>
 
     <intentionAction<fold text='...' expand='true'>><fold text=' for JAVA at Some category / DummyIntention ' expand='false'>
         <language>JAVA</language>

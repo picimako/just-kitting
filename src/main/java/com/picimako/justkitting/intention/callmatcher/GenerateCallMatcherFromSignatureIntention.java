@@ -3,6 +3,7 @@
 package com.picimako.justkitting.intention.callmatcher;
 
 import static com.intellij.openapi.application.ReadAction.computeBlocking;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
 
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInspection.util.IntentionFamilyName;
@@ -17,7 +18,6 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.util.IncorrectOperationException;
-import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.datatransfer.DataFlavor;
@@ -37,12 +37,12 @@ import java.awt.datatransfer.DataFlavor;
 public class GenerateCallMatcherFromSignatureIntention implements IntentionAction {
     @Override
     public @IntentionName @NotNull String getText() {
-        return JustKittingBundle.message("intention.call.matcher.generate.from.signature");
+        return message("intention.call.matcher.generate.from.signature");
     }
 
     @Override
     public @NotNull @IntentionFamilyName String getFamilyName() {
-        return JustKittingBundle.message("intention.call.matcher.generate.from.signature");
+        return message("intention.call.matcher.generate.from.signature");
     }
 
     //---- Availability check ----

@@ -72,7 +72,9 @@ class CallMatcherReferenceContributorTest : JustKittingTestBase() {
                 """.trimIndent()
         )
         val element = findElementAtCaret()
-        assertThat(computeBlocking<Array<PsiReference>, Exception> { element?.references }).isEmpty()
+        assertThat(computeBlocking<List<PsiReference>, Exception> {
+            element?.references?.filterIsInstance<CallMatcherReferenceContributor.CallMatcherArgReference>()
+        }).isEmpty()
     }
 
     //Method reference

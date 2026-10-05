@@ -4,6 +4,26 @@
 
 ## [Unreleased]
 
+## [1.6.0]
+### Added
+- [61](https://github.com/picimako/just-kitting/issues/61): Added a new tool window to interact with
+`com.intellij.ide.util.PropertiesComponent`. You can set, query and delete values on the application and project levels.
+- Action and tool window icons in plugin/module descriptor XMLs are displayed in the gutter for icon classes other than
+`AllIcons` and ones situated in `icons` packages. It can't load icons from all plugins but makes an attempt to do so.
+- [64](https://github.com/picimako/just-kitting/issues/64): Added inlay hints in `plugin.xml` files after each `idea-plugin.content.module` tag. The inlay hint is clickable and
+navigates to the `build.gradle.kts` file of the linked module descriptor file's parent module.
+- [65](https://github.com/picimako/just-kitting/issues/65): Added inlay hints for enum constants for pre-configured enums and field names. Has very limited enum support and is disabled by default.
+- Added code folding for the `codeInsight.declarativeInlayProvider` extension in plugin and module descriptor files.
+
+### Changed
+- New supported IDE version range: 2026.2+.
+- [63](https://github.com/picimako/just-kitting/issues/63): The light services inlay hint is now displayed in module
+descriptor files too. There it lists the light services in the corresponding modules.
+
+### Fixed
+- Fixed some potential `NullPointerException`s when calculating the offsets for the light services inlay hints.
+- Plugin/module descriptor files inside JAR files no longer show the light services inlay hint.
+
 ## [1.5.0]
 ### Changed
 - New supported IDE version range: 2026.1+.

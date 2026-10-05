@@ -1,0 +1,59 @@
+<idea-plugin<fold text='...' expand='true'>>
+<id>dummy</id>
+<vendor>test</vendor>
+
+<extensions defaultExtensionNs="com.intellij"<fold text='...' expand='true'>>
+    <!-- No folding for non-foldable attributes-->
+
+    <codeInsight.declarativeInlayProvider />
+
+    <codeInsight.declarativeInlayProvider<fold text='...' expand='true'>
+        implementationClass="com.picimako.justkitting.inlayhint.buildfile.ModuleBuildFileInlayHintsProvider"/</fold>>
+
+    <codeInsight.declarativeInlayProvider<fold text='...' expand='true'>
+        isEnabledByDefault="true"
+        implementationClass="com.picimako.justkitting.inlayhint.buildfile.ModuleBuildFileInlayHintsProvider"
+        providerId="just.kitting.module.build.file"/</fold>>
+
+    <!-- Folding for only individual attributes -->
+
+    <codeInsight.declarativeInlayProvider <fold text='for XML at [missing group] / [missing nameKey]' expand='false'>language="XML" /</fold>>
+
+    <codeInsight.declarativeInlayProvider <fold text='at CODE_AUTHOR_GROUP / [missing nameKey]' expand='false'>group="CODE_AUTHOR_GROUP" /</fold>>
+
+    <codeInsight.declarativeInlayProvider <fold text='at [missing group] / {inlay.hints.module.build.file}' expand='false'>nameKey="inlay.hints.module.build.file" /</fold>>
+
+    <!-- Combined foldable attributes -->
+
+    <codeInsight.declarativeInlayProvider<fold text='...' expand='true'>
+        <fold text='for XML at OTHER_GROUP / [missing nameKey]' expand='false'>language="XML"
+            group="OTHER_GROUP"/</fold></fold>>
+
+    <codeInsight.declarativeInlayProvider<fold text='...' expand='true'>
+        <fold text='at OTHER_GROUP / {inlay.hints.module.build.file}' expand='false'>group="OTHER_GROUP"
+            nameKey="inlay.hints.module.build.file"/</fold></fold>>
+
+    <codeInsight.declarativeInlayProvider<fold text='...' expand='true'>
+        <fold text='for XML at OTHER_GROUP / {inlay.hints.module.build.file}' expand='false'>language="XML"
+            group="OTHER_GROUP"
+            nameKey="inlay.hints.module.build.file"/</fold></fold>>
+
+    <!-- Combined foldable and non-foldable attributes -->
+
+    <codeInsight.declarativeInlayProvider<fold text='...' expand='true'>
+        <fold text='for XML at OTHER_GROUP / {inlay.hints.module.build.file}' expand='false'>language="XML"
+            group="OTHER_GROUP"
+            isEnabledByDefault="true"
+            implementationClass="com.picimako.justkitting.inlayhint.buildfile.ModuleBuildFileInlayHintsProvider"
+            nameKey="inlay.hints.module.build.file"
+            providerId="just.kitting.module.build.file"/</fold></fold>>
+
+    <codeInsight.declarativeInlayProvider<fold text='...' expand='true'>
+        <fold text='for kotlin at PARAMETERS_GROUP / {inlay.hints.enum.field}' expand='false'>language="kotlin"
+            group="PARAMETERS_GROUP"
+            isEnabledByDefault="false"
+            implementationClass="com.picimako.justkitting.inlayhint.enums.EnumFieldInlayHintsProvider"
+            nameKey="inlay.hints.enum.field"
+            providerId="just.kitting.enum.fields"/</fold></fold>>
+</extensions</fold>>
+        </idea-plugin</fold>>

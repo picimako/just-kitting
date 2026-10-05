@@ -11,9 +11,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceService;
 import com.intellij.psi.xml.XmlElement;
+import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.idea.devkit.util.DescriptorUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +69,7 @@ public abstract class PluginDescriptorTagFolder {
         return PsiReferenceService.getService().getReferences(element, PsiReferenceService.Hints.NO_HINTS);
     }
 
+    @NotNull
     protected static String findMessageInPropertiesOrDefaultToKey(PropertiesFile propertiesFile, @Nullable String messageKey, boolean wrapInSingleQuotes) {
         return Optional.ofNullable(messageKey)
             .map(propertiesFile::findPropertyByKey)
@@ -77,6 +80,7 @@ public abstract class PluginDescriptorTagFolder {
     /**
      * Encloses the argument attribute value in curly braces. For example: {@code some.key} becomes {@code {some.key}}.
      */
+    @NotNull
     protected static String asKey(@Nullable String attributeValue) {
         return getOrEmpty(attributeValue != null && !attributeValue.isBlank() ? "{" + attributeValue + "}" : "");
     }
@@ -84,7 +88,62 @@ public abstract class PluginDescriptorTagFolder {
     /**
      * Returns the argument value if it is non-null and non-empty, otherwise, returns empty string.
      */
+    @NotNull
     protected static String getOrEmpty(@Nullable String value) {
         return defaultIfEmpty(value, "");
+    }
+
+    /**
+     * Builds the placeholder text for the {@code language} attribute. For example, for the JAVA language,
+     * the placeholder text will be {@code for JAVA}.
+     *
+     * @return the placeholder text, or empty string if there is no language attribute, or its value is empty
+     */
+    @NotNull
+    protected static String buildLanguage(String language) {
+        return !language.isEmpty() ? "for " + language : "";
+    }
+
+    @NotNull
+    protected static String resolveMessageFromBundle(XmlTag extensionTag,
+                                                  String keyAttrName,
+                                                  @NotNull Bundle primaryBundle,
+                                                  boolean wrapInSingleQuotes) {
+        var bundle = primaryBundle;
+        while (bundle != Bundle.NONE) {
+            //GROUP_BUNDLE or BUNDLE
+            if (!bundle.attributeName.isEmpty()) {
+                var bundleAttr = extensionTag.getAttribute(bundle.attributeName);
+                if (bundleAttr != null) {
+                    var references = getReferences(bundleAttr.getValueElement());
+                    if (references.isEmpty()) return asKey(extensionTag.getAttributeValue(keyAttrName));
+
+                    //For now, it always takes the first ResourceBundleReference, regardless if there are e.g. localizations for more languages
+                    var resolved = findFirstBundleReference(references);
+                    if (resolved.isPresent() && resolved.get() instanceof PropertiesFile propertiesFile) {
+                        return findMessageInPropertiesOrDefaultToKey(propertiesFile, extensionTag.getAttributeValue(keyAttrName), wrapInSingleQuotes);
+                    }
+                }
+                bundle = bundle.fallbackTo;
+            }
+            //PLUGIN_DESCRIPTOR: <resource-bundle>
+            else {
+                /*
+                 * <idea-plugin>
+                 *   <resource-bundle>...</resource-bundle>
+                 * </idea-plugin>
+                 */
+                var resourceBundleTag = DescriptorUtil.getIdeaPlugin((XmlFile) extensionTag.getContainingFile()).getResourceBundle().getXmlTag();
+                if (resourceBundleTag == null) return asKey(extensionTag.getAttributeValue(keyAttrName));
+
+                //For now, it always takes the first ResourceBundleReference, regardless if there are e.g. localizations for more languages
+                return findFirstBundleReference(getReferences(resourceBundleTag))
+                    .map(resolved -> resolved instanceof PropertiesFile propertiesFile
+                        ? findMessageInPropertiesOrDefaultToKey(propertiesFile, extensionTag.getAttributeValue(keyAttrName), wrapInSingleQuotes)
+                        : null)
+                    .orElseGet(() -> asKey(extensionTag.getAttributeValue(keyAttrName)));
+            }
+        }
+        return asKey(extensionTag.getAttributeValue(keyAttrName));
     }
 }

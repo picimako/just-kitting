@@ -2,9 +2,10 @@
 
 package com.picimako.justkitting.codefolding;
 
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
+
 import com.intellij.application.options.editor.CodeFoldingOptionsProvider;
 import com.intellij.openapi.options.BeanConfigurable;
-import com.picimako.justkitting.resources.JustKittingBundle;
 
 /**
  * Provides an options UI for the code folding options of this plugin.
@@ -12,10 +13,10 @@ import com.picimako.justkitting.resources.JustKittingBundle;
 public class JustKittingCodeFoldingOptionsProvider extends BeanConfigurable<JustKittingCodeFoldingSettings> implements CodeFoldingOptionsProvider {
 
     public JustKittingCodeFoldingOptionsProvider() {
-        super(JustKittingCodeFoldingSettings.getInstance(), JustKittingBundle.message("plugin.name"));
+        super(JustKittingCodeFoldingSettings.getInstance(), message("plugin.name"));
         JustKittingCodeFoldingSettings settings = getInstance();
 
         //See PluginDescriptorTagsFoldingBuilder
-        checkBox(JustKittingBundle.message("code.folding.plugin.descriptor.tags"), settings::isCollapsePluginDescriptorTags, settings::setCollapsePluginDescriptorTags);
+        checkBox(message("code.folding.plugin.descriptor.tags"), settings::isCollapsePluginDescriptorTags, settings::setCollapsePluginDescriptorTags);
     }
 }

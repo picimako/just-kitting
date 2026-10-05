@@ -122,7 +122,7 @@ public final class CompareConfigFileWithPluginTemplateActionTest extends JustKit
         assertThat(simpleDiffRequest.getContentTitles())
                 .containsExactly("Platform Plugin Template / Remote Version", "Local");
         assertThat(simpleDiffRequest.toString())
-                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[null], \\{}:DocumentImpl\\[dependabot\\.yml]]");
+                .matches("com\\.intellij\\.diff\\.requests\\.SimpleDiffRequest@[a-zA-Z0-9]+:\\[\\{}:DocumentImpl\\[diff\\.yml], \\{}:DocumentImpl\\[dependabot\\.yml]]");
     }
 
     @Test

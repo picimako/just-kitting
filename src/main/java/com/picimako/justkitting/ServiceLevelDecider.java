@@ -4,13 +4,13 @@ package com.picimako.justkitting;
 
 import static com.intellij.openapi.application.ReadAction.computeBlocking;
 import static com.picimako.justkitting.PlatformNames.SERVICE_ANNOTATION;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
 
 import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReferenceExpression;
-import com.picimako.justkitting.resources.JustKittingBundle;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -136,10 +136,10 @@ public final class ServiceLevelDecider {
     @SuppressWarnings("LombokGetterMayBeUsed")
     @RequiredArgsConstructor
     public enum ServiceLevel {
-        PROJECT(JustKittingBundle.message("service.level.display.name.project")),
-        APP(JustKittingBundle.message("service.level.display.name.app")),
-        PROJECT_AND_APP(JustKittingBundle.message("service.level.display.name.project.and.app")),
-        NOT_SURE(JustKittingBundle.message("service.level.display.name.not.sure"));
+        PROJECT(message("service.level.display.name.project")),
+        APP(message("service.level.display.name.app")),
+        PROJECT_AND_APP(message("service.level.display.name.project.and.app")),
+        NOT_SURE(message("service.level.display.name.not.sure"));
 
         private final String displayName;
 

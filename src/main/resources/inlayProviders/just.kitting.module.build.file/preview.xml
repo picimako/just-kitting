@@ -1,0 +1,8 @@
+<idea-plugin>
+    <content>
+        <module name="my.plugin.frontend"/>/*<# frontend/build.gradle.kts #>*/
+        <module name="my.plugin.shared"/>/*<# shared/build.gradle.kts #>*/
+        <module name="my.plugin.backend"/>/*<# backend/build.gradle.kts #>*/
+        <module name="my.plugin.non.existent.module"/>
+    </content>
+</idea-plugin>

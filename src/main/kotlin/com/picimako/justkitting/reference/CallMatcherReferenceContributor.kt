@@ -24,6 +24,7 @@ import com.intellij.util.SmartList
 import com.picimako.justkitting.CallMatcherUtil
 import com.picimako.justkitting.PsiClassFinder.Companion.evaluate
 import com.picimako.justkitting.PsiClassFinder.Companion.findClass
+import org.jetbrains.annotations.VisibleForTesting
 
 /**
  * Adds references to the arguments of [com.siyeh.ig.callMatcher.CallMatcher] static factory methods: `staticCall`, `instanceCall`, `exactInstanceCall`.
@@ -77,9 +78,10 @@ class CallMatcherReferenceContributor : PsiReferenceContributor() {
     }
 
     /**
-     * Reference implementation to for class FQN and method name string literals in `CallMatcher` factory method arguments.
+     * Reference implementation for class FQN and method name string literals in `CallMatcher` factory method arguments.
      */
-    private class CallMatcherArgReference(element: PsiElement, private val elementsToResolveTo: () -> Array<PsiElement>)
+    @VisibleForTesting
+    class CallMatcherArgReference(element: PsiElement, private val elementsToResolveTo: () -> Array<PsiElement>)
         : PsiReferenceBase<PsiElement?>(element, TextRange.create(1, element.textRange.length - 1), true),
         PsiPolyVariantReference {
 

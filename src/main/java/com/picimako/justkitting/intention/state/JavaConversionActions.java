@@ -3,13 +3,13 @@
 package com.picimako.justkitting.intention.state;
 
 import static com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
 
 import com.intellij.codeInsight.CodeInsightActionHandler;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
-import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -64,7 +64,7 @@ final class JavaConversionActions {
         @Override
         protected void update(@NotNull Presentation presentation, @NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) {
             super.update(presentation, project, editor, file);
-            presentation.setText(JustKittingBundle.message("intention.persistent.state.use.standalone.state.object"));
+            presentation.setText(message("intention.persistent.state.use.standalone.state.object"));
         }
 
         @Override
@@ -122,7 +122,7 @@ final class JavaConversionActions {
         @Override
         protected void update(@NotNull Presentation presentation, @NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) {
             super.update(presentation, project, editor, file);
-            presentation.setText(JustKittingBundle.message("intention.persistent.state.use.self.as.state"));
+            presentation.setText(message("intention.persistent.state.use.self.as.state"));
         }
 
         @Override

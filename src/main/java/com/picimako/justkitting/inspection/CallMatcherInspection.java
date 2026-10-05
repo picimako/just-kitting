@@ -10,6 +10,7 @@ import static com.picimako.justkitting.CallMatcherUtil.CALL_MATCHER_STATIC_MATCH
 import static com.picimako.justkitting.CallMatcherUtil.filterByNonStatic;
 import static com.picimako.justkitting.CallMatcherUtil.filterByStatic;
 import static com.picimako.justkitting.PsiClassFinder.findClass;
+import static com.picimako.justkitting.resources.JustKittingBundle.message;
 
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;
@@ -23,7 +24,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiLiteralExpression;
 import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.picimako.justkitting.resources.JustKittingBundle;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -59,7 +59,7 @@ public class CallMatcherInspection extends LocalInspectionTool {
                     if (referencedClass != null) {
                         var methodCountAndMessage = getMethodCountAndMessage(literalExpr, referencedClass, parentCall);
                         if (!methodCountAndMessage.equals(Pair.empty()) && methodCountAndMessage.first == 0) {
-                            holder.registerProblem(literalExpr, JustKittingBundle.message(methodCountAndMessage.second), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL);
+                            holder.registerProblem(literalExpr, message(methodCountAndMessage.second), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL);
                         }
                     }
                 }

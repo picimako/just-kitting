@@ -1,6 +1,6 @@
 //Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
-package com.picimako.justkitting.inlayhint
+package com.picimako.justkitting.inlayhint.services
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.presentation.InsetPresentation
@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.xml.XmlToken
 import com.picimako.justkitting.ServiceLevelDecider
-import com.picimako.justkitting.inlayhint.LightServiceLookup.lookupLightServiceClasses
+import com.picimako.justkitting.inlayhint.services.LightServiceLookup.lookupLightServiceClasses
 import com.picimako.justkitting.resources.JustKittingBundle.message
 import org.apache.commons.lang3.mutable.MutableInt
 
@@ -112,12 +112,13 @@ abstract class LightServicesHintItemAdder(
     }
 
     private fun addHintFor(element: PsiElement, insetPres: InsetPresentation) {
+        val inlayStartOffset = calculateBlockInlayStartOffset(element as XmlToken) ?: return
         sink.addBlockElement(
-            element.parent.textRange.startOffset, relatesToPrecedingText = true, showAbove = true, priority = 0,
-            presentation = presentationFactory.inset(
-                insetPres,
-                left = calculateBlockInlayStartOffset(element as XmlToken)
-            )
+            offset = element.parent.textRange.startOffset,
+            relatesToPrecedingText = true,
+            showAbove = true,
+            priority = 0,
+            presentation = presentationFactory.inset(insetPres, left = inlayStartOffset)
         )
     }
 }

@@ -1,6 +1,8 @@
 //Copyright 2026 Tamás Balog. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
-package com.picimako.justkitting.inlayhint
+@file:Suppress("UnstableApiUsage")
+
+package com.picimako.justkitting.inlayhint.services
 
 import com.intellij.codeInsight.hints.ChangeListener
 import com.intellij.codeInsight.hints.FactoryInlayHintsCollector
@@ -26,36 +28,38 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.ui.DocumentAdapter
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import com.intellij.util.ui.JBUI
-import com.picimako.justkitting.inlayhint.Settings.Companion.MAX_NO_OF_SERVICES
-import com.picimako.justkitting.resources.JustKittingBundle
+import com.picimako.justkitting.inlayhint.services.Settings.Companion.MAX_NO_OF_SERVICES
+import com.picimako.justkitting.resources.JustKittingBundle.message
 import java.util.function.Supplier
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComponent
 import javax.swing.event.DocumentEvent
 
 /**
- * Provides inlay hints for the `<extensions>` starting tag in a plugin's main plugin.xml file.
+ * Provides inlay hints for the `<extensions>` starting tag in a plugin's main plugin.xml file and module descriptor files.
  *
  * The `<extensions>` tag is selected because it usually contains the majority of plugin functionality declarations.
+ * For now, if there is no `<extensions>` tag present, no hint is provided.
  *
  * Both the display mode and the number of services to display are configurable within `Settings > Editor > Inlay Hints`
  *
  * @since 0.1.0
  */
-@Suppress("UnstableApiUsage", "HardCodedStringLiteral")
+@Suppress("HardCodedStringLiteral")
 class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
     override val key: SettingsKey<Settings>
         get() = SettingsKey("light.services")
 
     override val name: String
-        get() = JustKittingBundle.message("inlay.hints.light.services.settings.type.title")
+        get() = message("inlay.hints.light.services.settings.type.title")
 
     override val previewText: String
+        //language=XML
         get() = """
                 <idea-plugin>
                     <extensions defaultExtensionNs="com.intellij">
@@ -69,7 +73,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
             val maxNoOfServicesTextField = JBTextField(2)
 
             override val mainCheckboxText: String
-                get() = JustKittingBundle.message("inlay.hints.light.services.settings.show.hints.option")
+                get() = message("inlay.hints.light.services.settings.show.hints.option")
 
             override fun createComponent(listener: ChangeListener): JComponent {
                 val panel = panel {
@@ -77,26 +81,24 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
                     /*
                      * Display mode: [<combobox with options>]
                      */
-                    row(JustKittingBundle.message("inlay.hints.light.services.display.mode.label")) {
-
+                    row(message("inlay.hints.light.services.display.mode.label")) {
                         //Add combobox to select display mode
-                        val lightServicesDisplayMode = comboBox<InlayDisplayMode>(
-                            lightServicesDisplayModeModel,
-                            SimpleListCellRenderer.create("") { it.displayName }
-                        ).component
-
-                        //Update Settings properties and related UI controls
-                        lightServicesDisplayMode.addActionListener {
-                            settings.lightServicesDisplayMode = lightServicesDisplayMode.selectedItem as InlayDisplayMode
-                            maxNoOfServicesTextField.isEnabled = settings.lightServicesDisplayMode == InlayDisplayMode.ListOfLightServices
-                            listener.settingsChanged()
-                        }
+                        comboBox(lightServicesDisplayModeModel, listCellRenderer { text(value!!.displayName) })
+                            .component.apply {
+                                //Update Settings properties and related UI controls
+                                addActionListener {
+                                    settings.lightServicesDisplayMode = selectedItem as InlayDisplayMode
+                                    maxNoOfServicesTextField.isEnabled =
+                                        settings.lightServicesDisplayMode == InlayDisplayMode.ListOfLightServices
+                                    listener.settingsChanged()
+                                }
+                            }
                     }
 
                     /*
                      * Max number of services to display: [<text field>]
                      */
-                    row(JustKittingBundle.message("inlay.hints.light.services.settings.max.no.of.services.label")) {
+                    row(message("inlay.hints.light.services.settings.max.no.of.services.label")) {
                         cell(maxNoOfServicesTextField)
                             .bindText({ settings.maxNumberOfServicesToDisplay.toString() })
                             { value ->
@@ -108,7 +110,7 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
 
                         maxNoOfServicesTextField.document.addDocumentListener(object : DocumentAdapter() {
                             override fun textChanged(e: DocumentEvent) {
-                                ComponentValidator.getInstance(maxNoOfServicesTextField).ifPresent { v: ComponentValidator -> v.revalidate() }
+                                ComponentValidator.getInstance(maxNoOfServicesTextField).ifPresent { it.revalidate() }
                                 listener.settingsChanged()
                             }
                         })
@@ -119,36 +121,32 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
             }
 
             /**
-             * ComponentValidator is used since CellBuilder.intTextField with its validation mechanism won't work for some reason
+             * `ComponentValidator` is used since `CellBuilder.intTextField` with its validation mechanism won't work for some reason.
              *
              * See [Validation errors](https://jetbrains.design/intellij/principles/validation_errors/).
              */
             private fun installValidatorForMaxNoOfServices() {
                 ComponentValidator(ApplicationManager.getApplication()).withValidator(Supplier {
                     maxNoOfServicesTextField.let {
-                        val maxServices: String = it.text
-                        if (maxServices.isNotBlank()) {
-                            try {
-                                if (maxServices.toInt() !in 1..MAX_NO_OF_SERVICES) {
-                                    ValidationInfo(
-                                        JustKittingBundle.message(
-                                            "inlay.hints.light.services.settings.value.must.be.between.x.and.y",
-                                            1,
-                                            MAX_NO_OF_SERVICES
-                                        ), maxNoOfServicesTextField
-                                    )
-                                } else {
-                                    settings.maxNumberOfServicesToDisplay = maxServices.toInt()
-                                    null
-                                }
-                            } catch (_: NumberFormatException) {
+                        try {
+                            val maxServicesAsInt = it.text.toInt()
+                            if (maxServicesAsInt in 1..MAX_NO_OF_SERVICES) {
+                                settings.maxNumberOfServicesToDisplay = maxServicesAsInt
+                                null
+                            } else {
                                 ValidationInfo(
-                                    JustKittingBundle.message("inlay.hints.light.services.settings.value.must.be.a.number"),
-                                    maxNoOfServicesTextField
+                                    message(
+                                        "inlay.hints.light.services.settings.value.must.be.between.x.and.y",
+                                        1,
+                                        MAX_NO_OF_SERVICES
+                                    ), it
                                 )
                             }
-                        } else {
-                            null
+                        } catch (_: NumberFormatException) {
+                            ValidationInfo(
+                                message("inlay.hints.light.services.settings.value.must.be.a.number"),
+                                it
+                            )
                         }
                     }
                 }).installOn(maxNoOfServicesTextField)
@@ -160,43 +158,44 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
         }
     }
 
-    override fun getCollectorFor(file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): InlayHintsCollector {
+    override fun getCollectorFor(file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink)
+            : InlayHintsCollector {
+        //Descriptors inside JARs are excluded, so that they don't show a false list of light services from the current project
+        if (file.virtualFile.path.contains(".jar!/")) return NoopInlayHintsCollector()
+
         return object : FactoryInlayHintsCollector(editor) {
-            val hintAdder = LightServicesModeBasedHintAdder(settings, sink, factory, editor, file)
+            private val hintAdder = LightServicesModeBasedHintAdder(settings, sink, factory, editor, file)
 
             override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
                 if (settings.lightServicesDisplayMode != InlayDisplayMode.Disabled) {
                     //For the preview in Inlay Hints settings, there is no need to query the project for actual light services, hence the distinction
                     val isSettingsPreview = isInSettingsPreview()
-                    //limit the hint to the plugin's main config file. Exclude optional dependencies' configurations
-                    if (!file.project.service<DumbService>().isDumb && isExtensionsPluginXmlTagToken(isSettingsPreview, element)) {
+                    //limit the hint to the plugin.xml or module descriptor file. Exclude optional dependencies' configurations
+                    if (!file.project.service<DumbService>().isDumb && isExtensionsXmlTagToken(element)) {
                         if (isSettingsPreview) hintAdder.addPreviewHints(element as XmlToken)
-                        else hintAdder.addRealHints(element as XmlToken)
+                        else hintAdder.addRealHints(element as XmlToken, isPluginXml = file.name == "plugin.xml")
                         return false //don't traverse child elements, found the <extensions> tag
                     }
                 }
                 return true
             }
 
-            private fun isExtensionsPluginXmlTagToken(isSettingsPreview: Boolean, element: PsiElement) =
-                if (isSettingsPreview) isElementToShowHintFor(element) else file.name == "plugin.xml" && isElementToShowHintFor(element)
-
             private fun isInSettingsPreview() = editor.editorKind == EditorKind.UNTYPED && file.name == "Dummy.xml"
 
             /**
-             * Validates whether `file` and `element` is the `<extensions>` XML tag with `defaultExtensionNs="com.intellij"`
-             * attribute within a plugin.xml file.
+             * Validates whether `element` is the `<extensions>` XML tag with `defaultExtensionNs="com.intellij"`
+             * attribute within a plugin or module descriptor file (with `<idea-plugin>` root tag).
              *
              * Since there is a separate inspection reporting that the `<extensions>` tag doesn't have `defaultExtensionNs="com.intellij"` specified,
              * that construct is ignored in this hints provider.
              *
-             * It uses a simplified check to determine if the file is an actual plugin descriptor because
+             * It uses a simplified check to determine if the file is an actual plugin/module descriptor because
              * [org.jetbrains.idea.devkit.util.DescriptorUtil.isPluginXml] returns null due to null file descriptor being returned
              * by the underlying logic.
              *
              * @see org.jetbrains.idea.devkit.inspections.PluginXmlDomInspection
              */
-            private fun isElementToShowHintFor(element: PsiElement): Boolean {
+            private fun isExtensionsXmlTagToken(element: PsiElement): Boolean {
                 return file is XmlFile && file.rootTag?.name == "idea-plugin" &&
                         psiElement(XmlToken::class.java)
                             .withElementType(XmlTokenType.XML_START_TAG_START)
@@ -213,4 +212,8 @@ class LightServicesInlayHintsProvider : InlayHintsProvider<Settings> {
     override fun createSettings(): Settings = Settings()
 
     override fun isLanguageSupported(language: Language): Boolean = language is XMLLanguage
+}
+
+private class NoopInlayHintsCollector : InlayHintsCollector {
+    override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean = false
 }
